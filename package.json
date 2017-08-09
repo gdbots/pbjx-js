@@ -1,0 +1,61 @@
+{
+  "name": "@gdbots/pbjx",
+  "version": "0.1.0",
+  "description": "Pbj messaging tools for es6.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gdbots/pbjx-js.git"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "npm run clean && npm run lint && npm run test && npm run build:babel && npm run build:prepub",
+    "build:babel": "BABEL_ENV=es6 babel src --out-dir ./dist",
+    "build:prepub": "cp -rf ./{*.md,package.json} ./dist",
+    "clean": "rimraf ./dist",
+    "lint": "BABEL_ENV=cjs eslint src tests",
+    "pub": "npm run build && cd dist && npm publish --access public",
+    "test": "BABEL_ENV=cjs tape -r ./tests/babel-register.js './tests/**/*.test.js' | faucet"
+  },
+  "module": "./index.js",
+  "jsnext:main": "./index.js",
+  "dependencies": {},
+  "peerDependencies": {
+    "@gdbots/common": "^0.1.0",
+    "@gdbots/schemas": "^1.2.0",
+    "@gdbots/pbj": "^0.1.1"
+  },
+  "devDependencies": {
+    "@gdbots/common": "^0.1.0",
+    "@gdbots/pbj": "^0.1.1",
+    "@gdbots/schemas": "^1.2.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-plugin-lodash": "^3.2.11",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-regenerator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "babel-tape-runner": "^2.0.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
+    "faucet": "^0.0.1",
+    "lodash": "^4.17.4",
+    "lodash-es": "^4.17.4",
+    "md5": "^2.2.1",
+    "moment": "^2.18.1",
+    "rimraf": "^2.6.1",
+    "tape": "^4.6.3",
+    "utf8": "^2.1.2",
+    "uuid": "^3.1.0"
+  },
+  "babel": {
+    "presets": "./.babelrc.js"
+  }
+}
