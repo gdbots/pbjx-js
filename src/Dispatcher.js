@@ -1,15 +1,10 @@
 import PbjxEvent from './events/PbjxEvent';
 
-/**
- * Dispatchers will keep their listeners private.
- *
- * @type {WeakMap}
- */
-const dispatchers = new WeakMap();
+const privateProps = new WeakMap();
 
 export default class Dispatcher {
   constructor() {
-    dispatchers.set(this, { listeners: new Map() });
+    privateProps.set(this, { listeners: new Map() });
   }
 
   /**
@@ -62,7 +57,7 @@ export default class Dispatcher {
       return [];
     }
 
-    return Array.from(dispatchers.get(this).listeners.get(eventName).keys());
+    return Array.from(privateProps.get(this).listeners.get(eventName).keys());
   }
 
   /**
@@ -73,7 +68,7 @@ export default class Dispatcher {
    * @returns {boolean}
    */
   hasListeners(eventName) {
-    const dispatcher = dispatchers.get(this);
+    const dispatcher = privateProps.get(this);
     if (!dispatcher.listeners.has(eventName)) {
       return false;
     }
@@ -88,7 +83,7 @@ export default class Dispatcher {
    * @param {Function} listener
    */
   addListener(eventName, listener) {
-    const dispatcher = dispatchers.get(this);
+    const dispatcher = privateProps.get(this);
     if (!dispatcher.listeners.has(eventName)) {
       dispatcher.listeners.set(eventName, new Map());
     }
@@ -103,7 +98,7 @@ export default class Dispatcher {
    * @param {Function} listener
    */
   removeListener(eventName, listener) {
-    const dispatcher = dispatchers.get(this);
+    const dispatcher = privateProps.get(this);
     if (!dispatcher.listeners.has(eventName)) {
       return;
     }

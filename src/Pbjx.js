@@ -62,7 +62,29 @@ export default class Pbjx {
    * @returns {Pbjx}
    */
   copyContext(from, to) {
-    console.log('copyContext', `${from}`, `${to}`);
+    if (to.isFrozen()) {
+      return this;
+    }
+
+    if (!to.has('ctx_causator_ref')) {
+      to.set('ctx_causator_ref', from.generateMessageRef());
+    }
+
+    if (!to.has('ctx_app') && from.has('ctx_app')) {
+      to.set('ctx_app', from.get('ctx_app').clone());
+    }
+
+    if (!to.has('ctx_cloud') && from.has('ctx_cloud')) {
+      to.set('ctx_cloud', from.get('ctx_cloud').clone());
+    }
+
+    ['ctx_correlator_ref', 'ctx_user_ref', 'ctx_ip', 'ctx_ua'].forEach((ctx) => {
+      if (!to.has(ctx) && from.has(ctx)) {
+        to.set(ctx, from.get(ctx));
+      }
+    });
+
+    return this;
   }
 
   /**
