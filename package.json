@@ -22,7 +22,8 @@
   "peerDependencies": {
     "@gdbots/common": "^0.1.0",
     "@gdbots/schemas": "^1.2.0",
-    "@gdbots/pbj": "^0.1.1"
+    "@gdbots/pbj": "^0.1.1",
+    "md5": "^2.2.1"
   },
   "devDependencies": {
     "@gdbots/common": "^0.1.0",

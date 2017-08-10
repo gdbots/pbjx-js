@@ -1,6 +1,6 @@
 import test from 'tape';
 import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import getEventNames from '../src/getEventNames';
+import getEventNames from '../../src/utils/getEventNames';
 
 test('getEventNames tests', (t) => {
   const request = EchoRequestV1.create();

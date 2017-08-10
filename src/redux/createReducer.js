@@ -1,5 +1,5 @@
 import Dispatcher from '../Dispatcher';
-import getEventNames from '../getEventNames';
+import getEventNames from '../utils/getEventNames';
 import reduceReducers from './reduceReducers';
 
 export default function createReducer() {
