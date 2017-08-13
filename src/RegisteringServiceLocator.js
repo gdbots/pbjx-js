@@ -1,7 +1,7 @@
 import HandlerNotFound from './exceptions/HandlerNotFound';
 import ServiceLocator from './ServiceLocator';
 
-const privateProps = new WeakMap();
+const handlers = Symbol('handlers');
 
 /**
  * This service locator requires that you register the handlers
@@ -13,7 +13,7 @@ const privateProps = new WeakMap();
 export default class RegisteringServiceLocator extends ServiceLocator {
   constructor() {
     super();
-    privateProps.set(this, { handlers: new Map() });
+    this[handlers] = new Map();
   }
 
   /**
@@ -35,7 +35,7 @@ export default class RegisteringServiceLocator extends ServiceLocator {
    * @param {CommandHandler} handler
    */
   registerCommandHandler(curie, handler) {
-    privateProps.get(this).handlers.set(curie.toString(), handler);
+    this[handlers].set(curie.toString(), handler);
   }
 
   /**
@@ -43,7 +43,7 @@ export default class RegisteringServiceLocator extends ServiceLocator {
    * @param {RequestHandler} handler
    */
   registerRequestHandler(curie, handler) {
-    privateProps.get(this).handlers.set(curie.toString(), handler);
+    this[handlers].set(curie.toString(), handler);
   }
 
   /**
@@ -56,11 +56,10 @@ export default class RegisteringServiceLocator extends ServiceLocator {
    * @throws {HandlerNotFound}
    */
   getHandler(curie) {
-    const handlers = privateProps.get(this).handlers;
     const id = curie.toString();
 
-    if (handlers.has(id)) {
-      return handlers.get(id);
+    if (this[handlers].has(id)) {
+      return this[handlers].get(id);
     }
 
     throw new HandlerNotFound(curie);

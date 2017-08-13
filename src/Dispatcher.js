@@ -1,10 +1,10 @@
 import PbjxEvent from './events/PbjxEvent';
 
-const privateProps = new WeakMap();
+const listenersMap = Symbol('listenersMap');
 
 export default class Dispatcher {
   constructor() {
-    privateProps.set(this, { listeners: new Map() });
+    this[listenersMap] = new Map();
   }
 
   /**
@@ -57,7 +57,7 @@ export default class Dispatcher {
       return [];
     }
 
-    return Array.from(privateProps.get(this).listeners.get(eventName).keys());
+    return Array.from(this[listenersMap].get(eventName).keys());
   }
 
   /**
@@ -68,12 +68,11 @@ export default class Dispatcher {
    * @returns {boolean}
    */
   hasListeners(eventName) {
-    const dispatcher = privateProps.get(this);
-    if (!dispatcher.listeners.has(eventName)) {
+    if (!this[listenersMap].has(eventName)) {
       return false;
     }
 
-    return dispatcher.listeners.get(eventName).size > 0;
+    return this[listenersMap].get(eventName).size > 0;
   }
 
   /**
@@ -83,12 +82,11 @@ export default class Dispatcher {
    * @param {function} listener
    */
   addListener(eventName, listener) {
-    const dispatcher = privateProps.get(this);
-    if (!dispatcher.listeners.has(eventName)) {
-      dispatcher.listeners.set(eventName, new Map());
+    if (!this[listenersMap].has(eventName)) {
+      this[listenersMap].set(eventName, new Map());
     }
 
-    dispatcher.listeners.get(eventName).set(listener, true);
+    this[listenersMap].get(eventName).set(listener, true);
   }
 
   /**
@@ -98,11 +96,10 @@ export default class Dispatcher {
    * @param {function} listener
    */
   removeListener(eventName, listener) {
-    const dispatcher = privateProps.get(this);
-    if (!dispatcher.listeners.has(eventName)) {
+    if (!this[listenersMap].has(eventName)) {
       return;
     }
 
-    dispatcher.listeners.get(eventName).delete(listener);
+    this[listenersMap].get(eventName).delete(listener);
   }
 }

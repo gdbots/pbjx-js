@@ -1,3 +1,7 @@
+import { SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from './pbjxEvents';
+import BusExceptionEvent from './events/BusExceptionEvent';
+import PbjxEvent from './events/PbjxEvent';
+
 export default class CommandBus {
   /**
    * @param {ServiceLocator} locator
@@ -17,7 +21,7 @@ export default class CommandBus {
    * @throws {Exception}
    */
   async send(command) {
-    await this.transport.sendCommand(command.freeze());
+    return this.transport.sendCommand(command.freeze());
   }
 
   /**
@@ -39,5 +43,24 @@ export default class CommandBus {
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    */
   receiveCommand(command) {
+    let handler;
+
+    try {
+      handler = this.locator.getCommandHandler(command.schema().getCurie());
+    } catch (e) {
+      this.locator.getExceptionHandler().onCommandBusException(new BusExceptionEvent(command, e));
+      return;
+    }
+
+    try {
+      command.freeze();
+      const pbjx = this.locator.getPbjx();
+      const event = new PbjxEvent(command);
+      pbjx.trigger(command, SUFFIX_BEFORE_HANDLE, event, false);
+      handler.handleCommand(command, pbjx);
+      pbjx.trigger(command, SUFFIX_AFTER_HANDLE, event, false);
+    } catch (e) {
+      this.locator.getExceptionHandler().onCommandBusException(new BusExceptionEvent(command, e));
+    }
   }
 }

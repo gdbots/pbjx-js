@@ -96,7 +96,8 @@ export default class Pbjx {
    * @throws {Exception}
    */
   async send(command) {
-    console.log('send', `${command}`);
+    this.triggerLifecycle(command);
+    return this.locator.getCommandBus().send(command);
   }
 
   /**

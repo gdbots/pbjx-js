@@ -17,7 +17,7 @@ export default class EventBus {
    * @throws {Exception}
    */
   async publish(event) {
-    await this.transport.sendEvent(event.freeze());
+    return this.transport.sendEvent(event.freeze());
   }
 
   /**

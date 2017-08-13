@@ -8,31 +8,34 @@ import InMemoryTransport from './transports/InMemoryTransport';
 import Pbjx from './Pbjx';
 import RequestBus from './RequestBus';
 
-const privateProps = new WeakMap();
+const pbjx = Symbol('pbjx');
+const dispatcher = Symbol('dispatcher');
+const commandBus = Symbol('commandBus');
+const eventBus = Symbol('eventBus');
+const requestBus = Symbol('requestBus');
+const exceptionHandler = Symbol('exceptionHandler');
+const defaultTransport = Symbol('defaultTransport');
 
 export default class ServiceLocator {
   constructor() {
-    privateProps.set(this, {
-      pbjx: null,
-      dispatcher: null,
-      commandBus: null,
-      eventBus: null,
-      requestBus: null,
-      exceptionHandler: null,
-      defaultTransport: null,
-    });
+    this[pbjx] = null;
+    this[dispatcher] = null;
+    this[commandBus] = null;
+    this[eventBus] = null;
+    this[requestBus] = null;
+    this[exceptionHandler] = null;
+    this[defaultTransport] = null;
   }
 
   /**
    * @returns {Pbjx}
    */
   getPbjx() {
-    const locator = privateProps.get(this);
-    if (locator.pbjx === null) {
-      locator.pbjx = this.doGetPbjx();
+    if (this[pbjx] === null) {
+      this[pbjx] = this.doGetPbjx();
     }
 
-    return locator.pbjx;
+    return this[pbjx];
   }
 
   /**
@@ -48,12 +51,11 @@ export default class ServiceLocator {
    * @returns {Dispatcher}
    */
   getDispatcher() {
-    const locator = privateProps.get(this);
-    if (locator.dispatcher === null) {
-      locator.dispatcher = this.doGetDispatcher();
+    if (this[dispatcher] === null) {
+      this[dispatcher] = this.doGetDispatcher();
     }
 
-    return locator.dispatcher;
+    return this[dispatcher];
   }
 
   /**
@@ -69,12 +71,11 @@ export default class ServiceLocator {
    * @returns {CommandBus}
    */
   getCommandBus() {
-    const locator = privateProps.get(this);
-    if (locator.commandBus === null) {
-      locator.commandBus = this.doGetCommandBus();
+    if (this[commandBus] === null) {
+      this[commandBus] = this.doGetCommandBus();
     }
 
-    return locator.commandBus;
+    return this[commandBus];
   }
 
   /**
@@ -90,12 +91,11 @@ export default class ServiceLocator {
    * @returns {EventBus}
    */
   getEventBus() {
-    const locator = privateProps.get(this);
-    if (locator.eventBus === null) {
-      locator.eventBus = this.doGetEventBus();
+    if (this[eventBus] === null) {
+      this[eventBus] = this.doGetEventBus();
     }
 
-    return locator.eventBus;
+    return this[eventBus];
   }
 
   /**
@@ -111,12 +111,11 @@ export default class ServiceLocator {
    * @returns {RequestBus}
    */
   getRequestBus() {
-    const locator = privateProps.get(this);
-    if (locator.requestBus === null) {
-      locator.requestBus = this.doGetRequestBus();
+    if (this[requestBus] === null) {
+      this[requestBus] = this.doGetRequestBus();
     }
 
-    return locator.requestBus;
+    return this[requestBus];
   }
 
   /**
@@ -132,12 +131,11 @@ export default class ServiceLocator {
    * @returns {ExceptionHandler}
    */
   getExceptionHandler() {
-    const locator = privateProps.get(this);
-    if (locator.exceptionHandler === null) {
-      locator.exceptionHandler = this.doGetExceptionHandler();
+    if (this[exceptionHandler] === null) {
+      this[exceptionHandler] = this.doGetExceptionHandler();
     }
 
-    return locator.exceptionHandler;
+    return this[exceptionHandler];
   }
 
   /**
@@ -181,20 +179,18 @@ export default class ServiceLocator {
    * @returns {Transport}
    */
   getDefaultTransport() {
-    const locator = privateProps.get(this);
-    if (locator.defaultTransport === null) {
-      locator.defaultTransport = this.doGetDefaultTransport();
+    if (this[defaultTransport] === null) {
+      this[defaultTransport] = this.doGetDefaultTransport();
     }
 
-    return locator.defaultTransport;
+    return this[defaultTransport];
   }
 
   /**
    * @param {Transport} transport
    */
   setDefaultTransport(transport) {
-    const locator = privateProps.get(this);
-    locator.defaultTransport = transport;
+    this[defaultTransport] = transport;
   }
 
   /**
