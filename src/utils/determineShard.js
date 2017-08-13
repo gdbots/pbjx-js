@@ -3,7 +3,7 @@ import md5 from 'md5';
 /**
  * Determines what shard the provided string should be on.
  *
- * @param {string} string - String input use to determine shard.
+ * @param {string} string - String input used to determine shard.
  * @param {number} shards - Size of shard pool.
  *
  * @returns {number} Returns an integer between 0 and (shards-1), i.e. 0-255

@@ -28,9 +28,9 @@ export default class Dispatcher {
    * This method can be overridden to add functionality
    * that is executed for each listener.
    *
-   * @private
+   * @protected
    *
-   * @param {Function[]} listeners
+   * @param {function[]} listeners
    * @param {string} eventName
    * @param {PbjxEvent} event
    */
@@ -50,7 +50,7 @@ export default class Dispatcher {
    *
    * @param {string} eventName
    *
-   * @returns {Function[]}
+   * @returns {function[]}
    */
   getListeners(eventName) {
     if (!this.hasListeners(eventName)) {
@@ -80,7 +80,7 @@ export default class Dispatcher {
    * Adds an event listener that listens on the specified events.
    *
    * @param {string} eventName
-   * @param {Function} listener
+   * @param {function} listener
    */
   addListener(eventName, listener) {
     const dispatcher = privateProps.get(this);
@@ -95,7 +95,7 @@ export default class Dispatcher {
    * Removes an event listener from the specified event.
    *
    * @param {string} eventName
-   * @param {Function} listener
+   * @param {function} listener
    */
   removeListener(eventName, listener) {
     const dispatcher = privateProps.get(this);

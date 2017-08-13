@@ -26,6 +26,7 @@
     "md5": "^2.2.1"
   },
   "devDependencies": {
+    "@gdbots/acme-schemas": "^1.0.1",
     "@gdbots/common": "^0.1.0",
     "@gdbots/pbj": "^0.1.1",
     "@gdbots/schemas": "^1.2.0",

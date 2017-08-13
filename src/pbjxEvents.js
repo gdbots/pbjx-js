@@ -1,5 +1,7 @@
+const t = id => `@gdbots/pbjx/${id}`;
+
 /**
- * Suffixes are typically used by @see Pbjx::trigger
+ * Suffixes are typically used by {@see Pbjx.trigger}
  * The actual event name is a combination of curies, mixins, etc. on the
  * message plus a suffix.  The event payload will be a PbjxEvent or a
  * subclass of that.
@@ -21,7 +23,7 @@ export const SUFFIX_DELETED = 'deleted';
  *
  * @see {BusExceptionEvent}
  */
-export const COMMAND_BUS_EXCEPTION = 'gdbots_pbjx.command_bus.exception';
+export const COMMAND_BUS_EXCEPTION = t('command_bus_exception');
 
 /**
  * Occurs during event dispatching, where events are actually handled.  If the
@@ -30,7 +32,7 @@ export const COMMAND_BUS_EXCEPTION = 'gdbots_pbjx.command_bus.exception';
  *
  * @see {BusExceptionEvent}
  */
-export const EVENT_BUS_EXCEPTION = 'gdbots_pbjx.event_bus.exception';
+export const EVENT_BUS_EXCEPTION = t('event_bus_exception');
 
 /**
  * Occurs during request handling when an exception is not properly
@@ -38,74 +40,53 @@ export const EVENT_BUS_EXCEPTION = 'gdbots_pbjx.event_bus.exception';
  *
  * @see {BusExceptionEvent}
  */
-export const REQUEST_BUS_EXCEPTION = 'gdbots_pbjx.request_bus.exception';
+export const REQUEST_BUS_EXCEPTION = t('request_bus_exception');
 
 /**
  * Occurs prior to the message being sent by the transport.
  *
  * @see {TransportEvent}
  */
-export const TRANSPORT_BEFORE_SEND = 'gdbots_pbjx.transport.before_send';
+export const TRANSPORT_BEFORE_SEND = t('transport_before_send');
 
 /**
  * Occurs after the message has been successfully sent by the transport.
  *
  * @see {TransportEvent}
  */
-export const TRANSPORT_AFTER_SEND = 'gdbots_pbjx.transport.after_send';
+export const TRANSPORT_AFTER_SEND = t('transport_after_send');
 
 /**
  * Occurs if the transport throws an exception during the send.
  *
  * @see {TransportExceptionEvent}
  */
-export const TRANSPORT_SEND_EXCEPTION = 'gdbots_pbjx.transport.send_exception';
+export const TRANSPORT_SEND_EXCEPTION = t('transport_send_exception');
 
 /**
  * Occurs before a job/task/message has been handled by a consumer.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_BEFORE_HANDLE = 'gdbots_pbjx.consumer.before_handle';
+export const CONSUMER_BEFORE_HANDLE = t('consumer_before_handle');
 
 /**
  * Occurs after a job/task/message has been handled by a consumer.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_AFTER_HANDLE = 'gdbots_pbjx.consumer.after_handle';
+export const CONSUMER_AFTER_HANDLE = t('consumer_after_handle');
 
 /**
  * Occurs if an exception is thrown during message handling.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_HANDLING_EXCEPTION = 'gdbots_pbjx.consumer.handling_exception';
+export const CONSUMER_HANDLING_EXCEPTION = t('consumer_handling_exception');
 
 /**
  * Occurs after the consumer has stopped and finished its teardown.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_AFTER_TEARDOWN = 'gdbots_pbjx.consumer.after_teardown';
-
-export default {
-  SUFFIX_BIND,
-  SUFFIX_VALIDATE,
-  SUFFIX_ENRICH,
-  SUFFIX_BEFORE_HANDLE,
-  SUFFIX_AFTER_HANDLE,
-  SUFFIX_CREATED,
-  SUFFIX_UPDATED,
-  SUFFIX_DELETED,
-  COMMAND_BUS_EXCEPTION,
-  EVENT_BUS_EXCEPTION,
-  REQUEST_BUS_EXCEPTION,
-  TRANSPORT_BEFORE_SEND,
-  TRANSPORT_AFTER_SEND,
-  TRANSPORT_SEND_EXCEPTION,
-  CONSUMER_BEFORE_HANDLE,
-  CONSUMER_AFTER_HANDLE,
-  CONSUMER_HANDLING_EXCEPTION,
-  CONSUMER_AFTER_TEARDOWN,
-};
+export const CONSUMER_AFTER_TEARDOWN = t('consumer_after_teardown');

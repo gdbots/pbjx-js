@@ -5,7 +5,7 @@ import CloudV1 from '@gdbots/schemas/gdbots/contexts/CloudV1';
 import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
 import Pbjx from '../src/Pbjx';
 
-test('Pbjx copyContext tests', (t) => {
+test('Pbjx.copyContext tests', (t) => {
   const pbjx = new Pbjx();
   const from = EchoRequestV1.create();
   const to = EchoRequestV1.create();

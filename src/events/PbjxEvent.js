@@ -1,14 +1,8 @@
-/**
- * Stores all events instances so some data is
- * kept private and cannot be mutated directly.
- *
- * type {WeakMap}
- */
-const events = new WeakMap();
+const privateProps = new WeakMap();
 
 export default class PbjxEvent {
   constructor() {
-    events.set(this, {
+    privateProps.set(this, {
       /** @var {boolean} */
       propagationStopped: false,
     });
@@ -20,7 +14,7 @@ export default class PbjxEvent {
    * @returns {boolean}
    */
   isPropagationStopped() {
-    return events.get(this).propagationStopped;
+    return privateProps.get(this).propagationStopped;
   }
 
   /**
@@ -31,6 +25,6 @@ export default class PbjxEvent {
    * stopPropagation().
    */
   stopPropagation() {
-    events.get(this).propagationStopped = true;
+    privateProps.get(this).propagationStopped = true;
   }
 }

@@ -116,7 +116,7 @@ export default class Pbjx {
    *
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Message} - Returns a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Message} Returns a message using mixin 'gdbots:pbjx:mixin:response'
    *
    * @throws {GdbotsPbjxException}
    * @throws {Exception}
