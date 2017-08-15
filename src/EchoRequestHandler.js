@@ -4,8 +4,10 @@ import RequestHandler from './RequestHandler';
 export default class EchoRequestHandler extends RequestHandler {
   /**
    * {@inheritDoc}
+   *
+   * @returns {Message}
    */
-  handleRequest(request, pbjx) {
+  async handleRequest(request, pbjx) {
     return EchoResponseV1.create().set('msg', request.get('msg'));
   }
 }

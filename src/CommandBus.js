@@ -42,7 +42,7 @@ export default class CommandBus {
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    */
-  receiveCommand(command) {
+  async receiveCommand(command) {
     let handler;
 
     try {
@@ -57,7 +57,7 @@ export default class CommandBus {
       const pbjx = this.locator.getPbjx();
       const event = new PbjxEvent(command);
       pbjx.trigger(command, SUFFIX_BEFORE_HANDLE, event, false);
-      handler.handleCommand(command, pbjx);
+      await handler.handleCommand(command, pbjx);
       pbjx.trigger(command, SUFFIX_AFTER_HANDLE, event, false);
     } catch (e) {
       this.locator.getExceptionHandler().onCommandBusException(new BusExceptionEvent(command, e));

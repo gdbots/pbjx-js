@@ -15,7 +15,7 @@ export default class RequestHandler {
    * @throws {GdbotsPbjxException}
    * @throws {Exception}
    */
-  handleRequest(request, pbjx) {
+  async handleRequest(request, pbjx) {
     throw new LogicException(`Method "handleRequest" must be implemented on the handler for "${request.schema().getCurie()}.`);
   }
 }

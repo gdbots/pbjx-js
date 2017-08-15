@@ -13,7 +13,7 @@ export default class CommandHandler {
    * @throws {GdbotsPbjxException}
    * @throws {Exception}
    */
-  handleCommand(command, pbjx) {
+  async handleCommand(command, pbjx) {
     throw new LogicException(`Method "handleCommand" must be implemented on the handler for "${command.schema().getCurie()}.`);
   }
 }

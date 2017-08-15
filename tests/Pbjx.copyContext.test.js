@@ -3,10 +3,12 @@ import MessageRef from '@gdbots/pbj/MessageRef';
 import AppV1 from '@gdbots/schemas/gdbots/contexts/AppV1';
 import CloudV1 from '@gdbots/schemas/gdbots/contexts/CloudV1';
 import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import Pbjx from '../src/Pbjx';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
 test('Pbjx.copyContext tests', (t) => {
-  const pbjx = new Pbjx();
+  const locator = new RegisteringServiceLocator();
+  const pbjx = locator.getPbjx();
+
   const from = EchoRequestV1.create();
   const to = EchoRequestV1.create();
   const app = AppV1.create()

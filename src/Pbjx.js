@@ -1,8 +1,23 @@
 /* eslint-disable */
+import clamp from 'lodash/clamp';
 import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
+import PbjxEvent from './events/PbjxEvent';
+import { SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './pbjxEvents';
+
+const dispatcher = Symbol('dispatcher');
+const locatorSym = Symbol('locator');
+const maxRecursionSym = Symbol('maxRecursion');
 
 export default class Pbjx {
-  constructor() {
+  /**
+   * @param {ServiceLocator} locator
+   * @param {number} maxRecursion
+   */
+  constructor(locator, maxRecursion = 10) {
+    this[dispatcher] = locator.getDispatcher();
+    this[locatorSym] = locator;
+    this[maxRecursionSym] = clamp(maxRecursion, 2, 10);
+    PbjxEvent.setPbjx(this);
   }
 
   /**
@@ -50,7 +65,15 @@ export default class Pbjx {
    * @throws {Exception}
    */
   triggerLifecycle(message, recursive = true) {
-    console.log('triggerLifecycle', `${message}`);
+    if (message.isFrozen()) {
+      return this;
+    }
+
+    const event = new PbjxEvent(message);
+    this.trigger(message, SUFFIX_BIND, event, recursive);
+    this.trigger(message, SUFFIX_VALIDATE, event, recursive);
+    this.trigger(message, SUFFIX_ENRICH, event, recursive);
+    return this;
   }
 
   /**
@@ -97,7 +120,7 @@ export default class Pbjx {
    */
   async send(command) {
     this.triggerLifecycle(command);
-    return this.locator.getCommandBus().send(command);
+    return this[locatorSym].getCommandBus().send(command);
   }
 
   /**
@@ -110,6 +133,7 @@ export default class Pbjx {
    */
   async publish(event) {
     console.log('publish', `${event}`);
+    return this[locatorSym].getEventBus().publish(event);
   }
 
   /**

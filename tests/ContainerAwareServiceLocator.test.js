@@ -8,10 +8,10 @@ import curieToHandlerServiceId from '../src/utils/curieToHandlerServiceId';
 
 test('ContainerAwareServiceLocator tests', (t) => {
   const container = new Container();
-  const pbjx = new Pbjx();
+  const locator = new ContainerAwareServiceLocator(container);
+  const pbjx = new Pbjx(locator);
   container.set('pbjx', pbjx);
 
-  const locator = new ContainerAwareServiceLocator(container);
   t.true(locator.getPbjx() === pbjx);
 
   const requestHandler = new EchoRequestHandler();
