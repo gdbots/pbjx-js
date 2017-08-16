@@ -1,4 +1,4 @@
-import PbjxEvent from './events/PbjxEvent';
+import Event from './events/Event';
 
 const listenersMap = Symbol('listenersMap');
 
@@ -11,12 +11,12 @@ export default class Dispatcher {
    * Dispatches an event to all registered listeners.
    *
    * @param {string} eventName
-   * @param {PbjxEvent} event
+   * @param {Event} event
    *
-   * @returns {PbjxEvent}
+   * @returns {Event}
    */
   dispatch(eventName, event = null) {
-    const theEvent = event || new PbjxEvent();
+    const theEvent = event || new Event();
     const listeners = this.getListeners(eventName);
     this.doDispatch(listeners, eventName, theEvent);
     return theEvent;
@@ -32,7 +32,7 @@ export default class Dispatcher {
    *
    * @param {function[]} listeners
    * @param {string} eventName
-   * @param {PbjxEvent} event
+   * @param {Event} event
    */
   doDispatch(listeners, eventName, event) {
     const l = listeners.length;

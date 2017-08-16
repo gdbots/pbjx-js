@@ -38,6 +38,7 @@ test('Dispatcher with class tests', (t) => {
   const dispatcher = new Dispatcher();
 
   let called = 0;
+
   class Listener {
     constructor(instanceVar) {
       this.instanceVar = instanceVar;
@@ -52,13 +53,13 @@ test('Dispatcher with class tests', (t) => {
   const listener = new Listener('somestring');
   dispatcher.addListener('test', listener.test.bind(listener));
 
-  let pbjxEvent = dispatcher.dispatch('test');
+  let event = dispatcher.dispatch('test');
   t.same(called, 1);
-  t.same(pbjxEvent.instanceVar, 'somestring-1');
+  t.same(event.instanceVar, 'somestring-1');
 
-  pbjxEvent = dispatcher.dispatch('test');
+  event = dispatcher.dispatch('test');
   t.same(called, 2);
-  t.same(pbjxEvent.instanceVar, 'somestring-2');
+  t.same(event.instanceVar, 'somestring-2');
 
   dispatcher.dispatch('test2');
   t.same(called, 2);

@@ -42,7 +42,7 @@ test('Pbjx.send (simulated passing) tests', async (t) => {
 });
 
 
-test('Pbjx.send (simulated failure) tests', async (t) => {
+test('Pbjx.send (simulated failing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
   const pbjx = locator.getPbjx();
   const handler = new TestHandler();
