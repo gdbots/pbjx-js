@@ -16,6 +16,14 @@ const requestBus = Symbol('requestBus');
 const exceptionHandler = Symbol('exceptionHandler');
 const defaultTransport = Symbol('defaultTransport');
 
+/**
+ * This class is meant to be extended so location of all services works as expected.
+ *
+ * @see ContainerAwareServiceLocator - used for most apps
+ * @see RegisteringServiceLocator    - typically used for unit testing
+ *
+ * @link https://martinfowler.com/articles/injection.html#UsingAServiceLocator
+ */
 export default class ServiceLocator {
   constructor() {
     this[pbjx] = null;

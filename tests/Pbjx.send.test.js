@@ -1,6 +1,6 @@
 import test from 'tape';
 import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/pbjxEvents';
+import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
 import CommandHandler from '../src/CommandHandler';
 import HandlerNotFound from '../src/exceptions/HandlerNotFound';
 import LogicException from '../src/exceptions/LogicException';

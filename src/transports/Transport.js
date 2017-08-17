@@ -1,4 +1,4 @@
-import { TRANSPORT_AFTER_SEND, TRANSPORT_BEFORE_SEND } from '../pbjxEvents';
+import { TRANSPORT_AFTER_SEND, TRANSPORT_BEFORE_SEND } from '../constants';
 import TransportEvent from '../events/TransportEvent';
 import TransportExceptionEvent from '../events/TransportExceptionEvent';
 

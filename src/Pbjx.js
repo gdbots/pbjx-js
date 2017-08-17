@@ -2,11 +2,11 @@
 import clamp from 'lodash/clamp';
 import trim from 'lodash/trim';
 import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
+import { EVENT_PREFIX, SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './constants';
 import getEventNames from './utils/getEventNames';
 import InvalidArgumentException from './exceptions/InvalidArgumentException';
 import PbjxEvent from './events/PbjxEvent';
 import TooMuchRecursion from './exceptions/TooMuchRecursion';
-import { EVENT_NAMESPACE, SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './pbjxEvents';
 
 const dispatcher = Symbol('dispatcher');
 const locatorSym = Symbol('locator');
@@ -111,7 +111,7 @@ export default class Pbjx {
       });
     }
 
-    this[dispatcher].dispatch(`${EVENT_NAMESPACE}message${fsuffix}`, fevent);
+    this[dispatcher].dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
     getEventNames(message, fsuffix).forEach(eventName => {
       this[dispatcher].dispatch(eventName, fevent);
     });

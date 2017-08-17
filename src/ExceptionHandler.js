@@ -3,7 +3,7 @@ import {
   EVENT_BUS_EXCEPTION,
   REQUEST_BUS_EXCEPTION,
   TRANSPORT_SEND_EXCEPTION,
-} from './pbjxEvents';
+} from './constants';
 
 export default class ExceptionHandler {
   /**

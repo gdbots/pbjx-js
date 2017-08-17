@@ -1,4 +1,4 @@
-import { SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from './pbjxEvents';
+import { SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from './constants';
 import BusExceptionEvent from './events/BusExceptionEvent';
 import PbjxEvent from './events/PbjxEvent';
 

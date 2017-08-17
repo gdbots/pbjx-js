@@ -8,7 +8,7 @@ const handlers = Symbol('handlers');
  * for all commands/requests.  Not ideal for large apps but
  * convenient and simple for test cases and very small apps.
  *
- * In most cases you'll use a ContainerAwareServiceLocator.
+ * In most cases you'll use a {@see ContainerAwareServiceLocator}.
  */
 export default class RegisteringServiceLocator extends ServiceLocator {
   constructor() {

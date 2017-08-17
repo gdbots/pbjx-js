@@ -1,5 +1,39 @@
-export const EVENT_NAMESPACE = '@gdbots/pbjx/';
-const t = id => `${EVENT_NAMESPACE}${id}`;
+export const SERVICE_PREFIX = '@gdbots/pbjx/';
+export const EVENT_PREFIX = SERVICE_PREFIX;
+const t = id => `${EVENT_PREFIX}${id}`;
+
+/**
+ * When using a {@see ContainerAwareServiceLocator} the services
+ * and parameters are located using these identifiers.
+ *
+ * @link https://martinfowler.com/articles/injection.html#UsingAServiceLocator
+ *
+ * @type {Object}
+ */
+export const serviceIds = {
+  SERVICE_PREFIX,
+
+  // core pbjx services
+  PBJX: t('pbjx'),
+  DISPATCHER: t('dispatcher'),
+  EXCEPTION_HANDLER: t('exception_handler'),
+
+  // bus configs (e.g. fetch, firehose, in_memory)
+  COMMAND_BUS_TRANSPORT: t('command_bus/transport'),
+  EVENT_BUS_TRANSPORT: t('event_bus/transport'),
+  REQUEST_BUS_TRANSPORT: t('request_bus/transport'),
+
+  // transports
+  TRANSPORT_PREFIX: t('transports/'),
+  TRANSPORT_FETCH: t('transports/fetch'),
+  TRANSPORT_FIREHOSE: t('transports/firehose'),
+  TRANSPORT_IN_MEMORY: t('transports/in_memory'),
+  TRANSPORT_LAMBDA: t('transports/lambda'),
+
+  // handlers
+  CHECK_HEALTH_HANDLER: t('check_health_handler'),
+  ECHO_REQUEST_HANDLER: t('echo_request_handler'),
+};
 
 /**
  * Suffixes are typically used by {@see Pbjx.trigger}
