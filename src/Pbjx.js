@@ -1,12 +1,51 @@
 /* eslint-disable */
 import clamp from 'lodash/clamp';
+import trim from 'lodash/trim';
 import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
+import getEventNames from './utils/getEventNames';
+import InvalidArgumentException from './exceptions/InvalidArgumentException';
 import PbjxEvent from './events/PbjxEvent';
-import { SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './pbjxEvents';
+import TooMuchRecursion from './exceptions/TooMuchRecursion';
+import { EVENT_NAMESPACE, SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './pbjxEvents';
 
 const dispatcher = Symbol('dispatcher');
 const locatorSym = Symbol('locator');
 const maxRecursionSym = Symbol('maxRecursion');
+
+/**
+ * @param {Message} message
+ * @param {Schema}  schema
+ *
+ * @returns {Message[]}
+ */
+const getNestedMessages = (message, schema) => {
+  let messages = [];
+
+  schema.getFields().forEach((field) => {
+    if (!field.getType().isMessage()) {
+      return;
+    }
+
+    if (!message.has(field.getName())) {
+      return;
+    }
+
+    if (field.isASingleValue()) {
+      messages.push(message.get(field.getName()));
+      return;
+    }
+
+    if (field.isAList()) {
+      message.get(field.getName()).forEach(v => messages.push(v));
+      return;
+    }
+
+    const obj = message.get(field.getName());
+    Object.keys(obj).forEach(k => messages.push(message.get(obj[k])));
+  });
+
+  return messages;
+};
 
 export default class Pbjx {
   /**
@@ -47,7 +86,37 @@ export default class Pbjx {
    * @throws {Exception}
    */
   trigger(message, suffix, event = null, recursive = true) {
-    console.log('trigger', `${message}.${suffix}`);
+    const fsuffix = `.${trim(suffix, '.')}`;
+    if (fsuffix === '.') {
+      throw new InvalidArgumentException('Trigger requires a non-empty suffix.');
+    }
+
+    const fevent = event || new PbjxEvent(message);
+    const schema = message.schema();
+
+    if (fevent.getDepth() > this[maxRecursionSym]) {
+      throw new TooMuchRecursion('Pbjx::trigger encountered a schema that is too complex ' +
+        'or a nested message is being referenced multiple times in ' +
+        `the same tree.  Max recursion: ${this[maxRecursionSym]}, Current schema is "${schema.getId()}".`
+      );
+    }
+
+    if (recursive && fevent.supportsRecursion()) {
+      getNestedMessages(message, schema).forEach((nestedMessage) => {
+        if (nestedMessage.isFrozen()) {
+          return;
+        }
+
+        this.trigger(nestedMessage, fsuffix, fevent.createChildEvent(nestedMessage), recursive);
+      });
+    }
+
+    this[dispatcher].dispatch(`${EVENT_NAMESPACE}message${fsuffix}`, fevent);
+    getEventNames(message, fsuffix).forEach(eventName => {
+      this[dispatcher].dispatch(eventName, fevent);
+    });
+
+    return this;
   }
 
   /**

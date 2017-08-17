@@ -18,7 +18,7 @@ export default class EventBus {
    */
   async publish(event) {
     // return this.transport.sendEvent(event.freeze());
-    this.locator.getDispatcher().getListeners(event.schema().getCurie().toString()).map(l => l(event, this));
+    return this.locator.getDispatcher().getListeners(event.schema().getCurie().toString()).map(l => l(event, this));
   }
 
   /**

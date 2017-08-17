@@ -1,4 +1,5 @@
-const t = id => `@gdbots/pbjx/${id}`;
+export const EVENT_NAMESPACE = '@gdbots/pbjx/';
+const t = id => `${EVENT_NAMESPACE}${id}`;
 
 /**
  * Suffixes are typically used by {@see Pbjx.trigger}
@@ -23,7 +24,7 @@ export const SUFFIX_DELETED = 'deleted';
  *
  * @see {BusExceptionEvent}
  */
-export const COMMAND_BUS_EXCEPTION = t('command_bus_exception');
+export const COMMAND_BUS_EXCEPTION = t('command_bus.exception');
 
 /**
  * Occurs during event dispatching, where events are actually handled.  If the
@@ -32,7 +33,7 @@ export const COMMAND_BUS_EXCEPTION = t('command_bus_exception');
  *
  * @see {BusExceptionEvent}
  */
-export const EVENT_BUS_EXCEPTION = t('event_bus_exception');
+export const EVENT_BUS_EXCEPTION = t('event_bus.exception');
 
 /**
  * Occurs during request handling when an exception is not properly
@@ -40,53 +41,53 @@ export const EVENT_BUS_EXCEPTION = t('event_bus_exception');
  *
  * @see {BusExceptionEvent}
  */
-export const REQUEST_BUS_EXCEPTION = t('request_bus_exception');
+export const REQUEST_BUS_EXCEPTION = t('request_bus.exception');
 
 /**
  * Occurs prior to the message being sent by the transport.
  *
  * @see {TransportEvent}
  */
-export const TRANSPORT_BEFORE_SEND = t('transport_before_send');
+export const TRANSPORT_BEFORE_SEND = t('transport.before_send');
 
 /**
  * Occurs after the message has been successfully sent by the transport.
  *
  * @see {TransportEvent}
  */
-export const TRANSPORT_AFTER_SEND = t('transport_after_send');
+export const TRANSPORT_AFTER_SEND = t('transport.after_send');
 
 /**
  * Occurs if the transport throws an exception during the send.
  *
  * @see {TransportExceptionEvent}
  */
-export const TRANSPORT_SEND_EXCEPTION = t('transport_send_exception');
+export const TRANSPORT_SEND_EXCEPTION = t('transport.send_exception');
 
 /**
  * Occurs before a job/task/message has been handled by a consumer.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_BEFORE_HANDLE = t('consumer_before_handle');
+export const CONSUMER_BEFORE_HANDLE = t('consumer.before_handle');
 
 /**
  * Occurs after a job/task/message has been handled by a consumer.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_AFTER_HANDLE = t('consumer_after_handle');
+export const CONSUMER_AFTER_HANDLE = t('consumer.after_handle');
 
 /**
  * Occurs if an exception is thrown during message handling.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_HANDLING_EXCEPTION = t('consumer_handling_exception');
+export const CONSUMER_HANDLING_EXCEPTION = t('consumer.handling_exception');
 
 /**
  * Occurs after the consumer has stopped and finished its teardown.
  *
  * @see {PbjxEvent}
  */
-export const CONSUMER_AFTER_TEARDOWN = t('consumer_after_teardown');
+export const CONSUMER_AFTER_TEARDOWN = t('consumer.after_teardown');

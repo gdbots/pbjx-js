@@ -20,8 +20,8 @@ export default function getEventNames(message, suffix = '', includeWildcards = f
   const curie = schema.getCurie();
   const events = [];
 
-  schema.getMixinIds().map(mixinId => events.push(`${mixinId}${suffix}`));
-  schema.getMixinCuries().map(mixinCurie => events.push(`${mixinCurie}${suffix}`));
+  schema.getMixinIds().forEach(mixinId => events.push(`${mixinId}${suffix}`));
+  schema.getMixinCuries().forEach(mixinCurie => events.push(`${mixinCurie}${suffix}`));
   events.push(`${schema.getCurieMajor()}${suffix}`);
   events.push(`${curie}${suffix}`);
 

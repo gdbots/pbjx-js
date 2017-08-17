@@ -15,7 +15,7 @@ export default function createReducer() {
     const message = action.pbj;
     const reducers = [];
 
-    getEventNames(message, '', true).map(eventName => reducers.push(...dispatcher.getListeners(eventName)));
+    getEventNames(message, '', true).forEach(eventName => reducers.push(...dispatcher.getListeners(eventName)));
     if (!reducers) {
       return state;
     }

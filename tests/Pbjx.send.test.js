@@ -1,9 +1,10 @@
 import test from 'tape';
 import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import { COMMAND_BUS_EXCEPTION } from '../src/pbjxEvents';
+import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/pbjxEvents';
 import CommandHandler from '../src/CommandHandler';
 import HandlerNotFound from '../src/exceptions/HandlerNotFound';
 import LogicException from '../src/exceptions/LogicException';
+import PbjxEvent from '../src/events/PbjxEvent';
 import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
 class TestHandler extends CommandHandler {
@@ -31,6 +32,25 @@ test('Pbjx.send (simulated passing) tests', async (t) => {
   const handler = new TestHandler();
   locator.registerCommandHandler(CheckHealthV1.schema().getCurie(), handler);
 
+  /**
+   * @param {PbjxEvent} event
+   */
+  const lifecycleChecker = (event) => {
+    t.true(event instanceof PbjxEvent, 'Event MUST be an instanceOf PbjxEvent');
+    t.true(event.getMessage() instanceof CheckHealthV1, 'Message MUST be an instanceOf CheckHealthV1');
+    t.same(event.getMessage().get('msg'), 'passing');
+  };
+
+  locator.getDispatcher().addListener(
+    `${CheckHealthV1.schema().getCurie()}.${SUFFIX_BEFORE_HANDLE}`,
+    lifecycleChecker.bind(this)
+  );
+
+  locator.getDispatcher().addListener(
+    `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
+    lifecycleChecker.bind(this)
+  );
+
   try {
     await pbjx.send(CheckHealthV1.create().set('msg', 'passing'));
   } catch (e) {
@@ -56,6 +76,12 @@ test('Pbjx.send (simulated failing) tests', async (t) => {
     t.true(e instanceof LogicException, 'Exception MUST be an instanceOf LogicException');
     t.same(e.message, 'failing');
   };
+
+  const lifecycleChecker = () => t.fail(`a failing message MUST NOT call ${SUFFIX_AFTER_HANDLE}`);
+  locator.getDispatcher().addListener(
+    `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
+    lifecycleChecker.bind(this)
+  );
 
   locator.getDispatcher().addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
 

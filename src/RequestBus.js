@@ -19,7 +19,7 @@ export default class RequestBus {
    * @throws {Exception}
    */
   async request(req) {
-    return await this.transport.sendRequest(req.freeze());
+    return this.transport.sendRequest(req.freeze());
   }
 
   /**
