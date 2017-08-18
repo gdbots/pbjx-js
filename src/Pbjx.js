@@ -8,7 +8,6 @@ import InvalidArgumentException from './exceptions/InvalidArgumentException';
 import PbjxEvent from './events/PbjxEvent';
 import TooMuchRecursion from './exceptions/TooMuchRecursion';
 
-const dispatcher = Symbol('dispatcher');
 const locatorSym = Symbol('locator');
 const maxRecursionSym = Symbol('maxRecursion');
 
@@ -53,7 +52,6 @@ export default class Pbjx {
    * @param {number} maxRecursion
    */
   constructor(locator, maxRecursion = 10) {
-    this[dispatcher] = locator.getDispatcher();
     this[locatorSym] = locator;
     this[maxRecursionSym] = clamp(maxRecursion, 2, 10);
     PbjxEvent.setPbjx(this);
@@ -111,9 +109,10 @@ export default class Pbjx {
       });
     }
 
-    this[dispatcher].dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
+    const dispatcher = this[locatorSym].getDispatcher();
+    dispatcher.dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
     getEventNames(message, fsuffix).forEach(eventName => {
-      this[dispatcher].dispatch(eventName, fevent);
+      dispatcher.dispatch(eventName, fevent);
     });
 
     return this;
@@ -188,6 +187,10 @@ export default class Pbjx {
    * @throws {Exception}
    */
   async send(command) {
+    if (!command.schema().hasMixin('gdbots:pbjx:mixin:command')) {
+      throw new InvalidArgumentException('Pbjx.send() requires a message using "gdbots:pbjx:mixin:command".');
+    }
+
     this.triggerLifecycle(command);
     return this[locatorSym].getCommandBus().send(command);
   }
@@ -201,7 +204,11 @@ export default class Pbjx {
    * @throws {Exception}
    */
   async publish(event) {
-    console.log('publish', `${event}`);
+    if (!event.schema().hasMixin('gdbots:pbjx:mixin:event')) {
+      throw new InvalidArgumentException('Pbjx.publish() requires a message using "gdbots:pbjx:mixin:event".');
+    }
+
+    this.triggerLifecycle(event);
     return this[locatorSym].getEventBus().publish(event);
   }
 
@@ -216,6 +223,10 @@ export default class Pbjx {
    * @throws {Exception}
    */
   async request(request) {
+    if (!request.schema().hasMixin('gdbots:pbjx:mixin:request')) {
+      throw new InvalidArgumentException('Pbjx.request() requires a message using "gdbots:pbjx:mixin:request".');
+    }
+
     console.log('request', `${request}`);
     return await EchoResponseV1.create().set('msg', 'test');
   }
