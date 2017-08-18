@@ -1,12 +1,22 @@
-/* eslint-disable */
 import clamp from 'lodash/clamp';
 import trim from 'lodash/trim';
-import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
-import { EVENT_PREFIX, SUFFIX_BIND, SUFFIX_ENRICH, SUFFIX_VALIDATE } from './constants';
+import {
+  EVENT_PREFIX,
+  SUFFIX_AFTER_HANDLE,
+  SUFFIX_BEFORE_HANDLE,
+  SUFFIX_BIND,
+  SUFFIX_CREATED,
+  SUFFIX_ENRICH,
+  SUFFIX_VALIDATE,
+} from './constants';
 import getEventNames from './utils/getEventNames';
+import BusExceptionEvent from './events/BusExceptionEvent';
+import GetResponseEvent from './events/GetResponseEvent';
 import InvalidArgumentException from './exceptions/InvalidArgumentException';
 import PbjxEvent from './events/PbjxEvent';
+import RequestHandlingFailed from './exceptions/RequestHandlingFailed';
 import TooMuchRecursion from './exceptions/TooMuchRecursion';
+import ResponseCreatedEvent from './events/ResponseCreatedEvent';
 
 const locatorSym = Symbol('locator');
 const maxRecursionSym = Symbol('maxRecursion');
@@ -18,7 +28,7 @@ const maxRecursionSym = Symbol('maxRecursion');
  * @returns {Message[]}
  */
 const getNestedMessages = (message, schema) => {
-  let messages = [];
+  const messages = [];
 
   schema.getFields().forEach((field) => {
     if (!field.getType().isMessage()) {
@@ -95,7 +105,7 @@ export default class Pbjx {
     if (fevent.getDepth() > this[maxRecursionSym]) {
       throw new TooMuchRecursion('Pbjx::trigger encountered a schema that is too complex ' +
         'or a nested message is being referenced multiple times in ' +
-        `the same tree.  Max recursion: ${this[maxRecursionSym]}, Current schema is "${schema.getId()}".`
+        `the same tree.  Max recursion: ${this[maxRecursionSym]}, Current schema is "${schema.getId()}".`,
       );
     }
 
@@ -111,7 +121,7 @@ export default class Pbjx {
 
     const dispatcher = this[locatorSym].getDispatcher();
     dispatcher.dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
-    getEventNames(message, fsuffix).forEach(eventName => {
+    getEventNames(message, fsuffix).forEach((eventName) => {
       dispatcher.dispatch(eventName, fevent);
     });
 
@@ -215,19 +225,43 @@ export default class Pbjx {
   /**
    * Processes a request synchronously and returns the response.
    *
-   * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
+   * @param {Message} req - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Message} Returns a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
    *
    * @throws {GdbotsPbjxException}
    * @throws {Exception}
    */
-  async request(request) {
-    if (!request.schema().hasMixin('gdbots:pbjx:mixin:request')) {
+  async request(req) {
+    if (!req.schema().hasMixin('gdbots:pbjx:mixin:request')) {
       throw new InvalidArgumentException('Pbjx.request() requires a message using "gdbots:pbjx:mixin:request".');
     }
 
-    console.log('request', `${request}`);
-    return await EchoResponseV1.create().set('msg', 'test');
+    this.triggerLifecycle(req);
+    const event = new GetResponseEvent(req);
+    this.trigger(req, SUFFIX_BEFORE_HANDLE, event, false);
+
+    if (event.hasResponse()) {
+      return event.getResponse();
+    }
+
+    const response = await this[locatorSym].getRequestBus().request(req);
+    event.setResponse(response);
+
+    if (response.schema().getCurie().toString() === 'gdbots:pbjx:request:request-failed-response') {
+      throw new RequestHandlingFailed(response);
+    }
+
+    try {
+      const createdEvent = new ResponseCreatedEvent(req, response);
+      this.trigger(req, SUFFIX_AFTER_HANDLE, createdEvent, false);
+      this.trigger(response, SUFFIX_CREATED, createdEvent, false);
+    } catch (e) {
+      this[locatorSym].getExceptionHandler().onRequestBusException(
+        new BusExceptionEvent(response, e),
+      );
+    }
+
+    return response;
   }
 }

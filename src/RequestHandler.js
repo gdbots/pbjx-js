@@ -10,7 +10,7 @@ export default class RequestHandler {
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    * @param {Pbjx}    pbjx    - The Pbjx instance handling the request.
    *
-   * @returns {Message} Returns a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
    *
    * @throws {GdbotsPbjxException}
    * @throws {Exception}

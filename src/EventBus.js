@@ -34,7 +34,10 @@ export default class EventBus {
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    */
   async receiveEvent(event) {
-    return this.locator.getDispatcher().getListeners(event.schema().getCurie().toString()).map(l => l(event, this));
+    return this.locator
+      .getDispatcher()
+      .getListeners(event.schema().getCurie().toString())
+      .map(l => l(event, this));
 
     //
     // event.freeze();
@@ -48,13 +51,16 @@ export default class EventBus {
   }
 
   async dispatch(eventName, event) {
+    const dispatcher = this.locator.getDispatcher();
+    dispatcher.dispatch(eventName, event);
     // $listeners = $this->dispatcher->getListeners($eventName);
     // foreach ($listeners as $listener) {
     //     try {
     //         call_user_func($listener, $event, $this->pbjx);
     //     } catch (\Exception $e) {
     //         if ($event instanceof EventExecutionFailed) {
-    //             $this->locator->getExceptionHandler()->onEventBusException(new BusExceptionEvent($event, $e));
+    //             $this->locator->getExceptionHandler()->onEventBusException(
+    // new BusExceptionEvent($event, $e));
     //             return;
     //         }
     //
@@ -68,7 +74,8 @@ export default class EventBus {
     //             ->set('stack_trace', $e->getTraceAsString());
     //
     //         if ($e->getPrevious()) {
-    //             $failedEvent->set('prev_error_message', substr($e->getPrevious()->getMessage(), 0, 2048));
+    //             $failedEvent
+    // ->set('prev_error_message', substr($e->getPrevious()->getMessage(), 0, 2048));
     //         }
     //
     //         $this->pbjx->copyContext($event, $failedEvent);

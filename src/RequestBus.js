@@ -1,3 +1,5 @@
+import createResponseForFailedRequest from './utils/createResponseForFailedRequest';
+
 export default class RequestBus {
   /**
    * @param {ServiceLocator} locator
@@ -13,10 +15,7 @@ export default class RequestBus {
    *
    * @param {Message} req - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Message} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
-   *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise.<Message>} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async request(req) {
     return this.transport.sendRequest(req.freeze());
@@ -34,8 +33,28 @@ export default class RequestBus {
    *
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @returns {Message} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
    */
-  receiveRequest(request) {
+  async receiveRequest(request) {
+    let handler;
+
+    try {
+      handler = this.locator.getRequestHandler(request.schema().getCurie());
+    } catch (e) {
+      return createResponseForFailedRequest(request, e);
+    }
+
+    try {
+      request.freeze();
+      const response = await handler.handleRequest(request, this.locator.getPbjx());
+      response.set('ctx_request_ref', request.generateMessageRef());
+      if (request.has('ctx_correlator_ref')) {
+        response.set('ctx_correlator_ref', request.get('ctx_correlator_ref'));
+      }
+
+      return response;
+    } catch (e) {
+      return createResponseForFailedRequest(request, e);
+    }
   }
 }

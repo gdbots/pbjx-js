@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import test from 'tape';
 import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
 import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
@@ -43,12 +44,12 @@ test('Pbjx.send (simulated passing) tests', async (t) => {
 
   locator.getDispatcher().addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_BEFORE_HANDLE}`,
-    lifecycleChecker.bind(this)
+    lifecycleChecker.bind(this),
   );
 
   locator.getDispatcher().addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
-    lifecycleChecker.bind(this)
+    lifecycleChecker.bind(this),
   );
 
   try {
@@ -80,7 +81,7 @@ test('Pbjx.send (simulated failing) tests', async (t) => {
   const lifecycleChecker = () => t.fail(`a failing message MUST NOT call ${SUFFIX_AFTER_HANDLE}`);
   locator.getDispatcher().addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
-    lifecycleChecker.bind(this)
+    lifecycleChecker.bind(this),
   );
 
   locator.getDispatcher().addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
