@@ -17,8 +17,7 @@ export default class CommandBus {
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async send(command) {
     return this.transport.sendCommand(command.freeze());
@@ -41,6 +40,8 @@ export default class CommandBus {
    * @package
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
+   *
+   * @returns {Promise}
    */
   async receiveCommand(command) {
     let handler;

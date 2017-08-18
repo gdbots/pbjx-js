@@ -18,8 +18,7 @@ export default class Transport {
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async sendCommand(command) {
     const transportEvent = new TransportEvent(command, this.transportName);
@@ -44,8 +43,7 @@ export default class Transport {
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async doSendCommand(command) {
     return this.locator.getCommandBus().receiveCommand(command);
@@ -56,8 +54,7 @@ export default class Transport {
    *
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async sendEvent(event) {
     const transportEvent = new TransportEvent(event, this.transportName);
@@ -82,8 +79,7 @@ export default class Transport {
    *
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async doSendEvent(event) {
     return this.locator.getEventBus().receiveEvent(event);
@@ -94,10 +90,7 @@ export default class Transport {
    *
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
-   *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async sendRequest(request) {
     const transportEvent = new TransportEvent(request, this.transportName);
@@ -126,10 +119,7 @@ export default class Transport {
    *
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
-   *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async doSendRequest(request) {
     return this.locator.getRequestBus().receiveRequest(request);

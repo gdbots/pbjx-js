@@ -193,8 +193,7 @@ export default class Pbjx {
    *
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async send(command) {
     if (!command.schema().hasMixin('gdbots:pbjx:mixin:command')) {
@@ -210,8 +209,7 @@ export default class Pbjx {
    *
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async publish(event) {
     if (!event.schema().hasMixin('gdbots:pbjx:mixin:event')) {
@@ -228,9 +226,6 @@ export default class Pbjx {
    * @param {Message} req - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
    * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
-   *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
    */
   async request(req) {
     if (!req.schema().hasMixin('gdbots:pbjx:mixin:request')) {

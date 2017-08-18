@@ -13,8 +13,7 @@ export default class EventBus {
    *
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async publish(event) {
     return this.transport.sendEvent(event.freeze());
@@ -32,6 +31,8 @@ export default class EventBus {
    * @package
    *
    * @param {Message} event - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
+   *
+   * @returns {Promise}
    */
   async receiveEvent(event) {
     return this.locator

@@ -10,8 +10,7 @@ export default class CommandHandler {
    * @param {Message} command - Expected to be a message using mixin 'gdbots:pbjx:mixin:command'
    * @param {Pbjx}    pbjx    - The Pbjx instance handling the command.
    *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise}
    */
   async handleCommand(command, pbjx) {
     throw new LogicException(`Method "handleCommand" must be implemented on the handler for "${command.schema().getCurie()}.`);

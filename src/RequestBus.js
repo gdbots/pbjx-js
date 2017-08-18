@@ -15,7 +15,7 @@ export default class RequestBus {
    *
    * @param {Message} req - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Promise.<Message>} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async request(req) {
     return this.transport.sendRequest(req.freeze());
@@ -33,7 +33,7 @@ export default class RequestBus {
    *
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:event'
    *
-   * @returns {Promise.<Message>} Expected to be a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async receiveRequest(request) {
     let handler;

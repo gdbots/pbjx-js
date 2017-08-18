@@ -10,10 +10,7 @@ export default class RequestHandler {
    * @param {Message} request - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    * @param {Pbjx}    pbjx    - The Pbjx instance handling the request.
    *
-   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
-   *
-   * @throws {GdbotsPbjxException}
-   * @throws {Exception}
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async handleRequest(request, pbjx) {
     throw new LogicException(`Method "handleRequest" must be implemented on the handler for "${request.schema().getCurie()}.`);
