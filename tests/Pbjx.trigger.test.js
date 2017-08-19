@@ -6,6 +6,7 @@ import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
 test('Pbjx.trigger tests', (t) => {
   const locator = new RegisteringServiceLocator();
+  const dispatcher = locator.getDispatcher();
   const pbjx = locator.getPbjx();
   let called = 0;
 
@@ -15,17 +16,17 @@ test('Pbjx.trigger tests', (t) => {
   const commandCurie = 'gdbots:pbjx:mixin:command';
   const lifecycle = `${constants.EVENT_PREFIX}message`;
 
-  locator.getDispatcher().addListener(`${lifecycle}.${constants.SUFFIX_BIND}`, boundChecker);
-  locator.getDispatcher().addListener(`${curie}.${constants.SUFFIX_BIND}`, boundChecker);
-  locator.getDispatcher().addListener(`${commandCurie}.${constants.SUFFIX_BIND}`, boundChecker);
+  dispatcher.addListener(`${lifecycle}.${constants.SUFFIX_BIND}`, boundChecker);
+  dispatcher.addListener(`${curie}.${constants.SUFFIX_BIND}`, boundChecker);
+  dispatcher.addListener(`${commandCurie}.${constants.SUFFIX_BIND}`, boundChecker);
 
-  locator.getDispatcher().addListener(`${lifecycle}.${constants.SUFFIX_VALIDATE}`, boundChecker);
-  locator.getDispatcher().addListener(`${curie}.${constants.SUFFIX_VALIDATE}`, boundChecker);
-  locator.getDispatcher().addListener(`${commandCurie}.${constants.SUFFIX_VALIDATE}`, boundChecker);
+  dispatcher.addListener(`${lifecycle}.${constants.SUFFIX_VALIDATE}`, boundChecker);
+  dispatcher.addListener(`${curie}.${constants.SUFFIX_VALIDATE}`, boundChecker);
+  dispatcher.addListener(`${commandCurie}.${constants.SUFFIX_VALIDATE}`, boundChecker);
 
-  locator.getDispatcher().addListener(`${lifecycle}.${constants.SUFFIX_ENRICH}`, boundChecker);
-  locator.getDispatcher().addListener(`${curie}.${constants.SUFFIX_ENRICH}`, boundChecker);
-  locator.getDispatcher().addListener(`${commandCurie}.${constants.SUFFIX_ENRICH}`, boundChecker);
+  dispatcher.addListener(`${lifecycle}.${constants.SUFFIX_ENRICH}`, boundChecker);
+  dispatcher.addListener(`${curie}.${constants.SUFFIX_ENRICH}`, boundChecker);
+  dispatcher.addListener(`${commandCurie}.${constants.SUFFIX_ENRICH}`, boundChecker);
 
   pbjx.triggerLifecycle(CheckHealthV1.create());
 
