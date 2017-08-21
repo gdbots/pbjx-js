@@ -36,6 +36,14 @@ export const serviceIds = {
 };
 
 /**
+ * Access Tokens (aka Bearer Token) can be used with transports
+ * that support authentication via an "Authorization" header.
+ * When reading/writing the access tokens, use these keys.
+ */
+export const ACCESS_TOKEN_STORAGE_KEY = 'pbjx.accessToken';
+export const ACCESS_TOKEN_ENV_KEY = 'PBJX_ACCESS_TOKEN';
+
+/**
  * Suffixes are typically used by {@see Pbjx.trigger}
  * The actual event name is a combination of curies, mixins, etc. on the
  * message plus a suffix.  The event payload will be a PbjxEvent or a
@@ -97,6 +105,15 @@ export const TRANSPORT_AFTER_SEND = t('transport.after_send');
  * @see {TransportExceptionEvent}
  */
 export const TRANSPORT_SEND_EXCEPTION = t('transport.send_exception');
+
+/**
+ * Occurs when the {@see FetchTransport} receives an Envelope from a PBJX HTTP service.
+ * The envelope sometimes carries out of band information and an event subscriber
+ * would need to extract that data to make use of it.
+ *
+ * @see {EnvelopeReceivedEvent}
+ */
+export const TRANSPORT_HTTP_ENVELOPE_RECEIVED = t('transport.http_envelope_received');
 
 /**
  * Occurs before a job/task/message has been handled by a consumer.

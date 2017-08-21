@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this, no-unused-vars */
 import test from 'tape';
+import 'isomorphic-fetch';
 import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
 import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
 import { REQUEST_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
@@ -9,6 +10,7 @@ import LogicException from '../src/exceptions/LogicException';
 import PbjxEvent from '../src/events/PbjxEvent';
 import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 import RequestHandlingFailed from '../src/exceptions/RequestHandlingFailed';
+import FetchTransport from '../src/transports/FetchTransport';
 
 class TestHandler extends RequestHandler {
   async handleRequest(request, pbjx) {
@@ -23,6 +25,7 @@ class TestHandler extends RequestHandler {
 
 test('Pbjx.request (simulated passing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
+  locator.setDefaultTransport(new FetchTransport(locator, 'https://localhost/pbjx'));
   const pbjx = locator.getPbjx();
   const handler = new TestHandler();
   locator.registerRequestHandler(EchoRequestV1.schema().getCurie(), handler);
