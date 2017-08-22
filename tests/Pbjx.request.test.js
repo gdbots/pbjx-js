@@ -10,7 +10,7 @@ import LogicException from '../src/exceptions/LogicException';
 import PbjxEvent from '../src/events/PbjxEvent';
 import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 import RequestHandlingFailed from '../src/exceptions/RequestHandlingFailed';
-import FetchTransport from '../src/transports/FetchTransport';
+import HttpTransport from '../src/transports/HttpTransport';
 
 class TestHandler extends RequestHandler {
   async handleRequest(request, pbjx) {
@@ -25,7 +25,7 @@ class TestHandler extends RequestHandler {
 
 test('Pbjx.request (simulated passing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  locator.setDefaultTransport(new FetchTransport(locator, 'https://localhost/pbjx'));
+  locator.setDefaultTransport(new HttpTransport(locator, 'https://localhost/pbjx'));
   const pbjx = locator.getPbjx();
   const handler = new TestHandler();
   locator.registerRequestHandler(EchoRequestV1.schema().getCurie(), handler);

@@ -25,14 +25,28 @@ export const serviceIds = {
 
   // transports
   TRANSPORT_PREFIX: t('transports/'),
-  TRANSPORT_FETCH: t('transports/fetch'),
   TRANSPORT_FIREHOSE: t('transports/firehose'),
+  TRANSPORT_HTTP: t('transports/http'),
   TRANSPORT_IN_MEMORY: t('transports/in_memory'),
   TRANSPORT_LAMBDA: t('transports/lambda'),
 
   // handlers
   CHECK_HEALTH_HANDLER: t('check_health_handler'),
   ECHO_REQUEST_HANDLER: t('echo_request_handler'),
+};
+
+/**
+ * When using the redux middleware you can use these actionTypes
+ * in your reducers, sagas, etc.
+ *
+ * @link http://redux.js.org/docs/basics/Actions.html
+ *
+ * @type {Object}
+ */
+export const actionTypes = {
+  ACTION_PREFIX: EVENT_PREFIX,
+
+  STARTED: t('STARTED'),
 };
 
 /**
@@ -107,13 +121,13 @@ export const TRANSPORT_AFTER_SEND = t('transport.after_send');
 export const TRANSPORT_SEND_EXCEPTION = t('transport.send_exception');
 
 /**
- * Occurs when the {@see FetchTransport} receives an Envelope from a PBJX HTTP service.
+ * Occurs when the {@see HttpTransport} receives an Envelope from a PBJX HTTP service.
  * The envelope sometimes carries out of band information and an event subscriber
  * would need to extract that data to make use of it.
  *
  * @see {EnvelopeReceivedEvent}
  */
-export const TRANSPORT_HTTP_ENVELOPE_RECEIVED = t('transport.http_envelope_received');
+export const TRANSPORT_HTTP_ENVELOPE_RECEIVED = t('transport.http.envelope_received');
 
 /**
  * Occurs before a job/task/message has been handled by a consumer.

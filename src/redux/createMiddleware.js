@@ -56,6 +56,11 @@ pbjxMaybe(pbj);
 saga listens to ^^
 */
 
+/**
+ * @param {Pbjx} pbjx
+ *
+ * @returns {function}
+ */
 export default function createMiddleware(pbjx) {
   return store => next => (action) => {
     if (!(action instanceof Message)) {
@@ -73,6 +78,12 @@ export default function createMiddleware(pbjx) {
 
     store.dispatch({ type: '@gdbots/pbjx/STARTED', pbj: action });
     store.dispatch({ type: `${schema.getCurie()}.started`, pbj: action });
+
+    // pbjx.send(action)
+    //   .then(() => {
+    //   })
+    //   .catch(() => {
+    //   });
 
     const transport = {
       post: () => {
