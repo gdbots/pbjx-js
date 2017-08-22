@@ -11,7 +11,7 @@ const t = id => `${EVENT_PREFIX}${id}`;
  * @type {Object}
  */
 export const serviceIds = {
-  SERVICE_PREFIX,
+  PREFIX: SERVICE_PREFIX,
 
   // core pbjx services
   PBJX: t('pbjx'),
@@ -44,7 +44,7 @@ export const serviceIds = {
  * @type {Object}
  */
 export const actionTypes = {
-  ACTION_PREFIX: EVENT_PREFIX,
+  PREFIX: EVENT_PREFIX,
 
   STARTED: t('STARTED'),
 };

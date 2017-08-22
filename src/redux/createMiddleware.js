@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-unused-vars */
 import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';
 import Message from '@gdbots/pbj/Message';
+import { actionTypes } from '../constants';
 
 // const transport = axios.create({
 //   baseURL: PBJX_ENDPOINT,
@@ -40,7 +41,10 @@ what pbjx middleware will do with it (wip):
   and should be addressed in reducers.
 
 - dispatch pbjx completed or error
-  e.g. { type: '@gdbots/pbjx/COMPLETED', pbj: action }
+  e.g. { type: '@gdbots/pbjx/COMPLETED', pbj: action, pbjxPhase: 'completed' }
+
+createPbjxAction(pbj, 'FAILED')
+failPbjx
 
   need to either have pbjx reducer which internally dispatches
   to pbjx subscribers as a single unit of work or each
@@ -54,7 +58,29 @@ pbjxMaybe(pbj);
 
 { type: 'tmz:iam:request:search-users-response.created', pbj }
 saga listens to ^^
+
+
+@triniti/iam/SEARCH_USERS_REQUESTED
+@triniti/iam/SEARCH_USERS_REQUEST_STARTED
+@triniti/iam/SEARCH_USERS_REQUEST_FAILED
+@triniti/iam/SEARCH_USERS_REQUEST_REJECTED
+@triniti/iam/SEARCH_USERS_RESPONSE (this is the "completed" condition of the request - might change this convention)
+@triniti/iam/CREATE_USER_REQUESTED
+@triniti/iam/CREATE_USER_STARTED
+@triniti/iam/CREATE_USER_FAILED
+@triniti/iam/CREATE_USER_REJECTED
+@triniti/iam/CREATE_USER_SENT
+
+phases:
+- requested
+- started
+- failed
+- sent/published/completed
 */
+
+export default function createPbjxAction(pbj, phase = '') {
+  return { type: `${actionTypes.PREFIX}${phase}`, pbj, pbjxPhase: phase };
+}
 
 /**
  * @param {Pbjx} pbjx
@@ -68,72 +94,98 @@ export default function createMiddleware(pbjx) {
       return;
     }
 
+    const dispatch = store.dispatch;
     const schema = action.schema();
-    const endpoint = schema.getCurie()
-      .toString()
-      .replace('::', ':_:')
-      .replace(/:/g, '/');
+    const curie = schema.getCurie();
 
-    const accessToken = localStorage.getItem('tmz:user:access_token');
+    dispatch(createPbjxAction(action, 'started'));
 
-    store.dispatch({ type: '@gdbots/pbjx/STARTED', pbj: action });
-    store.dispatch({ type: `${schema.getCurie()}.started`, pbj: action });
+    if (schema.hasMixin('gdbots:pbjx:mixin:command')) {
+      pbjx.send(action)
+        .then(() => {
+          dispatch(createPbjxAction(action, 'completed'));
+        })
+        .catch((e) => {
+          dispatch(createPbjxAction(action, e.name));
+        });
 
-    // pbjx.send(action)
-    //   .then(() => {
-    //   })
-    //   .catch(() => {
-    //   });
+      return;
+    }
 
-    const transport = {
-      post: () => {
-      },
-    };
-    transport.post(endpoint, action.toObject(), {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then(({ data }) => {
-      try {
-        const envelope = EnvelopeV1.fromObject(data);
-        if (envelope.get('ok')) {
-          const pbj = envelope.get('message') || action;
-          store.dispatch({ type: '@gdbots/pbjx/COMPLETED', pbj });
-          store.dispatch({ type: `${pbj.schema().getCurie()}.completed`, pbj });
+    if (schema.hasMixin('gdbots:pbjx:mixin:request')) {
+      pbjx.request(action)
+        .then((response) => {
+          dispatch(createPbjxAction(response, 'completed'));
+        })
+        .catch((e) => {
+          dispatch(createPbjxAction(action, e.name));
+        });
 
-          if (envelope.has('message')) {
-            // const message = envelope.get('message').freeze();
-            //
-            // store.dispatch({
-            //   type: message.schema().getCurieMajor().toString(),
-            //   pbj: message,
-            // });
-            //
-            // store.dispatch({
-            //   type: message.schema().getCurie().toString(),
-            //   pbj: message,
-            // });
-            //
-            // message.schema().getMixinCuries().forEach((curie) => {
-            //   store.dispatch({
-            //     type: curie,
-            //     pbj: message,
-            //   });
-            // });
-          }
+      return;
+    }
 
-          return;
-        }
 
-        store.dispatch({ type: '@gdbots/pbjx/REJECTED', error: envelope });
-        store.dispatch({ type: `${schema.getCurie()}.rejected`, error: envelope });
-      } catch (e) {
-        store.dispatch({ type: '@gdbots/pbjx/ERROR', error: JSON.stringify(data) });
-        store.dispatch({ type: `${schema.getCurie()}.error`, error: JSON.stringify(data) });
-      }
-    }).catch((err) => {
-      store.dispatch({ type: '@gdbots/pbjx/ERROR', error: err });
-      store.dispatch({ type: `${schema.getCurie()}.error`, error: err });
-    });
+    //
+    // const endpoint = schema.getCurie()
+    //   .toString()
+    //   .replace('::', ':_:')
+    //   .replace(/:/g, '/');
+    //
+    // const accessToken = localStorage.getItem('tmz:user:access_token');
+    //
+    // store.dispatch({ type: '@gdbots/pbjx/STARTED', pbj: action });
+    // store.dispatch({ type: `${schema.getCurie()}.started`, pbj: action });
+    //
+    //
+    // const transport = {
+    //   post: () => {
+    //   },
+    // };
+    // transport.post(endpoint, action.toObject(), {
+    //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    // }).then(({ data }) => {
+    //   try {
+    //     const envelope = EnvelopeV1.fromObject(data);
+    //     if (envelope.get('ok')) {
+    //       const pbj = envelope.get('message') || action;
+    //       store.dispatch({ type: '@gdbots/pbjx/COMPLETED', pbj });
+    //       store.dispatch({ type: `${pbj.schema().getCurie()}.completed`, pbj });
+    //
+    //       if (envelope.has('message')) {
+    //         // const message = envelope.get('message').freeze();
+    //         //
+    //         // store.dispatch({
+    //         //   type: message.schema().getCurieMajor().toString(),
+    //         //   pbj: message,
+    //         // });
+    //         //
+    //         // store.dispatch({
+    //         //   type: message.schema().getCurie().toString(),
+    //         //   pbj: message,
+    //         // });
+    //         //
+    //         // message.schema().getMixinCuries().forEach((curie) => {
+    //         //   store.dispatch({
+    //         //     type: curie,
+    //         //     pbj: message,
+    //         //   });
+    //         // });
+    //       }
+    //
+    //       return;
+    //     }
+    //
+    //     store.dispatch({ type: '@gdbots/pbjx/REJECTED', error: envelope });
+    //     store.dispatch({ type: `${schema.getCurie()}.rejected`, error: envelope });
+    //   } catch (e) {
+    //     store.dispatch({ type: '@gdbots/pbjx/ERROR', error: JSON.stringify(data) });
+    //     store.dispatch({ type: `${schema.getCurie()}.error`, error: JSON.stringify(data) });
+    //   }
+    // }).catch((err) => {
+    //   store.dispatch({ type: '@gdbots/pbjx/ERROR', error: err });
+    //   store.dispatch({ type: `${schema.getCurie()}.error`, error: err });
+    // });
   };
 }
