@@ -3,9 +3,8 @@ import Exception from '@gdbots/common/Exception';
 import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';
 import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode';
-import Message from '@gdbots/pbj/Message';
 import ObjectSerializer from '@gdbots/pbj/serializers/ObjectSerializer';
-import { ACCESS_TOKEN_ENV_KEY, ACCESS_TOKEN_STORAGE_KEY, TRANSPORT_HTTP_ENVELOPE_RECEIVED, } from '../constants';
+import { ACCESS_TOKEN_ENV_KEY, ACCESS_TOKEN_STORAGE_KEY, TRANSPORT_HTTP_ENVELOPE_RECEIVED } from '../constants';
 import EnvelopeReceivedEvent from '../events/EnvelopeReceivedEvent';
 import HttpTransportFailed from '../exceptions/HttpTransportFailed';
 import Transport from './Transport';
@@ -79,7 +78,7 @@ export default class HttpTransport extends Transport {
   }
 
   /**
-   * @param {Message} message - the message (command, event, request) initiating the fetch operation.
+   * @param {Message} message - the (command, event, request) initiating the fetch operation.
    * @param {Object}  options - the options that will be passed "fetch(url, options)"
    *
    * @returns {Object} The final options object to use for the fetch.
@@ -146,7 +145,7 @@ export default class HttpTransport extends Transport {
 
     const accessToken = this.getAccessToken();
     if (accessToken) {
-      options.headers['Authorization'] = `Bearer ${accessToken}`;
+      options.headers.Authorization = `Bearer ${accessToken}`;
       options.credentials = 'include';
     }
 

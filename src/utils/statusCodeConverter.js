@@ -127,7 +127,4 @@ export function httpToVendor(httpCode = HttpCode.HTTP_OK.getValue()) {
   }
 }
 
-export default {
-  vendorToHttp,
-  httpToVendor,
-}
+export default { vendorToHttp, httpToVendor };
