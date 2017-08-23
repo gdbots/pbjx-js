@@ -1,0 +1,20 @@
+{
+  "extends": "airbnb",
+  "globals": {
+    "document": true,
+    "window": true,
+    "PBJX_ENDPOINT": false
+  },
+  "env": {
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
+  "rules": {
+  }
+}
