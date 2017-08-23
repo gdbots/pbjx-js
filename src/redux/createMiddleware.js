@@ -1,7 +1,10 @@
 /* eslint-disable no-console, no-unused-vars */
+import Exception from '@gdbots/common/Exception';
+import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';
 import Message from '@gdbots/pbj/Message';
 import { actionTypes } from '../constants';
+import LogicException from '../exceptions/LogicException';
 
 // const transport = axios.create({
 //   baseURL: PBJX_ENDPOINT,
@@ -63,23 +66,60 @@ saga listens to ^^
 @triniti/iam/SEARCH_USERS_REQUESTED
 @triniti/iam/SEARCH_USERS_REQUEST_STARTED
 @triniti/iam/SEARCH_USERS_REQUEST_FAILED
-@triniti/iam/SEARCH_USERS_REQUEST_REJECTED
+@triniti/iam/SEARCH_USERS_REQUEST_COMPLETED
+@triniti/iam/SEARCH_USERS_RESPONSE_RECEIVED
 @triniti/iam/SEARCH_USERS_RESPONSE (this is the "completed" condition of the request - might change this convention)
 @triniti/iam/CREATE_USER_REQUESTED
 @triniti/iam/CREATE_USER_STARTED
 @triniti/iam/CREATE_USER_FAILED
-@triniti/iam/CREATE_USER_REJECTED
 @triniti/iam/CREATE_USER_SENT
 
-phases:
-- requested
-- started
-- failed
-- sent/published/completed
+started
+rejected
+fulfilled
+settled
+
+startPbjx
+rejectPbjx
+fulfillPbjx
+settlePbjx
+
+{ type: '', pbj, pbjx: { state: 'pending' } }'
 */
 
-export default function createPbjxAction(pbj, phase = '') {
-  return { type: `${actionTypes.PREFIX}${phase}`, pbj, pbjxPhase: phase };
+export default function startPbjxAction(pbj) {
+  return {
+    type: actionTypes.STARTED,
+    pbj,
+    pbjx: {
+      ok: true,
+      state: 'started',
+    },
+  };
+}
+
+export default function rejectPbjxAction(pbj, exception) {
+  return {
+    type: actionTypes.REJECTED,
+    pbj,
+    pbjx: {
+      ok: false,
+      state: 'rejected',
+      code: exception.getCode() || Code.UNKNOWN.getValue(),
+      exception,
+    },
+  };
+}
+
+export default function fulfillPbjxAction(pbj) {
+  return {
+    type: actionTypes.FULFILLED,
+    pbj,
+    pbjx: {
+      ok: true,
+      state: 'fulfilled',
+    },
+  };
 }
 
 /**
@@ -88,41 +128,46 @@ export default function createPbjxAction(pbj, phase = '') {
  * @returns {function}
  */
 export default function createMiddleware(pbjx) {
-  return store => next => (action) => {
-    if (!(action instanceof Message)) {
-      next(action);
+  return store => next => (pbj) => {
+    if (!(pbj instanceof Message)) {
+      next(pbj);
       return;
     }
 
     const dispatch = store.dispatch;
-    const schema = action.schema();
+    const schema = pbj.schema();
     const curie = schema.getCurie();
-
-    dispatch(createPbjxAction(action, 'started'));
+    let method = null;
 
     if (schema.hasMixin('gdbots:pbjx:mixin:command')) {
-      pbjx.send(action)
-        .then(() => {
-          dispatch(createPbjxAction(action, 'completed'));
-        })
-        .catch((e) => {
-          dispatch(createPbjxAction(action, e.name));
-        });
-
+      method = 'send';
+    } else if (schema.hasMixin('gdbots:pbjx:mixin:request')) {
+      method = 'request';
+    } else if (schema.hasMixin('gdbots:pbjx:mixin:event')) {
+      method = 'publish';
+    } else {
       return;
     }
 
-    if (schema.hasMixin('gdbots:pbjx:mixin:request')) {
-      pbjx.request(action)
-        .then((response) => {
-          dispatch(createPbjxAction(response, 'completed'));
-        })
-        .catch((e) => {
-          dispatch(createPbjxAction(action, e.name));
-        });
+    dispatch(startPbjxAction(pbj));
 
-      return;
-    }
+    pbjx[method](pbj)
+      .then((response = null) => {
+        pbj.freeze();
+        if (method === 'request') {
+          dispatch(fulfillPbjxAction(response));
+          dispatch({ ...fulfillPbjxAction(response), type: curie.toString() });
+          return;
+        }
+
+        dispatch(fulfillPbjxAction(pbj));
+        dispatch({ ...fulfillPbjxAction(pbj), type: `${curie}.fulfilled` });
+      })
+      .catch((e) => {
+        pbj.freeze();
+        const exception = e instanceof Exception ? e : new LogicException(`${e.message || e}`);
+        dispatch(rejectPbjxAction(pbj, exception));
+      });
 
 
     //

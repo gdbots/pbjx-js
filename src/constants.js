@@ -47,6 +47,8 @@ export const actionTypes = {
   PREFIX: EVENT_PREFIX,
 
   STARTED: t('STARTED'),
+  FULFILLED: t('FULFILLED'),
+  REJECTED: t('REJECTED'),
 };
 
 /**
