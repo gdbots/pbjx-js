@@ -3,6 +3,7 @@ import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import Message from '@gdbots/pbj/Message';
 import LogicException from '../exceptions/LogicException';
 import { actionTypes, STATE_FULFILLED, STATE_REJECTED, STATE_STARTED } from '../constants';
+import PbjxEvent from '../events/PbjxEvent';
 
 const startPbjxAction = (pbj, method) => ({
   type: actionTypes.STARTED,
@@ -44,6 +45,8 @@ export default function createMiddleware(pbjx) {
       next(pbj);
       return;
     }
+
+    PbjxEvent.setRedux(store);
 
     const schema = pbj.schema();
     const curie = schema.getCurie();

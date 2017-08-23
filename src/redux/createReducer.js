@@ -11,8 +11,6 @@ const actionsToHandle = {
 
 export default function createReducer() {
   const dispatcher = new Dispatcher();
-  const subscribe = (eventName, listener) => dispatcher.addListener(eventName, listener);
-  const unsubscribe = (eventName, listener) => dispatcher.removeListener(eventName, listener);
   const reducer = (state = {}, action) => {
     if (!actionsToHandle[action.type]) {
       return state;
@@ -38,9 +36,7 @@ export default function createReducer() {
     return reduceReducers(...reducers)(state, action.pbj);
   };
 
-  return {
-    subscribe,
-    unsubscribe,
-    reducer,
-  };
+  reducer.subscribe = (eventName, listener) => dispatcher.addListener(eventName, listener);
+  reducer.unsubscribe = (eventName, listener) => dispatcher.removeListener(eventName, listener);
+  return reducer;
 }

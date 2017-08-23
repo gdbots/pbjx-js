@@ -102,4 +102,31 @@ export default class Dispatcher {
 
     this[listenersMap].get(eventName).delete(listener);
   }
+
+  /**
+   * Adds an event subscriber.
+   *
+   * The subscriber is asked for all the events he is
+   * interested in and added as a listener for these events.
+   *
+   * @param {EventSubscriber} subscriber
+   */
+  addSubscriber(subscriber) {
+    const events = subscriber.getSubscribedEvents();
+    Object.keys(events).forEach((eventName) => {
+      this.addListener(eventName, events[eventName]);
+    });
+  }
+
+  /**
+   * Removes an event subscriber.
+   *
+   * @param {EventSubscriber} subscriber
+   */
+  removeSubscriber(subscriber) {
+    const events = subscriber.getSubscribedEvents();
+    Object.keys(events).forEach((eventName) => {
+      this.removeListener(eventName, events[eventName]);
+    });
+  }
 }
