@@ -17,8 +17,9 @@ export const serviceIds = {
   PBJX: t('pbjx'),
   DISPATCHER: t('dispatcher'),
   EXCEPTION_HANDLER: t('exception_handler'),
+  LOCATOR: t('locator'),
 
-  // bus configs (e.g. fetch, firehose, in_memory)
+  // bus configs (e.g. firehose, http, in_memory, lambda)
   COMMAND_BUS_TRANSPORT: t('command_bus/transport'),
   EVENT_BUS_TRANSPORT: t('event_bus/transport'),
   REQUEST_BUS_TRANSPORT: t('request_bus/transport'),
@@ -33,6 +34,9 @@ export const serviceIds = {
   // handlers
   CHECK_HEALTH_HANDLER: t('check_health_handler'),
   ECHO_REQUEST_HANDLER: t('echo_request_handler'),
+
+  // redux
+  REDUX_REDUCER: t('redux/reducer'),
 };
 
 /**
@@ -50,6 +54,14 @@ export const actionTypes = {
   FULFILLED: t('FULFILLED'),
   REJECTED: t('REJECTED'),
 };
+
+/**
+ * Redux requires a state property on the action when processing
+ * pbjx middleware and pbjx reducers.
+ */
+export const STATE_STARTED = 'started';
+export const STATE_FULFILLED = 'fulfilled';
+export const STATE_REJECTED = 'rejected';
 
 /**
  * Access Tokens (aka Bearer Token) can be used with transports
