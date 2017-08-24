@@ -80,7 +80,10 @@ export default function createMiddleware(pbjx) {
 
         if (method === 'request') {
           store.dispatch(fulfillPbjxAction(response, method));
-          store.dispatch({ ...fulfillPbjxAction(response, method), type: curie.toString() });
+          store.dispatch({
+            ...fulfillPbjxAction(response, method),
+            type: response.schema().getCurie().toString(),
+          });
           return;
         }
 
@@ -92,7 +95,7 @@ export default function createMiddleware(pbjx) {
         pbj.freeze();
         const exception = e instanceof Exception ? e : new LogicException(`${e.message || e}`);
         store.dispatch(rejectPbjxAction(pbj, method, exception));
-        store.dispatch({ ...rejectPbjxAction(pbj, method), type: `${curie}.${STATE_REJECTED}` });
+        store.dispatch({ ...rejectPbjxAction(pbj, method, exception), type: `${curie}.${STATE_REJECTED}` });
       });
   };
 }
