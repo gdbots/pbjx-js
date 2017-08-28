@@ -28,6 +28,7 @@ export const serviceIds = {
   TRANSPORT_PREFIX: t('transports/'),
   TRANSPORT_FIREHOSE: t('transports/firehose'),
   TRANSPORT_HTTP: t('transports/http'),
+  TRANSPORT_HTTP_ENDPOINT: t('transports/http/endpoint'),
   TRANSPORT_IN_MEMORY: t('transports/in_memory'),
   TRANSPORT_LAMBDA: t('transports/lambda'),
 
