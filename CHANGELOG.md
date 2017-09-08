@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## v0.1.3
+* Add the ability to include an "owner" in a redux action.  This addresses issues with 
+  concurrent pbjx actions or simply needing pbjx actions to be reduced into different 
+  parts of the state in a reducer.
+
+
 ## v0.1.2
 * Include an empty `.babelrc.js` in published package to prevent babel preset loading error.
 * Add `index.js` entry point and export most commonly used classes.

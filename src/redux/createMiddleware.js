@@ -40,11 +40,13 @@ const fulfillPbjxAction = (pbj, method) => ({
  * @returns {function}
  */
 export default function createMiddleware(pbjx) {
-  return store => next => (pbj) => {
-    if (!(pbj instanceof Message)) {
-      next(pbj);
+  return store => next => (action) => {
+    if (!(action instanceof Message)) {
+      next(action);
       return;
     }
+
+    const pbj = action;
 
     PbjxEvent.setRedux(store);
 
