@@ -1,4 +1,3 @@
-import Message from '@gdbots/pbj/Message';
 import { actionTypes } from '../constants';
 
 /**
