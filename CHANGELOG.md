@@ -8,6 +8,7 @@
     parts of the state in a reducer.
   * Change the redux action structure to `action.ctx` instead of `action.pbjx` for clarify 
     that it's contextual data about the action which may or may not be pbjx specific.
+  * Return a promise with the result of the final dispatch in the pbjx process.
 * Add `redux/actions.js` with one public action creator `callPbjx`.
 * Change `redux/createReducer.js` to call the reducer with the standard signature of
   `prevState, action` instead of `prevState, pbj`.  This also gives the reducer the complete

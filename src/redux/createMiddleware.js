@@ -53,8 +53,7 @@ export default function createMiddleware(pbjx) {
       pbj = action.pbj;
       channel = action.ctx.channel || channel;
     } else {
-      next(action);
-      return;
+      return next(action);
     }
 
     PbjxEvent.setRedux(store);
@@ -70,7 +69,7 @@ export default function createMiddleware(pbjx) {
     } else if (schema.hasMixin('gdbots:pbjx:mixin:event')) {
       method = 'publish';
     } else {
-      return;
+      return Promise.resolve(action);
     }
 
     // if we're publishing and it's frozen already then we assume that the
@@ -78,35 +77,37 @@ export default function createMiddleware(pbjx) {
     // the intention was to dispatch this through redux, not pbjx.
     if (method === 'publish' && pbj.isFrozen()) {
       store.dispatch(fulfillPbjx(pbj, channel, method));
-      store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: curie.toString() });
-      return;
+      return Promise.resolve(
+        store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: curie.toString() }),
+      );
     }
 
     store.dispatch(startPbjx(pbj, channel, method));
     store.dispatch({ ...startPbjx(pbj, channel, method), type: `${curie}.${STATE_STARTED}` });
 
-    pbjx[method](pbj)
-      .then((response = null) => {
+    return pbjx[method](pbj).then(
+      (response = null) => {
         pbj.freeze();
 
         if (method === 'request') {
           store.dispatch(fulfillPbjx(response, channel, method));
-          store.dispatch({
+          return store.dispatch({
             ...fulfillPbjx(response, channel, method),
             type: response.schema().getCurie().toString(),
           });
-          return;
         }
 
         const suffix = method === 'publish' ? '' : `.${STATE_FULFILLED}`;
         store.dispatch(fulfillPbjx(pbj, channel, method));
-        store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: `${curie}${suffix}` });
-      })
-      .catch((e) => {
+        return store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: `${curie}${suffix}` });
+      },
+      (e) => {
         pbj.freeze();
         const exception = e instanceof Exception ? e : new LogicException(`${e.message || e}`);
         store.dispatch(rejectPbjx(pbj, channel, method, exception));
         store.dispatch({ ...rejectPbjx(pbj, channel, method, exception), type: `${curie}.${STATE_REJECTED}` });
-      });
+        return Promise.reject(exception);
+      },
+    );
   };
 }
