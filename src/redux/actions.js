@@ -10,6 +10,9 @@ import { actionTypes } from '../constants';
  * itself, that is equivalent to using this action creator with the default
  * channel value of "root".
  *
+ * IMPORTANT - The pbjx middleware intercepts this and runs the pbjx process.
+ * This action will never land in a reducer or other middleware.
+ *
  * @param {Message} pbj       - A pbj Message instance.
  * @param {string}  [channel] - Allows for concurrent pbjx operations to be dealt
  *                              with differently in sagas, reducers, etc.

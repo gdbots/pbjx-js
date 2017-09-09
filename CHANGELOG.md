@@ -3,7 +3,7 @@
 
 ## v0.1.3
 * In `redux/createMiddleware.js`:
-  * Add the ability to include an "channel" in a redux action. This addresses issues with 
+  * Add the ability to include a "channel" in a redux action. This addresses issues with 
     concurrent pbjx actions or simply needing pbjx actions to be reduced into different 
     parts of the state in a reducer.
   * Change the redux action structure to `action.ctx` instead of `action.pbjx` for clarify 
