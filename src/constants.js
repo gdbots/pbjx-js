@@ -51,6 +51,7 @@ export const serviceIds = {
 export const actionTypes = {
   PREFIX: EVENT_PREFIX,
 
+  CALLED: t('CALLED'),
   STARTED: t('STARTED'),
   FULFILLED: t('FULFILLED'),
   REJECTED: t('REJECTED'),
