@@ -9,11 +9,11 @@ test('Redux createReducer tests', (t) => {
 
   let called = 0;
 
-  const listener = (state, pbj) => {
+  const listener = (state, action) => {
     called += 1;
     return {
       ...state,
-      test: pbj.get('msg'),
+      test: action.pbj.get('msg'),
     };
   };
   const boundListener = listener.bind(this);
@@ -21,7 +21,7 @@ test('Redux createReducer tests', (t) => {
   const action = {
     type: actionTypes.FULFILLED,
     pbj: HealthCheckedV1.create().set('msg', 'after'),
-    pbjx: {
+    ctx: {
       method: 'publish',
       state: STATE_FULFILLED,
     },

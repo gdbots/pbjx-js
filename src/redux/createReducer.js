@@ -17,11 +17,11 @@ export default function createReducer() {
     }
 
     let includeWildcards = false;
-    let suffix = `.${action.pbjx.state}`;
+    let suffix = `.${action.ctx.state}`;
 
     if (action.type === actionTypes.FULFILLED) {
-      includeWildcards = action.pbjx.method === 'publish';
-      suffix = action.pbjx.method !== 'send' ? '' : suffix;
+      includeWildcards = action.ctx.method === 'publish';
+      suffix = action.ctx.method !== 'send' ? '' : suffix;
     }
 
     const reducers = [];
@@ -33,7 +33,7 @@ export default function createReducer() {
       return state;
     }
 
-    return reduceReducers(...reducers)(state, action.pbj);
+    return reduceReducers(...reducers)(state, action);
   };
 
   reducer.subscribe = (eventName, listener) => dispatcher.addListener(eventName, listener);

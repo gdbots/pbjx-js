@@ -5,19 +5,21 @@ import LogicException from '../exceptions/LogicException';
 import { actionTypes, STATE_FULFILLED, STATE_REJECTED, STATE_STARTED } from '../constants';
 import PbjxEvent from '../events/PbjxEvent';
 
-const startPbjxAction = (pbj, method) => ({
+const startPbjx = (pbj, channel, method) => ({
   type: actionTypes.STARTED,
   pbj,
-  pbjx: {
+  ctx: {
+    channel,
     method,
     state: STATE_STARTED,
   },
 });
 
-const rejectPbjxAction = (pbj, method, exception) => ({
+const rejectPbjx = (pbj, channel, method, exception) => ({
   type: actionTypes.REJECTED,
   pbj,
-  pbjx: {
+  ctx: {
+    channel,
     method,
     state: STATE_REJECTED,
     code: exception.getCode() || Code.UNKNOWN.getValue(),
@@ -25,10 +27,11 @@ const rejectPbjxAction = (pbj, method, exception) => ({
   },
 });
 
-const fulfillPbjxAction = (pbj, method) => ({
+const fulfillPbjx = (pbj, channel, method) => ({
   type: actionTypes.FULFILLED,
   pbj,
-  pbjx: {
+  ctx: {
+    channel,
     method,
     state: STATE_FULFILLED,
   },
@@ -40,10 +43,17 @@ const fulfillPbjxAction = (pbj, method) => ({
  * @returns {function}
  */
 export default function createMiddleware(pbjx) {
-  return store => next => (pbj) => {
-    if (!(pbj instanceof Message)) {
-      next(pbj);
-      return;
+  return store => next => (action) => {
+    let pbj;
+    let channel = 'root';
+
+    if (action instanceof Message) {
+      pbj = action;
+    } else if (action.type === actionTypes.CALLED) {
+      pbj = action.pbj;
+      channel = action.ctx.channel || channel;
+    } else {
+      return next(action);
     }
 
     PbjxEvent.setRedux(store);
@@ -59,43 +69,45 @@ export default function createMiddleware(pbjx) {
     } else if (schema.hasMixin('gdbots:pbjx:mixin:event')) {
       method = 'publish';
     } else {
-      return;
+      return Promise.resolve(action);
     }
 
     // if we're publishing and it's frozen already then we assume that the
     // event was injected by another process (websocket for example) and
     // the intention was to dispatch this through redux, not pbjx.
     if (method === 'publish' && pbj.isFrozen()) {
-      store.dispatch(fulfillPbjxAction(pbj, method));
-      store.dispatch({ ...fulfillPbjxAction(pbj, method), type: curie.toString() });
-      return;
+      store.dispatch(fulfillPbjx(pbj, channel, method));
+      return Promise.resolve(
+        store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: curie.toString() }),
+      );
     }
 
-    store.dispatch(startPbjxAction(pbj, method));
-    store.dispatch({ ...startPbjxAction(pbj, method), type: `${curie}.${STATE_STARTED}` });
+    store.dispatch(startPbjx(pbj, channel, method));
+    store.dispatch({ ...startPbjx(pbj, channel, method), type: `${curie}.${STATE_STARTED}` });
 
-    pbjx[method](pbj)
-      .then((response = null) => {
+    return pbjx[method](pbj).then(
+      (response = null) => {
         pbj.freeze();
 
         if (method === 'request') {
-          store.dispatch(fulfillPbjxAction(response, method));
-          store.dispatch({
-            ...fulfillPbjxAction(response, method),
+          store.dispatch(fulfillPbjx(response, channel, method));
+          return store.dispatch({
+            ...fulfillPbjx(response, channel, method),
             type: response.schema().getCurie().toString(),
           });
-          return;
         }
 
         const suffix = method === 'publish' ? '' : `.${STATE_FULFILLED}`;
-        store.dispatch(fulfillPbjxAction(pbj, method));
-        store.dispatch({ ...fulfillPbjxAction(pbj, method), type: `${curie}${suffix}` });
-      })
-      .catch((e) => {
+        store.dispatch(fulfillPbjx(pbj, channel, method));
+        return store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: `${curie}${suffix}` });
+      },
+      (e) => {
         pbj.freeze();
         const exception = e instanceof Exception ? e : new LogicException(`${e.message || e}`);
-        store.dispatch(rejectPbjxAction(pbj, method, exception));
-        store.dispatch({ ...rejectPbjxAction(pbj, method, exception), type: `${curie}.${STATE_REJECTED}` });
-      });
+        store.dispatch(rejectPbjx(pbj, channel, method, exception));
+        store.dispatch({ ...rejectPbjx(pbj, channel, method, exception), type: `${curie}.${STATE_REJECTED}` });
+        return Promise.reject(exception);
+      },
+    );
   };
 }
