@@ -21,7 +21,7 @@
   "dependencies": {},
   "peerDependencies": {
     "@gdbots/common": "^0.1.0",
-    "@gdbots/schemas": "^1.2.0",
+    "@gdbots/schemas": "^1.3.0",
     "@gdbots/pbj": "^0.1.1",
     "lodash": "^4.17.4",
     "lodash-es": "^4.17.4",
