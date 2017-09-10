@@ -225,7 +225,7 @@ export default class Pbjx {
    *
    * @param {Message} req - Expected to be a message using mixin 'gdbots:pbjx:mixin:request'
    *
-   * @returns {Promise.<Message>} Returns a message using mixin 'gdbots:pbjx:mixin:response'
+   * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async request(req) {
     if (!req.schema().hasMixin('gdbots:pbjx:mixin:request')) {
