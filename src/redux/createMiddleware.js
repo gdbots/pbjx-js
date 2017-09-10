@@ -37,6 +37,14 @@ const fulfillPbjx = (pbj, channel, method) => ({
   },
 });
 
+const unsupportedPbjx = (pbj, channel) => ({
+  type: pbj.schema().getCurie().toString(),
+  pbj,
+  ctx: {
+    channel,
+  },
+});
+
 /**
  * @param {Pbjx} pbjx
  *
@@ -69,7 +77,10 @@ export default function createMiddleware(pbjx) {
     } else if (schema.hasMixin('gdbots:pbjx:mixin:event')) {
       method = 'publish';
     } else {
-      return Promise.resolve(action);
+      // this is not likely to occur as it means you're dispatching
+      // a pbj that is not a command, request or event.
+      pbj.freeze();
+      return Promise.resolve(store.dispatch(unsupportedPbjx(pbj, channel)));
     }
 
     // if we're publishing and it's frozen already then we assume that the
@@ -85,8 +96,8 @@ export default function createMiddleware(pbjx) {
     store.dispatch(startPbjx(pbj, channel, method));
     store.dispatch({ ...startPbjx(pbj, channel, method), type: `${curie}.${STATE_STARTED}` });
 
-    return pbjx[method](pbj).then(
-      (response = null) => {
+    return pbjx[method](pbj)
+      .then((response = null) => {
         pbj.freeze();
 
         if (method === 'request') {
@@ -100,14 +111,13 @@ export default function createMiddleware(pbjx) {
         const suffix = method === 'publish' ? '' : `.${STATE_FULFILLED}`;
         store.dispatch(fulfillPbjx(pbj, channel, method));
         return store.dispatch({ ...fulfillPbjx(pbj, channel, method), type: `${curie}${suffix}` });
-      },
-      (e) => {
+      })
+      .catch((e) => {
         pbj.freeze();
         const exception = e instanceof Exception ? e : new LogicException(`${e.message || e}`);
         store.dispatch(rejectPbjx(pbj, channel, method, exception));
         store.dispatch({ ...rejectPbjx(pbj, channel, method, exception), type: `${curie}.${STATE_REJECTED}` });
         return Promise.reject(exception);
-      },
-    );
+      });
   };
 }
