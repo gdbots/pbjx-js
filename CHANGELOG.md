@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v0.1.4
+* Update npm `peerDependencies` to allow for more versions of `@gdbots/pbj`.
+
+
 ## v0.1.3
 * In `redux/createMiddleware.js`:
   * Add the ability to include a "channel" in a redux action. This addresses issues with 
