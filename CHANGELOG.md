@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## v0.1.5
+* Remove the `babel` key from the `package.json` during build so projects importing 
+  this lib don't have their babel config wiped out during serve/build/bundle/etc.
+
+
 ## v0.1.4
 * Update npm `peerDependencies` to allow for more versions of `@gdbots/pbj`.
 
