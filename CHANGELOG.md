@@ -6,6 +6,7 @@
   * `aws/lambda/determineEventSource.js` takes the event payload and returns the name of service it came from. 
   * `aws/lambda/getConfig.js` takes an object with keys of parameters to load from SSM and the variables to map them to.
 * Add `PbjxToken` which can be used to secure an endpoint that accept pbjx payloads.
+* Add `transports/TransportEnvelope.js` for containing messages through pbjx.  Same as php lib.
 
 
 ## v0.1.5
