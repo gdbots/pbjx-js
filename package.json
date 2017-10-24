@@ -23,6 +23,7 @@
     "@gdbots/common": "^0.1.0 || ^0.2.0 || ^0.3.0 || ^0.4.0 || ^1.0.0",
     "@gdbots/pbj": "^0.1.1 || ^0.2.0 || ^0.3.0 || ^0.4.0 || ^1.0.0",
     "@gdbots/schemas": "^1.4.0",
+    "aws-sdk": "*",
     "lodash": "^4.17.4",
     "lodash-es": "^4.17.4",
     "md5": "^2.2.1"
@@ -32,6 +33,7 @@
     "@gdbots/common": "^0.1.0",
     "@gdbots/pbj": "^0.2.1",
     "@gdbots/schemas": "^1.4.0",
+    "aws-sdk-mock": "^1.7.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-lodash": "^3.2.11",

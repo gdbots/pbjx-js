@@ -1,5 +1,29 @@
+const aws = require('aws-sdk');
+
+const ssm = new aws.SSM({
+  apiVersion: '2014-11-06',
+});
+
 const config = {
+  loaded: false,
+  expires_at: new Date() + 9000,
   ttl: 60,
+};
+
+const callSsm = (params) => {
+  return new Promise((resolve, reject) => {
+    ssm.getParameters(params, (err, data) => {
+      if (err) {
+        return reject(err.message);
+      }
+
+      return resolve(data.Parameters.reduce((acc, param) => {
+        acc[param.Name] = param.Value;
+
+        return acc;
+      }, {}));
+    });
+  });
 };
 
 /**
@@ -10,5 +34,29 @@ const config = {
  *
  * @returns {Object} Returns the configuration from SSM.
  */
-export default async function getConfig(params, ttl = 60) {
+export default async function getConfig(params, ttl) {
+  if (config.loaded && config.expires_at > new Date()) {
+    return config;
+  }
+
+  const names = Object.keys(params).map((key) => {
+    return params[key];
+  });
+
+  try {
+    const result = await callSsm({
+      Names: names,
+      WithDecryption: true,
+    });
+
+    config.loaded = true;
+    config.ttl = ttl;
+
+    Object.assign(config, result);
+  } catch (e) {
+    config.loaded = false;
+    throw e;
+  }
+
+  return config;
 }
