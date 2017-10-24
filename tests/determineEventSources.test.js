@@ -9,7 +9,7 @@ test('Event Type Detection Tests', async (t) => {
       const contents = fs.readFileSync(files[file]);
       const eventObject = JSON.parse(contents);
       const eventType = determineEventSources(eventObject);
-      t.comment(JSON.stringify(eventType));
+      t.comment("Found content type: " + JSON.stringify(eventType));
     }
   });
   t.end();
