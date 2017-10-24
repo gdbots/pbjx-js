@@ -6,4 +6,5 @@
  * @returns {string} Returns the service (s3, dynamodb, etc.) or "unknown"
  */
 export default function determineEventSource(event) {
+
 }
