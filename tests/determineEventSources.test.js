@@ -1,6 +1,7 @@
 import test from 'tape';
 import glob from 'glob';
-var fs = require("fs");
+import fs from 'fs';
+
 import determineEventSources from '../src/aws/lambda/determineEventSource';
 
 test('Event Type Detection Tests', async (t) => {
