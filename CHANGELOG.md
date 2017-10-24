@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+## v0.1.6
+* Add helpers for using pbjx in AWS Lambda.
+  * `aws/lambda/determineEventSource.js` takes the event payload and returns the name of service it came from. 
+  * `aws/lambda/getConfig.js` takes an object with keys of parameters to load from SSM and the variables to map them to.
+* Add `PbjxToken` which can be used to secure an endpoint that accept pbjx payloads.
+
+
 ## v0.1.5
 * Remove the `babel` key from the `package.json` during build so projects importing 
   this lib don't have their babel config wiped out during serve/build/bundle/etc.
