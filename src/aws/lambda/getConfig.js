@@ -6,7 +6,7 @@ const ssm = new aws.SSM({
 
 const config = {
   loaded: false,
-  expires_at: new Date() + 9000,
+  expires_at: 'FIX',
   ttl: 60,
 };
 
