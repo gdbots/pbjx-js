@@ -8,7 +8,7 @@
 export default function determineEventSource(event) {
   const EVENT_TYPES = {
     CLOUDFRONT: 'CLOUDFRONT',
-    CONGNITO: 'CONGNITO',
+    COGNITO_SYNC: 'COGNITO_SYNC',
     DYNAMODB: 'DYNAMODB',
     KINESIS: 'KINESIS',
     KINESIS_FIREHOSE: 'KINESIS_FIREHOSE',
@@ -16,7 +16,7 @@ export default function determineEventSource(event) {
     SES: 'SES',
     SNS: 'SNS',
     SCHEDULED_EVENT: 'SCHEDULED_EVENT',
-    API_GATEWAY: 'API_GATEWAY',
+    APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
     UNKNOWN: 'UNKNOWN',
   };
 
@@ -67,7 +67,7 @@ export default function determineEventSource(event) {
     if (event.datasetName) {
       if (event.eventType === 'SyncTrigger') {
         if (event.identityPoolId === 'identityPoolId') {
-          return EVENT_TYPES.CONGNITO;
+          return EVENT_TYPES.COGNITO_SYNC;
         }
       }
     }
@@ -95,7 +95,7 @@ export default function determineEventSource(event) {
           if (event.requestContext.identity) {
             if (event.queryStringParameters) {
               if (event.headers) {
-                return EVENT_TYPES.API_GATEWAY;
+                return EVENT_TYPES.APIGATEWAY_PROXY;
               }
             }
           }
