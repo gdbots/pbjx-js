@@ -6,8 +6,6 @@ const ssm = new aws.SSM({
 
 const config = {
   loaded: false,
-  expires_at: new Date() + 9000,
-  ttl: 60,
 };
 
 const callSsm = (params) => {
@@ -34,15 +32,12 @@ const callSsm = (params) => {
  *
  * @returns {Object} Returns the configuration from SSM.
  */
-export default async function getConfig(params, ttl) {
+export default async function getConfig(params, ttl = 60) {
   if (config.loaded && config.expires_at > new Date()) {
     return config;
   }
 
-  const names = Object.keys(params).map((key) => {
-    return params[key];
-  });
-
+  const names = Object.keys(params).map(key => (params[key]));
   try {
     const result = await callSsm({
       Names: names,
@@ -50,7 +45,7 @@ export default async function getConfig(params, ttl) {
     });
 
     config.loaded = true;
-    config.ttl = ttl;
+    config.expires_at = new Date() + ttl;
 
     Object.assign(config, result);
   } catch (e) {

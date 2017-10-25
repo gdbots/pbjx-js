@@ -1,8 +1,11 @@
+import UserCreatedV1 from '@gdbots/acme-schemas/acme/iam/event/UserCreatedV1';
 import test from 'tape';
 import TransportEnvelope from '../../src/transports/TransportEnvelope';
 
 test('TransportEnvelope tests', (t) => {
-  const s3Records = require('../aws/lambda/sample-events/s3.json');
-  t.same(TransportEnvelope.toObject(JSON.stringify(s3Records)), s3Records);
+  const userCreated = new UserCreatedV1();
+  const transportEnvelope = new TransportEnvelope(userCreated, 'json');
+
+  t.same(transportEnvelope.toString(), 'test');
   t.end();
 });
