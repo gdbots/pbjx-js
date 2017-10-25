@@ -51,20 +51,34 @@ export default class TransportEnvelope {
   }
 
   /**
-   * @param {string} json
+   * @param {Object} obj
    *
-   * @returns {Object}
+   * @returns {TransportEnvelope}
    */
-  static toObject(json) {
-    let obj;
-
-    try {
-      obj = JSON.parse(json);
-    } catch (e) {
-      throw new AssertionFailed('Invalid JSON.');
+  static fromObject(obj = {}) {
+    if (obj.message && obj.serializer) {
+      return new TransportEnvelope(obj.message, obj.serializer);
     }
 
-    return obj;
+    throw new AssertionFailed('Invalid TransportEnvelope object.');
+  }
+
+  /**
+   * @returns {Object}
+   */
+  toObject() {
+    return {
+      serializer: this.serializer,
+      is_replay: this.message.isReplay(),
+      message: TransportEnvelope.getSerializer(this.serializer).serialize(this.message),
+    };
+  }
+
+  /**
+   * @returns {Object}
+   */
+  toJSON() {
+    return this.toObject();
   }
 
   /**
