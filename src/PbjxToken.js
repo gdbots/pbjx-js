@@ -27,7 +27,6 @@ export default class PbjxToken {
    * @param {string} token - A JWT formatted token
    */
   constructor(token) {
-
     /**
      * Used to provide claim-checking support to jws decoding & validation.
      * Currently supports: 'exp'
@@ -65,11 +64,7 @@ export default class PbjxToken {
    * Returns a json representation of a decoded JWT Token
    */
   toJSON() {
-    return JSON.stringify({
-      header: this.header,
-      payload: this.payload,
-      signature: this.signature,
-    });
+    return this.token;
   }
 
   /**
@@ -91,14 +86,14 @@ export default class PbjxToken {
       typ: 'JWT',
     };
     const payload = {
-      host: host,
+      host,
       pbjx: getPayloadHash(),
       exp: Date.now() + DEFAULT_EXPIRATION,
     };
     const token = jws.sign({
-      header: header,
-      payload: payload,
-      secret: secret,
+      header,
+      payload,
+      secret,
     });
     return new PbjxToken(token);
   }
