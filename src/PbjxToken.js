@@ -67,7 +67,7 @@ export default class PbjxToken {
    * Currently supports: 'exp'
    * @param {object} tokenData - decoded JWS object
    */
-  static checkClaims(tokenData) {
+  checkClaims(tokenData) {
     if (!tokenData.payload.exp) {
       throw new Error('No expiration tag found, this is not a valid PBJX-JWS');
     }
