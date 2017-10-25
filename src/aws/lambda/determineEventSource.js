@@ -1,4 +1,21 @@
-import AWS_EVENT from '../Event';
+export const AWS_EVENT = {
+  CLOUDFRONT: 'CLOUDFRONT',
+  COGNITO_SYNC: 'COGNITO_SYNC',
+  DYNAMODB: 'DYNAMODB',
+  KINESIS: 'KINESIS',
+  KINESIS_FIREHOSE: 'KINESIS_FIREHOSE',
+  S3: 'S3',
+  SES: 'SES',
+  SNS: 'SNS',
+  SCHEDULED_EVENT: 'SCHEDULED_EVENT',
+  APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
+  UNKNOWN: 'UNKNOWN',
+  /**
+   * CUSTOM_EVENT type will be returned when a manual invocation of a lambda function is
+   * called with a custom payload that is not structured like a APIGATEWAY_PROXY event.
+   */
+  CUSTOM_EVENT: 'CUSTOM_EVENT',
+};
 
 /**
  * Determines the source of the lambda event, i.e. the AWS service
@@ -76,22 +93,21 @@ export default function determineEventSource(event) {
       }
     }
 
-    // Check apiGateway event
+    // Check apiGateway / custom event
     if (event.body) {
       if (event.resource) {
         if (event.requestContext) {
           if (event.requestContext.identity) {
-            if (event.queryStringParameters) {
-              if (event.headers) {
-                return AWS_EVENT.APIGATEWAY_PROXY;
-              }
+            if (event.requestContext.identity.userArn === '') {
+              return AWS_EVENT.CUSTOM_EVENT;
             }
+            return AWS_EVENT.APIGATEWAY_PROXY;
           }
         }
       }
     }
 
-    return AWS_EVENT.UNKNOWN;
+    return AWS_EVENT.CUSTOM_EVENT;
   } catch (ex) {
     return AWS_EVENT.UNKNOWN;
   }
