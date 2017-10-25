@@ -72,6 +72,7 @@ export default function determineEventSource(event) {
       }
     }
 
+    // Check for scheduled events
     if (event.account) {
       if (event['detail-type'] === 'Scheduled Event') {
         if (event.source === 'aws.events') {
@@ -94,10 +95,7 @@ export default function determineEventSource(event) {
           if (event.requestContext.identity) {
             if (event.queryStringParameters) {
               if (event.headers) {
-                if (event.stageVariables) {
-                  // Item is probably a api-gateway event
-                  return EVENT_TYPES.API_GATEWAY;
-                }
+                return EVENT_TYPES.API_GATEWAY;
               }
             }
           }
