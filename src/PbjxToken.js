@@ -58,7 +58,7 @@ export default class PbjxToken {
    * Returns a string representation of an encoded JWT Token
    */
   toString() {
-    return this.getToken();
+    return this.token;
   }
 
   /**
@@ -128,18 +128,14 @@ export default class PbjxToken {
   }
 
   /**
-   * Get the full JWT formatted token string
-   * @returns {string}
-   */
-  getToken() {
-    return this.token;
-  }
-
-  /**
    * Verify the current token can be decoded given a user supplied secret.
    * @returns {boolean}
    */
   verify(secret) {
-    return jws.verify(this.token, DEFAULT_ALGO, secret);
+    try {
+      return jws.verify(this.token, DEFAULT_ALGO, secret);
+    } catch (ex) {
+      return false;
+    }
   }
 }
