@@ -95,12 +95,12 @@ export default class PbjxToken {
       pbjx: getPayloadHash(),
       exp: Date.now() + DEFAULT_EXPIRATION,
     };
-    const signature = jws.sign({
+    const token = jws.sign({
       header: header,
       payload: payload,
       secret: secret,
     });
-    return new PbjxToken(signature);
+    return new PbjxToken(token);
   }
 
   /**
