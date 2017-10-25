@@ -108,7 +108,7 @@ export default class PbjxToken {
 
   /**
    * Get the decoded payload
-   * @returns {string}
+   * @returns {mixed}
    */
   getPayload() {
     return this.payload;
