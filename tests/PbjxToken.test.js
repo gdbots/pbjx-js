@@ -16,25 +16,14 @@ test('JWT HMAC SHA256 Token', (t) => {
   res = pbjxToken.verify('not the secret');
   t.equal(res, false);
 
-  t.test('Validating payload hash');
-  const expectedHash = pbjxToken.getPayload().pbjx;
-  const generatedHash = PbjxToken.getPayloadHash(JSON.stringify(content), secret);
-  t.equal(expectedHash, generatedHash);
-
-
   t.test('Validating expired token is in invalid');
   const expiredToken = 'eyJwYXlsb2FkX2hhc2giOiIxdWpJZ0VNbFdIdWRNN3A3SkpKR0JRMzdSZFwvVlRXUUZaN3Q4am84VWgyUT0iLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJob3N0IjoidG16ZGV2LmNvbSIsImV4cCI6NjB9.LWOQpMgIw0b-oqTaEarZWncQvJCGY50lTV4Gh2GLHhw';
   try {
-    new PbjxToken(expiredToken);
+    PbjxToken(expiredToken);
     t.fail('Expired token was decoded');
-  } catch(ex) {
+  } catch (ex) {
     t.pass('expired token will not be decoded by PbjxToken');
   }
-
-  t.test('Test HTTP Header generation');
-  const headerValue = pbjxToken.toHttpHeader();
-  const expectedHeaderValue = `Token ${pbjxToken.getToken()}`;
-  t.equal(headerValue, expectedHeaderValue);
 
   t.end();
 });

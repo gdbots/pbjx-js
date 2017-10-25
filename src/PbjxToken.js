@@ -27,8 +27,26 @@ export default class PbjxToken {
    * @param {string} token - A JWT formatted token
    */
   constructor(token) {
+
+    /**
+     * Used to provide claim-checking support to jws decoding & validation.
+     * Currently supports: 'exp'
+     * @param {object} tokenData - decoded JWS object
+     */
+    function checkClaims(tokenData) {
+      if (!tokenData.payload.exp) {
+        throw new Error('No expiration tag found, this is not a valid PBJX-JWS');
+      }
+
+      if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
+        throw new Error('Token expired');
+      }
+
+      return true;
+    }
+
     const tokenData = jws.decode(token);
-    this.checkClaims(tokenData);
+    checkClaims(tokenData);
     Object.defineProperty(this, 'signature', { value: tokenData.signature });
     Object.defineProperty(this, 'payload', { value: tokenData.payload });
     Object.defineProperty(this, 'header', { value: tokenData.header });
@@ -46,53 +64,12 @@ export default class PbjxToken {
   /**
    * Returns a json representation of a decoded JWT Token
    */
-  toJson() {
+  toJSON() {
     return JSON.stringify({
       header: this.header,
       payload: this.payload,
       signature: this.signature,
     });
-  }
-
-  /**
-   * Returns a http 'Authorization' header value in PBJX-JWT (http bearer) format
-   * @return {string}
-   */
-  toHttpHeader() {
-    return `Token ${this.getToken()}`;
-  }
-
-  /**
-   * Used to provide claim-checking support to jws decoding & validation.
-   * Currently supports: 'exp'
-   * @param {object} tokenData - decoded JWS object
-   */
-  checkClaims(tokenData) {
-    if (!tokenData.payload.exp) {
-      throw new Error('No expiration tag found, this is not a valid PBJX-JWS');
-    }
-
-    if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
-      throw new Error('Token expired');
-    }
-
-    return true;
-  }
-
-  /**
-   *
-   * @param {string} host - The host or endpoint that this payload is being sent to
-   * @param {string} content - The content to include in the payload
-   * @param {string} secret - The default structure for all PBJX tokens
-   * @returns {{host: *, content: *, content_signature: string, exp: number}}
-   *   - default structure for all PBJX tokens
-   */
-  static generatePayload(host, content, secret) {
-    return {
-      host: host,
-      pbjx: PbjxToken.getPayloadHash(content, secret),
-      exp: Date.now() + DEFAULT_EXPIRATION,
-    };
   }
 
   /**
@@ -114,26 +91,24 @@ export default class PbjxToken {
    * @returns {PbjxToken}
    */
   static create(host, content, secret) {
+    function getPayloadHash() {
+      return crypto.createHmac('sha256', secret)
+        .update(content)
+        .digest('base64');
+    }
+
     const header = PbjxToken.generateHeader();
-    const payload = PbjxToken.generatePayload(host, content, secret);
+    const payload = {
+      host: host,
+      pbjx: getPayloadHash(),
+      exp: Date.now() + DEFAULT_EXPIRATION,
+    };
     const signature = jws.sign({
       header: header,
       payload: payload,
       secret: secret,
     });
     return new PbjxToken(signature);
-  }
-
-  /**
-   *
-   * @param {string} payload - The host or endpoint that this payload is being sent to
-   * @param {string} secret - The content to include in the payload.
-   * @returns {string}
-   */
-  static getPayloadHash(payload, secret) {
-    return crypto.createHmac('sha256', secret)
-      .update(payload)
-      .digest('base64');
   }
 
   /**
