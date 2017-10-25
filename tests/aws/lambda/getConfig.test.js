@@ -3,7 +3,7 @@ import aws from 'aws-sdk-mock';
 import getConfig from '../../../src/aws/lambda/getConfig';
 
 test('getConfig tests', (t) => {
-  aws.mock('SSM', 'getParameters', function awsMockPut(params, callback) {
+  aws.mock('SSM', 'getParameters', function awsMockGet(params, callback) {
     callback(null, { Key: params.Key, Body: params.Body });
   });
 
