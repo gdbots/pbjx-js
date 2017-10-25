@@ -1,5 +1,3 @@
-
-
 /**
  * Determines the source of the lambda event, i.e. the AWS service
  *
@@ -11,9 +9,9 @@ export default function determineEventSource(event) {
   const EVENT_TYPES = {
     CLOUDFRONT: 'CLOUDFRONT',
     CONGNITO: 'CONGNITO',
-    DYNAMODB: 'DyanamoDB',
-    Kinesis: 'Kinesis',
-    KinesisFirehose: 'KinesisFirehose',
+    DYNAMODB: 'DYNAMODB',
+    KINESIS: 'KINESIS',
+    KINESIS_FIREHOSE: 'KINESIS_FIREHOSE',
     S3: 'S3',
     SES: 'SES',
     SNS: 'SNS',
@@ -41,7 +39,7 @@ export default function determineEventSource(event) {
       // Check Kinesis
       if (record.kinesis) {
         if (record.eventSource === 'aws:kinesis') {
-          return EVENT_TYPES.Kinesis;
+          return EVENT_TYPES.KINESIS;
         }
       }
 
@@ -85,7 +83,7 @@ export default function determineEventSource(event) {
     // Check Kinesis Firehost
     if (event.records) {
       if (event.deliveryStreamArn.indexOf('arn:aws:kinesis') === 0) {
-        return EVENT_TYPES.KinesisFirehose;
+        return EVENT_TYPES.KINESIS_FIREHOSE;
       }
     }
 
