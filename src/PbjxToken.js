@@ -73,17 +73,6 @@ export default class PbjxToken {
   }
 
   /**
-   * Generate a minimal JWT token header
-   * @returns {{alg: string, typ: string}}
-   */
-  static generateHeader() {
-    return {
-      alg: DEFAULT_ALGO,
-      typ: 'JWT',
-    };
-  }
-
-  /**
    *
    * @param {string} host - Pbjx host or service name
    * @param {string} content - Pbjx content
@@ -97,7 +86,10 @@ export default class PbjxToken {
         .digest('base64');
     }
 
-    const header = PbjxToken.generateHeader();
+    const header = {
+      alg: DEFAULT_ALGO,
+      typ: 'JWT',
+    };
     const payload = {
       host: host,
       pbjx: getPayloadHash(),
