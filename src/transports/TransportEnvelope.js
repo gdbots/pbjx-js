@@ -87,11 +87,7 @@ export default class TransportEnvelope {
    * @return string
    */
   toString() {
-    return JSON.stringify({
-      serializer: this.serializer,
-      is_replay: this.message.isReplay(),
-      message: TransportEnvelope.getSerializer(this.serializer).serialize(this.message),
-    });
+    return JSON.stringify(this);
   }
 
   /**
