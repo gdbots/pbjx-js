@@ -15,12 +15,9 @@ import mockEventScheduled from './sample-events/scheduled-event.json';
 import mockEventSes from './sample-events/ses.json';
 import mockEventSns from './sample-events/sns.json';
 
-function eventTypeMatches(event, expectedEvent) {
-  const eventType = determineEventSource(event);
-  return eventType === expectedEvent;
-}
+const eventTypeMatches = (event, expected) => determineEventSource(event) === expected;
 
-test('Event Type Detection Tests', async (t) => {
+test('Validate function detection via determineEventSource tests', async (t) => {
   t.ok(eventTypeMatches(mockEventCloudfront, eventSources.CLOUDFRONT));
   t.ok(eventTypeMatches(mockEventApiGateway, eventSources.APIGATEWAY_PROXY));
   t.ok(eventTypeMatches(mockEventCognitoSync, eventSources.COGNITO_SYNC));
@@ -35,3 +32,4 @@ test('Event Type Detection Tests', async (t) => {
   t.ok(eventTypeMatches(mockEventIotButton, eventSources.IOT_BUTTON));
   t.end();
 });
+
