@@ -3,7 +3,7 @@ import PbjxToken from '../src/PbjxToken';
 
 test('JWT HMAC SHA256 Token', (t) => {
   t.test('Creating JWT token');
-  const host = 'tmzdev.com';
+  const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = ['envelope1', 'envelope2'];
   const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
