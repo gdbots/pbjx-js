@@ -53,14 +53,19 @@ export default class TransportEnvelope {
    * @returns {TransportEnvelope}
    */
   static fromObject(obj = {}) {
-    if (obj.message && obj.serializer) {
-      if (obj.is_replay) {
-        obj.message.isReplay(true);
-      }
-      return new TransportEnvelope(obj.message, obj.serializer);
+    if (!obj.message && !obj.serializer) {
+      throw new AssertionFailed('Invalid TransportEnvelope object.');
     }
 
-    throw new AssertionFailed('Invalid TransportEnvelope object.');
+    const serializer = obj.serializer ? obj.serializer : 'json';
+    const isReplay = obj.is_replay ? obj.is_replay : false;
+    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message ? obj.message : '');
+
+    if (isReplay) {
+      message.isReplay(true);
+    }
+
+    return new TransportEnvelope(obj.message, obj.serializer);
   }
 
   /**
