@@ -124,14 +124,11 @@ export default function determineEventSource(event) {
       }
     }
 
-    // Check apiGateway / custom event
+    // Check apiGateway / custom event via api gateway
     if (event.body) {
       if (event.resource) {
         if (event.requestContext) {
           if (event.requestContext.identity) {
-            if (event.requestContext.identity.userArn === '') {
-              return AWS_EVENT.CUSTOM_EVENT;
-            }
             return AWS_EVENT.APIGATEWAY_PROXY;
           }
         }
