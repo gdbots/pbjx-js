@@ -1,13 +1,37 @@
 import test from 'tape';
-import determineShard from '../../../src/aws/lambda/determineEventSource';
-import dynamodbEvent from './sample-events/dynamodb.json';
 
-test('determineEventSource tests', (t) => {
+import determineEventSource, { AWS_EVENT } from '../../../src/aws/lambda/determineEventSource';
 
-  // assert that it's the expected type
-  // dynamodbEvent resolves to dynamodb for example
-  // but also, dynamodb does NOT resolve as any other service
-  // this is as important
+import mockEventCloudfront from './sample-events/cloudfront.json';
+import mockEventApiGateway from './sample-events/apigateway-proxy.json';
+import mockEventCognitoSync from './sample-events/cognito-sync.json';
+import mockEventDynamoDB from './sample-events/dynamodb.json';
+import mockEventIotButton from './sample-events/iot-button.json';
+import mockEventLex from './sample-events/lex.json';
+import mockEventKinesis from './sample-events/kinesis.json';
+import mockEventKinesisFirehose from './sample-events/kinesis-firehose.json';
+import mockEventS3 from './sample-events/s3.json';
+import mockEventScheduled from './sample-events/scheduled-event.json';
+import mockEventSes from './sample-events/ses.json';
+import mockEventSns from './sample-events/sns.json';
 
+function eventTypeMatches(event, expectedEvent) {
+  const eventType = determineEventSource(event);
+  return eventType === expectedEvent;
+}
+
+test('Event Type Detection Tests', async (t) => {
+  t.ok(eventTypeMatches(mockEventCloudfront, AWS_EVENT.CLOUDFRONT));
+  t.ok(eventTypeMatches(mockEventApiGateway, AWS_EVENT.APIGATEWAY_PROXY));
+  t.ok(eventTypeMatches(mockEventCognitoSync, AWS_EVENT.COGNITO_SYNC));
+  t.ok(eventTypeMatches(mockEventDynamoDB, AWS_EVENT.DYNAMODB));
+  t.ok(eventTypeMatches(mockEventKinesis, AWS_EVENT.KINESIS));
+  t.ok(eventTypeMatches(mockEventKinesisFirehose, AWS_EVENT.KINESIS_FIREHOSE));
+  t.ok(eventTypeMatches(mockEventS3, AWS_EVENT.S3));
+  t.ok(eventTypeMatches(mockEventScheduled, AWS_EVENT.SCHEDULED));
+  t.ok(eventTypeMatches(mockEventSes, AWS_EVENT.SES));
+  t.ok(eventTypeMatches(mockEventSns, AWS_EVENT.SNS));
+  t.ok(eventTypeMatches(mockEventLex, AWS_EVENT.LEX));
+  t.ok(eventTypeMatches(mockEventIotButton, AWS_EVENT.IOT_BUTTON));
   t.end();
 });
