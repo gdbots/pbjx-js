@@ -44,15 +44,6 @@ export default class TransportEnvelope {
       throw new AssertionFailed('Invalid JSON.');
     }
 
-    return this.fromObject(obj);
-  }
-
-  /**
-   * @param {Object} obj
-   *
-   * @returns {TransportEnvelope}
-   */
-  static fromObject(obj = {}) {
     if (!obj.message && !obj.serializer) {
       throw new AssertionFailed('Invalid TransportEnvelope object.');
     }
