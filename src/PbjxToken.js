@@ -20,6 +20,35 @@ const DEFAULT_EXPIRATION = 5;
  */
 const DEFAULT_LEEWAY = 5;
 
+/**
+ * Used to provide claim-checking support to jws decoding & validation.
+ * Currently supports: 'exp'
+ * @param {object} tokenData - decoded JWS object
+ */
+function checkClaims(tokenData) {
+  if (!tokenData.payload.exp) {
+    throw new Error('No expiration tag found, this is not a valid PBJX-JWS');
+  }
+
+  if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
+    throw new Error('Token expired');
+  }
+
+  return true;
+}
+
+/**
+ * Used to provide hash an arbitrary payload to prevent tampering attacks on a JWT token
+ * @param {string} payload hash in base64_encoded format
+ */
+function getPayloadHash(content) {
+  const hash = crypto.createHmac('sha256', '')
+    .update(content)
+    .digest('hex');
+
+  return hash;
+}
+
 export default class PbjxToken {
   /**
    * Represents a signed PBJX-JWT token.  PBJX-JWT is a type of JWS.
@@ -27,23 +56,6 @@ export default class PbjxToken {
    * @param {string} token - A JWT formatted token
    */
   constructor(token) {
-    /**
-     * Used to provide claim-checking support to jws decoding & validation.
-     * Currently supports: 'exp'
-     * @param {object} tokenData - decoded JWS object
-     */
-    function checkClaims(tokenData) {
-      if (!tokenData.payload.exp) {
-        throw new Error('No expiration tag found, this is not a valid PBJX-JWS');
-      }
-
-      if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
-        throw new Error('Token expired');
-      }
-
-      return true;
-    }
-
     const tokenData = jws.decode(token);
     checkClaims(tokenData);
     Object.defineProperty(this, 'signature', { value: tokenData.signature });
@@ -75,19 +87,13 @@ export default class PbjxToken {
    * @returns {PbjxToken}
    */
   static create(host, content, secret) {
-    function getPayloadHash() {
-      return crypto.createHmac('sha256', secret)
-        .update(content)
-        .digest('base64');
-    }
-
     const header = {
       alg: DEFAULT_ALGO,
       typ: 'JWT',
     };
     const payload = {
       host,
-      pbjx: getPayloadHash(),
+      pbjx: getPayloadHash(content, secret),
       exp: Date.now() + DEFAULT_EXPIRATION,
     };
     const token = jws.sign({
@@ -100,7 +106,7 @@ export default class PbjxToken {
 
   /**
    * Get the decoded header
-   * @returns {string}
+   * @returns {Object}
    */
   getHeader() {
     return this.header;
@@ -108,7 +114,7 @@ export default class PbjxToken {
 
   /**
    * Get the decoded payload
-   * @returns {mixed}
+   * @returns {Object}
    */
   getPayload() {
     return this.payload;
