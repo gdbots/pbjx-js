@@ -9,7 +9,7 @@ test('getConfig tests', (t) => {
         {
           Type: 'String',
           Name: 'pbjxHost',
-          Value: 'master-api.dev.tmzlabs.com',
+          Value: 'master-api.dev.com',
         },
         {
           Type: 'String',
