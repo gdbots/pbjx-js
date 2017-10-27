@@ -9,6 +9,11 @@ export const AWS_EVENT = {
   SNS: 'SNS',
   SCHEDULED_EVENT: 'SCHEDULED_EVENT',
   APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
+  LEX: 'LEX',
+  IOT_BUTTON: 'IOT_BUTTON',
+  CLOUDWATCH: 'CLOUDWATCH',
+  CONFIG: 'CONFIG',
+
   UNKNOWN: 'UNKNOWN',
   /**
    * CUSTOM_EVENT type will be returned when a manual invocation of a lambda function is
@@ -77,6 +82,13 @@ export default function determineEventSource(event) {
       }
     }
 
+    // Check Amazon lex event
+    if (event.bot) {
+      if (event.currentIntent) {
+        return AWS_EVENT.LEX;
+      }
+    }
+
     // Check for scheduled events
     if (event.account) {
       if (event['detail-type'] === 'Scheduled Event') {
@@ -90,6 +102,25 @@ export default function determineEventSource(event) {
     if (event.records) {
       if (event.deliveryStreamArn.indexOf('arn:aws:kinesis') === 0) {
         return AWS_EVENT.KINESIS_FIREHOSE;
+      }
+    }
+
+    // Check for AWS IOT 'Button Event'
+    if (event.serialNumber) {
+      if (event.clickType) {
+        return AWS_EVENT.IOT_BUTTON;
+      }
+    }
+
+    if (event.awslogs) {
+      if (event.awslogs.data) {
+        return AWS_EVENT.CLOUDWATCH;
+      }
+    }
+
+    if (event.configRuleArn) {
+      if (event.configRuleArn.indexOf('arn:aws:config') === 0) {
+        return AWS_EVENT.CONFIG;
       }
     }
 
