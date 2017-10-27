@@ -7,7 +7,7 @@ export const AWS_EVENT = {
   S3: 'S3',
   SES: 'SES',
   SNS: 'SNS',
-  SCHEDULED_EVENT: 'SCHEDULED_EVENT',
+  SCHEDULED: 'SCHEDULED',
   APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
   LEX: 'LEX',
   IOT_BUTTON: 'IOT_BUTTON',
@@ -93,7 +93,7 @@ export default function determineEventSource(event) {
     if (event.account) {
       if (event['detail-type'] === 'Scheduled Event') {
         if (event.source === 'aws.events') {
-          return AWS_EVENT.SCHEDULED_EVENT;
+          return AWS_EVENT.SCHEDULED;
         }
       }
     }

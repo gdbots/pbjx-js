@@ -30,7 +30,7 @@ test('Event Type Detection Tests', async (t) => {
   t.ok(eventTypeMatches(mockEventKinesis, AWS_EVENT.KINESIS));
   t.ok(eventTypeMatches(mockEventKinesisFirehose, AWS_EVENT.KINESIS_FIREHOSE));
   t.ok(eventTypeMatches(mockEventS3, AWS_EVENT.S3));
-  t.ok(eventTypeMatches(mockEventScheduled, AWS_EVENT.SCHEDULED_EVENT));
+  t.ok(eventTypeMatches(mockEventScheduled, AWS_EVENT.SCHEDULED));
   t.ok(eventTypeMatches(mockEventSes, AWS_EVENT.SES));
   t.ok(eventTypeMatches(mockEventSns, AWS_EVENT.SNS));
   t.end();
