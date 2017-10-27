@@ -44,10 +44,7 @@ export default class TransportEnvelope {
       throw new AssertionFailed('Invalid JSON.');
     }
 
-    const serializer = obj.serializer ? obj.serializer : 'json';
-    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message ? obj.message : '');
-
-    return new this(message, serializer);
+    return this.fromObject(obj);
   }
 
   /**
@@ -57,6 +54,9 @@ export default class TransportEnvelope {
    */
   static fromObject(obj = {}) {
     if (obj.message && obj.serializer) {
+      if (obj.is_replay) {
+        obj.message.isReplay(true);
+      }
       return new TransportEnvelope(obj.message, obj.serializer);
     }
 
@@ -84,10 +84,17 @@ export default class TransportEnvelope {
   /**
    * Returns a json string version of the envelope.
    *
-   * @return string
+   * @returns {string}
    */
   toString() {
     return JSON.stringify(this);
+  }
+
+  /**
+   * @returns {Message}
+   */
+  getMessage() {
+    return this.message;
   }
 
   /**
