@@ -54,6 +54,9 @@ export default class TransportEnvelope {
    */
   static fromObject(obj = {}) {
     if (obj.message && obj.serializer) {
+      if (obj.is_replay) {
+        obj.message.isReplay(true);
+      }
       return new TransportEnvelope(obj.message, obj.serializer);
     }
 
