@@ -1,4 +1,4 @@
-export const AWS_EVENT = {
+export const eventSources = {
   APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
   CLOUDFRONT: 'CLOUDFRONT',
   COGNITO_SYNC: 'COGNITO_SYNC',
@@ -35,40 +35,40 @@ export default function determineEventSource(event) {
 
       // Check cloudfront
       if (record.cf) {
-        return AWS_EVENT.CLOUDFRONT;
+        return eventSources.CLOUDFRONT;
       }
 
       // Check dynamoDB
       if (record.dynamodb) {
         if (record.eventSource === 'aws:dynamodb') {
-          return AWS_EVENT.DYNAMODB;
+          return eventSources.DYNAMODB;
         }
       }
 
       // Check Kinesis
       if (record.kinesis) {
         if (record.eventSource === 'aws:kinesis') {
-          return AWS_EVENT.KINESIS;
+          return eventSources.KINESIS;
         }
       }
 
       // Check S3
       if (record.s3) {
         if (record.eventSource === 'aws:s3') {
-          return AWS_EVENT.S3;
+          return eventSources.S3;
         }
       }
 
       // Check SES
       if (record.ses) {
         if (record.eventSource === 'aws:ses') {
-          return AWS_EVENT.SES;
+          return eventSources.SES;
         }
       }
 
       // Check SNS
       if (record.Sns) {
-        return AWS_EVENT.SNS;
+        return eventSources.SNS;
       }
     }
 
@@ -76,7 +76,7 @@ export default function determineEventSource(event) {
     if (event.datasetName) {
       if (event.eventType === 'SyncTrigger') {
         if (event.identityPoolId === 'identityPoolId') {
-          return AWS_EVENT.COGNITO_SYNC;
+          return eventSources.COGNITO_SYNC;
         }
       }
     }
@@ -84,7 +84,7 @@ export default function determineEventSource(event) {
     // Check Amazon lex event
     if (event.bot) {
       if (event.currentIntent) {
-        return AWS_EVENT.LEX;
+        return eventSources.LEX;
       }
     }
 
@@ -92,7 +92,7 @@ export default function determineEventSource(event) {
     if (event.account) {
       if (event['detail-type'] === 'Scheduled Event') {
         if (event.source === 'aws.events') {
-          return AWS_EVENT.SCHEDULED;
+          return eventSources.SCHEDULED;
         }
       }
     }
@@ -100,26 +100,26 @@ export default function determineEventSource(event) {
     // Check Kinesis Firehost
     if (event.records) {
       if (event.deliveryStreamArn.indexOf('arn:aws:kinesis') === 0) {
-        return AWS_EVENT.KINESIS_FIREHOSE;
+        return eventSources.KINESIS_FIREHOSE;
       }
     }
 
     // Check for AWS IOT 'Button Event'
     if (event.serialNumber) {
       if (event.clickType) {
-        return AWS_EVENT.IOT_BUTTON;
+        return eventSources.IOT_BUTTON;
       }
     }
 
     if (event.awslogs) {
       if (event.awslogs.data) {
-        return AWS_EVENT.CLOUDWATCH;
+        return eventSources.CLOUDWATCH;
       }
     }
 
     if (event.configRuleArn) {
       if (event.configRuleArn.indexOf('arn:aws:config') === 0) {
-        return AWS_EVENT.CONFIG;
+        return eventSources.CONFIG;
       }
     }
 
@@ -128,14 +128,14 @@ export default function determineEventSource(event) {
       if (event.resource) {
         if (event.requestContext) {
           if (event.requestContext.identity) {
-            return AWS_EVENT.APIGATEWAY_PROXY;
+            return eventSources.APIGATEWAY_PROXY;
           }
         }
       }
     }
 
-    return AWS_EVENT.CUSTOM_EVENT;
+    return eventSources.CUSTOM_EVENT;
   } catch (ex) {
-    return AWS_EVENT.UNKNOWN;
+    return eventSources.UNKNOWN;
   }
 }

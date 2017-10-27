@@ -1,6 +1,6 @@
 import test from 'tape';
 
-import determineEventSource, {AWS_EVENT} from '../src/aws/lambda/determineEventSource';
+import determineEventSource, {eventSources} from '../src/aws/lambda/determineEventSource';
 
 import mockEventCloudfront from './aws/lambda/sample-events/cloudfront.json';
 import mockEventApiGateway from './aws/lambda/sample-events/apigateway-proxy.json';
@@ -24,17 +24,17 @@ function eventTypeMatches(event, expectedEvent) {
 }
 
 test('Event Type Detection Tests', async (t) => {
-  t.ok(eventTypeMatches(mockEventCloudfront, AWS_EVENT.CLOUDFRONT));
-  t.ok(eventTypeMatches(mockEventApiGateway, AWS_EVENT.APIGATEWAY_PROXY));
-  t.ok(eventTypeMatches(mockEventCognitoSync, AWS_EVENT.COGNITO_SYNC));
-  t.ok(eventTypeMatches(mockEventDynamoDB, AWS_EVENT.DYNAMODB));
-  t.ok(eventTypeMatches(mockEventKinesis, AWS_EVENT.KINESIS));
-  t.ok(eventTypeMatches(mockEventKinesisFirehose, AWS_EVENT.KINESIS_FIREHOSE));
-  t.ok(eventTypeMatches(mockEventS3, AWS_EVENT.S3));
-  t.ok(eventTypeMatches(mockEventScheduled, AWS_EVENT.SCHEDULED));
-  t.ok(eventTypeMatches(mockEventSes, AWS_EVENT.SES));
-  t.ok(eventTypeMatches(mockEventSns, AWS_EVENT.SNS));
-  t.ok(eventTypeMatches(mockEventLex, AWS_EVENT.LEX));
-  t.ok(eventTypeMatches(mockEventIotButton, AWS_EVENT.IOT_BUTTON));
+  t.ok(eventTypeMatches(mockEventCloudfront, eventSources.CLOUDFRONT));
+  t.ok(eventTypeMatches(mockEventApiGateway, eventSources.APIGATEWAY_PROXY));
+  t.ok(eventTypeMatches(mockEventCognitoSync, eventSources.COGNITO_SYNC));
+  t.ok(eventTypeMatches(mockEventDynamoDB, eventSources.DYNAMODB));
+  t.ok(eventTypeMatches(mockEventKinesis, eventSources.KINESIS));
+  t.ok(eventTypeMatches(mockEventKinesisFirehose, eventSources.KINESIS_FIREHOSE));
+  t.ok(eventTypeMatches(mockEventS3, eventSources.S3));
+  t.ok(eventTypeMatches(mockEventScheduled, eventSources.SCHEDULED));
+  t.ok(eventTypeMatches(mockEventSes, eventSources.SES));
+  t.ok(eventTypeMatches(mockEventSns, eventSources.SNS));
+  t.ok(eventTypeMatches(mockEventLex, eventSources.LEX));
+  t.ok(eventTypeMatches(mockEventIotButton, eventSources.IOT_BUTTON));
   t.end();
 });
