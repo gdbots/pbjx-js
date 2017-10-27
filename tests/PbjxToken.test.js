@@ -1,22 +1,29 @@
 import test from 'tape';
 import PbjxToken from '../src/PbjxToken';
 
-test('JWT HMAC SHA256 Token', (t) => {
-  t.test('Creating JWT token');
-  const host = 'pbjxdev.com';
-  const secret = 'segdg4twsgsg';
-  const content = ['envelope1', 'envelope2'];
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+const host = 'pbjxdev.com';
+const secret = 'segdg4twsgsg';
+const content = ['envelope1', 'envelope2'];
+const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
 
-  t.test('Verifying JWT token with correct secret');
-  let res = pbjxToken.verify(secret);
-  t.equal(res, true);
+test('Created Valid JWT token', (t) => {
+  t.ok(pbjxToken);
+  t.end();
+});
 
-  t.test('Attempting to verify JWT token with in-correct secret');
-  res = pbjxToken.verify('not the secret');
-  t.equal(res, false);
+test('Verifying JWT token with correct secret', (t) => {
+  const res = pbjxToken.verify(secret);
+  t.ok(res);
+  t.end();
+});
 
-  t.test('Validating expired token is in invalid');
+test('Verifying JWT token with in-correct secret', (t) => {
+  const res = pbjxToken.verify('not the secret');
+  t.notOk(res);
+  t.end();
+});
+
+test('Validating expired token is in invalid', (t) => {
   const expiredToken = 'eyJwYXlsb2FkX2hhc2giOiIxdWpJZ0VNbFdIdWRNN3A3SkpKR0JRMzdSZFwvVlRXUUZaN3Q4am84VWgyUT0iLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJob3N0IjoidG16ZGV2LmNvbSIsImV4cCI6NjB9.LWOQpMgIw0b-oqTaEarZWncQvJCGY50lTV4Gh2GLHhw';
   try {
     PbjxToken(expiredToken);
@@ -24,6 +31,5 @@ test('JWT HMAC SHA256 Token', (t) => {
   } catch (ex) {
     t.pass('expired token will not be decoded by PbjxToken');
   }
-
   t.end();
 });
