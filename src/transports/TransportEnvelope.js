@@ -44,7 +44,7 @@ export default class TransportEnvelope {
       throw new AssertionFailed('Invalid JSON.');
     }
 
-    if (!obj.message && !obj.serializer) {
+    if (!obj.message || !obj.serializer) {
       throw new AssertionFailed('Invalid TransportEnvelope object.');
     }
 
