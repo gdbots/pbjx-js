@@ -50,7 +50,7 @@ export default class TransportEnvelope {
 
     const serializer = obj.serializer ? obj.serializer : 'json';
     const isReplay = obj.is_replay ? obj.is_replay : false;
-    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message ? obj.message : {});
+    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message ? obj.message : '');
 
     if (isReplay) {
       message.isReplay(true);
