@@ -11,18 +11,18 @@ import InvalidArgumentException from './exceptions/InvalidArgumentException';
 const DEFAULT_ALGO = 'HS256';
 
 /**
- * The number of seconds in the future this token should expire.
+ * The number of milliseconds in the future this token should expire.
  *
  * @type {number}
  */
-const DEFAULT_EXPIRATION = 5;
+const DEFAULT_EXPIRATION = 5 * 1000;
 
 /**
- * Seconds to allow time skew for time sensitive signatures
+ * Seconds to allow milliseconds time skew for time sensitive signatures
  *
  * @type {number}
  */
-const DEFAULT_LEEWAY = 5;
+const DEFAULT_LEEWAY = 5 * 1000;
 
 /**
  * Used to provide claim-checking support to jws decoding and validation.
@@ -37,14 +37,9 @@ const checkClaims = (tokenData) => {
     throw new InvalidArgumentException('The "exp" payload property is required.');
   }
 
-  // fixme: Date.now returns milliseconds, this needs to be timestamp in second.
   if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
     throw new InvalidArgumentException('Token expired');
   }
-
-  // fixme: this function is throwing exceptions and returning
-  // true here is never used or needed.
-  return true;
 };
 
 /**
@@ -68,8 +63,6 @@ export default class PbjxToken {
   constructor(token) {
     const tokenData = jws.decode(token);
     checkClaims(tokenData);
-
-    // fixme: are the token parts objects here or base64 strings?
 
     Object.defineProperty(this, 'token', { value: token });
     Object.defineProperty(this, 'header', { value: tokenData.header });
@@ -96,7 +89,6 @@ export default class PbjxToken {
     const payload = {
       host,
       pbjx: createContentHash(content),
-      // fixme: Date.now is milliseconds, we need seconds (utc)
       exp: exp || Date.now() + DEFAULT_EXPIRATION,
     };
 

@@ -1,27 +1,34 @@
 import test from 'tape';
 import PbjxToken from '../src/PbjxToken';
 
-// fixme: these generally go into the test case
-const host = 'pbjxdev.com';
-const secret = 'segdg4twsgsg';
-// fixme: content should be a string
-const content = ['envelope1', 'envelope2'];
-const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
-
-
 test('PbjxToken tests', (t) => {
+  const host = 'pbjxdev.com';
+  const secret = 'segdg4twsgsg';
+  const content = JSON.stringify(['envelope1', 'envelope2']);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+
   t.ok(pbjxToken);
   t.end();
 });
 
 
 test('PbjxToken.verify (passing) tests', (t) => {
+  const host = 'pbjxdev.com';
+  const secret = 'segdg4twsgsg';
+  const content = JSON.stringify(['envelope1', 'envelope2']);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+
   t.ok(pbjxToken.verify(secret));
   t.end();
 });
 
 
 test('PbjxToken.verify (failing) tests', (t) => {
+  const host = 'pbjxdev.com';
+  const secret = 'segdg4twsgsg';
+  const content = JSON.stringify(['envelope1', 'envelope2']);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+
   t.notOk(pbjxToken.verify('not the secret'));
   t.end();
 });
