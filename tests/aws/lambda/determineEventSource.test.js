@@ -17,7 +17,7 @@ import mockEventSns from './sample-events/sns.json';
 
 const eventTypeMatches = (event, expected) => determineEventSource(event) === expected;
 
-test('Validate function detection via determineEventSource tests', async (t) => {
+test('determineEventSource() event detection', async (t) => {
   t.ok(eventTypeMatches(mockEventApiGateway, eventSources.APIGATEWAY_PROXY));
   t.ok(eventTypeMatches(mockEventCloudfront, eventSources.CLOUDFRONT));
   t.ok(eventTypeMatches(mockEventCognitoSync, eventSources.COGNITO_SYNC));
