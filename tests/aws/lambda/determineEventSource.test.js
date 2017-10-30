@@ -1,7 +1,5 @@
 import test from 'tape';
-
 import determineEventSource, { eventSources } from '../../../src/aws/lambda/determineEventSource';
-
 import mockEventApiGateway from './sample-events/apigateway-proxy.json';
 import mockEventCloudfront from './sample-events/cloudfront.json';
 import mockEventCognitoSync from './sample-events/cognito-sync.json';
