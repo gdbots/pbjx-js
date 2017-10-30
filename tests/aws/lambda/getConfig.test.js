@@ -7,8 +7,6 @@ aws.setSDKInstance(realAws);
 
 test('getConfig tests', async (t) => {
   aws.mock('SSM', 'getParameters', (params, callback) => {
-    t.comment('mock worked');
-
     callback(null, {
       InvalidParameters: [],
       Parameters: [
@@ -25,18 +23,6 @@ test('getConfig tests', async (t) => {
       ],
     });
   });
-
-  try {
-    const config = await getConfig({
-      pbjxHost: '',
-      pbjxReceiveKey: '',
-    });
-
-    t.same(config.pbjxHost, 'test1');
-    t.same(config.pbjxReceiveKey, 'test2');
-  } catch (e) {
-    t.fail('getConfig failed');
-  }
 
   aws.restore();
 
