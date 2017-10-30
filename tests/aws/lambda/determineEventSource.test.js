@@ -1,7 +1,5 @@
 import test from 'tape';
-
 import determineEventSource, { eventSources } from '../../../src/aws/lambda/determineEventSource';
-
 import mockEventApiGateway from './sample-events/apigateway-proxy.json';
 import mockEventCloudfront from './sample-events/cloudfront.json';
 import mockEventCognitoSync from './sample-events/cognito-sync.json';
@@ -17,7 +15,7 @@ import mockEventSns from './sample-events/sns.json';
 
 const eventTypeMatches = (event, expected) => determineEventSource(event) === expected;
 
-test('Validate function detection via determineEventSource tests', async (t) => {
+test('determineEventSource tests', (t) => {
   t.ok(eventTypeMatches(mockEventApiGateway, eventSources.APIGATEWAY_PROXY));
   t.ok(eventTypeMatches(mockEventCloudfront, eventSources.CLOUDFRONT));
   t.ok(eventTypeMatches(mockEventCognitoSync, eventSources.COGNITO_SYNC));

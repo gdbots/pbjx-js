@@ -49,14 +49,14 @@ export default class TransportEnvelope {
     }
 
     const serializer = obj.serializer ? obj.serializer : 'json';
-    const isReplay = obj.is_replay ? obj.is_replay : false;
-    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message ? obj.message : '');
+    const isReplay = !!obj.is_replay;
+    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message || '');
 
     if (isReplay) {
       message.isReplay(true);
     }
 
-    return new TransportEnvelope(obj.message, obj.serializer);
+    return new TransportEnvelope(message, serializer);
   }
 
   /**
