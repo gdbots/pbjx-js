@@ -15,14 +15,14 @@ const DEFAULT_ALGO = 'HS256';
  *
  * @type {number}
  */
-const DEFAULT_EXPIRATION = 5 * 1000;
+const DEFAULT_EXPIRATION = 5;
 
 /**
- * Seconds to allow milliseconds time skew for time sensitive signatures
+ * Seconds to allow time skew for time sensitive signatures
  *
  * @type {number}
  */
-const DEFAULT_LEEWAY = 5 * 1000;
+const DEFAULT_LEEWAY = 5;
 
 /**
  * Used to provide claim-checking support to jws decoding and validation.
@@ -37,7 +37,7 @@ const checkClaims = (tokenData) => {
     throw new InvalidArgumentException('The "exp" payload property is required.');
   }
 
-  if ((Date.now() - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
+  if (((Date.now() / 1000) - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
     throw new InvalidArgumentException('Token expired');
   }
 };
@@ -89,7 +89,7 @@ export default class PbjxToken {
     const payload = {
       host,
       pbjx: createContentHash(content),
-      exp: exp || Date.now() + DEFAULT_EXPIRATION,
+      exp: exp || (Date.now() / 1000) + DEFAULT_EXPIRATION,
     };
 
     return new PbjxToken(jws.sign({ header, payload, secret }));
