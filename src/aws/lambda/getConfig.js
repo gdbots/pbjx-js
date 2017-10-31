@@ -44,15 +44,16 @@ export default async function getConfig(params, ttl = 60) {
       WithDecryption: true,
     });
 
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + ttl);
+
     config.loaded = true;
-    // fixme: ensure this is actually a date with ttl seconds into the future
-    config.expires_at = new Date() + ttl;
+    config.expires_at = time;
 
     Object.assign(config, result);
   } catch (e) {
     if (!config.loaded) {
-      // if the config was loaded, allow return of stale config
-      // and hopefully next lambda invocation works
+      config.loaded = false;
       throw e;
     }
   }
