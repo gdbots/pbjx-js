@@ -45,12 +45,16 @@ export default async function getConfig(params, ttl = 60) {
     });
 
     config.loaded = true;
+    // fixme: ensure this is actually a date with ttl seconds into the future
     config.expires_at = new Date() + ttl;
 
     Object.assign(config, result);
   } catch (e) {
-    config.loaded = false;
-    throw e;
+    if (!config.loaded) {
+      // if the config was loaded, allow return of stale config
+      // and hopefully next lambda invocation works
+      throw e;
+    }
   }
 
   return config;

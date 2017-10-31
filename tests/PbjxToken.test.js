@@ -3,15 +3,15 @@ import PbjxToken from '../src/PbjxToken';
 
 
 test('PbjxToken tests', (t) => {
-  const jwtKid = 'myKid1';
+  const kid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
 
   t.ok(pbjxToken);
   if (pbjxToken.getHeader().kid) {
-    t.equal(pbjxToken.getHeader().kid, jwtKid);
+    t.equal(pbjxToken.getHeader().kid, kid);
   }
 
   t.end();
@@ -19,27 +19,27 @@ test('PbjxToken tests', (t) => {
 
 
 test('PbjxToken.verify (passing) tests', (t) => {
-  const jwtKid = 'myKid1';
+  const kid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
 
   t.ok(pbjxToken.verify(secret));
-  t.equal(pbjxToken.getHeader().kid, jwtKid);
+  t.equal(pbjxToken.getHeader().kid, kid);
   t.end();
 });
 
 
 test('PbjxToken.verify (failing) tests', (t) => {
-  const jwtKid = 'myKid1';
+  const kid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
 
   t.notOk(pbjxToken.verify('not the secret'));
-  t.equal(pbjxToken.getHeader().kid, jwtKid);
+  t.equal(pbjxToken.getHeader().kid, kid);
   t.end();
 });
 

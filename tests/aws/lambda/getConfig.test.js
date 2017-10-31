@@ -6,6 +6,7 @@ import getConfig from '../../../src/aws/lambda/getConfig';
 aws.setSDKInstance(realAws);
 
 test('getConfig tests', async (t) => {
+  t.skip('Implement once aws.mock works with ssm');
   aws.mock('SSM', 'getParameters', (params, callback) => {
     callback(null, {
       InvalidParameters: [],

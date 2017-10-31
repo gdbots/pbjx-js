@@ -11,7 +11,7 @@ import InvalidArgumentException from './exceptions/InvalidArgumentException';
 const DEFAULT_ALGO = 'HS256';
 
 /**
- * The number of milliseconds in the future this token should expire.
+ * The number of seconds in the future this token should expire.
  *
  * @type {number}
  */
@@ -40,6 +40,8 @@ const checkClaims = (tokenData) => {
   if (((Date.now() / 1000) - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
     throw new InvalidArgumentException('Token expired');
   }
+
+  // fixme: assert that kid exists and is not empty
 };
 
 /**
@@ -75,8 +77,9 @@ export default class PbjxToken {
   /**
    * @param {string} host     - Pbjx host or service name
    * @param {string} content  - Pbjx content
-   * @param {string} secret   - Shared secret
-   * @param {?number} exp     - The expiry to use for the token, defaults to 5 seconds from now.
+   * @param {string} kid      - Name of key used to sign the JWT.
+   * @param {string} secret   - Secret used to sign the JWT.
+   * @param {?number} exp     - The expiry (unix timestamp) to use for the token, defaults to 5 seconds from now.
    *
    * @returns {PbjxToken}
    */
@@ -120,12 +123,32 @@ export default class PbjxToken {
   }
 
   /**
+   * Returns the kid from the header.
+   *
+   * @returns {string}
+   */
+  getKid() {
+    // fixme: implement getKid
+    return 'akid';
+  }
+
+  /**
    * Get the decoded payload
    *
    * @returns {Object}
    */
   getPayload() {
     return this.payload;
+  }
+
+  /**
+   * Returns the expiry for this token.
+   *
+   * @returns {number} a unix timestamp
+   */
+  getExp() {
+    // fixme: implement getExp
+    return 111111;
   }
 
   /**
