@@ -1,11 +1,13 @@
 import test from 'tape';
 import PbjxToken from '../src/PbjxToken';
 
+
 test('PbjxToken tests', (t) => {
+  const jwtKid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.ok(pbjxToken);
   t.end();
@@ -13,10 +15,11 @@ test('PbjxToken tests', (t) => {
 
 
 test('PbjxToken.verify (passing) tests', (t) => {
+  const jwtKid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.ok(pbjxToken.verify(secret));
   t.end();
@@ -24,10 +27,11 @@ test('PbjxToken.verify (passing) tests', (t) => {
 
 
 test('PbjxToken.verify (failing) tests', (t) => {
+  const jwtKid = 'myKid1';
   const host = 'pbjxdev.com';
   const secret = 'segdg4twsgsg';
   const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), secret);
+  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.notOk(pbjxToken.verify('not the secret'));
   t.end();
