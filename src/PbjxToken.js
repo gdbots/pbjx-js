@@ -41,7 +41,9 @@ const checkClaims = (tokenData) => {
     throw new InvalidArgumentException('Token expired');
   }
 
-  // fixme: assert that kid exists and is not empty
+  if (!tokenData.header.kid) {
+    throw new InvalidArgumentException('The "kid" header property is required.');
+  }
 };
 
 /**
@@ -128,8 +130,7 @@ export default class PbjxToken {
    * @returns {string}
    */
   getKid() {
-    // fixme: implement getKid
-    return 'akid';
+    return this.getHeader().kid;
   }
 
   /**
@@ -147,8 +148,7 @@ export default class PbjxToken {
    * @returns {number} a unix timestamp
    */
   getExp() {
-    // fixme: implement getExp
-    return 111111;
+    return this.getPayload().exp;
   }
 
   /**
