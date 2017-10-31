@@ -80,10 +80,11 @@ export default class PbjxToken {
    *
    * @returns {PbjxToken}
    */
-  static create(host, content, secret, exp = null) {
+  static create(host, content, kid, secret, exp = null) {
     const header = {
       alg: DEFAULT_ALGO,
       typ: 'JWT',
+      kid,
     };
 
     const payload = {
