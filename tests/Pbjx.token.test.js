@@ -10,6 +10,10 @@ test('PbjxToken tests', (t) => {
   const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.ok(pbjxToken);
+  if (pbjxToken.getHeader().kid) {
+    t.equal(pbjxToken.getHeader().kid, jwtKid);
+  }
+
   t.end();
 });
 
@@ -22,6 +26,7 @@ test('PbjxToken.verify (passing) tests', (t) => {
   const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.ok(pbjxToken.verify(secret));
+  t.equal(pbjxToken.getHeader().kid, jwtKid);
   t.end();
 });
 
@@ -34,6 +39,7 @@ test('PbjxToken.verify (failing) tests', (t) => {
   const pbjxToken = PbjxToken.create(host, JSON.stringify(content), jwtKid, secret);
 
   t.notOk(pbjxToken.verify('not the secret'));
+  t.equal(pbjxToken.getHeader().kid, jwtKid);
   t.end();
 });
 
