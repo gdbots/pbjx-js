@@ -68,7 +68,10 @@ export default function determineEventSource(event) {
 
       // Check SNS
       if (record.Sns) {
-        return eventSources.SNS;
+        // This is not a typo, eventsource is capitalized in different ways in different events
+        if (record.EventSource === 'aws:sns') {
+          return eventSources.SNS;
+        }
       }
     }
 
