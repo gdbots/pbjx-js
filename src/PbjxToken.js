@@ -1,6 +1,7 @@
 import jws from 'jws';
 import crypto from 'crypto';
 import InvalidArgumentException from './exceptions/InvalidArgumentException';
+import GdbotsPbjxException from "./exceptions/GdbotsPbjxException";
 
 /**
  * The default algorithm and type of encryption scheme to use when signing.
@@ -79,13 +80,17 @@ export default class PbjxToken {
   /**
    * @param {string} host     - Pbjx host or service name
    * @param {string} content  - Pbjx content
-   * @param {string} kid      - Name of key used to sign the JWT.
+   * @param {string} kid      - Value of key used to identify the JWT.
    * @param {string} secret   - Secret used to sign the JWT.
    * @param {?number} exp     - The expiry (unix timestamp) to use for the token, defaults to 5 seconds from now.
    *
    * @returns {PbjxToken}
    */
   static create(host, content, kid, secret, exp = null) {
+    if (!kid) {
+      throw new GdbotsPbjxException('Invalid keyId, please pass a string value');
+    }
+
     const header = {
       alg: DEFAULT_ALGO,
       typ: 'JWT',
@@ -109,7 +114,7 @@ export default class PbjxToken {
   }
 
   /**
-   * @returns {string}
+   * @returns {Object}
    */
   toJSON() {
     return this.token;
