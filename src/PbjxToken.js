@@ -129,6 +129,7 @@ export default class PbjxToken {
     return this.header;
   }
 
+
   /**
    * Returns the kid from the header.
    *
