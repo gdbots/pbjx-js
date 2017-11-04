@@ -1,24 +1,33 @@
+/**
+ * Most of the event sources come from AWS services that are found
+ * in the ARN document (link below).  However, there are cases where
+ * Amazon calls lambda with a payload that is part of a larger
+ * service, for example, "lex" events.
+ *
+ * @link http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+ */
 export const eventSources = {
-  APIGATEWAY_PROXY: 'APIGATEWAY_PROXY',
-  CLOUDFRONT: 'CLOUDFRONT',
-  COGNITO_SYNC: 'COGNITO_SYNC',
-  DYNAMODB: 'DYNAMODB',
-  IOT_BUTTON: 'IOT_BUTTON',
-  KINESIS: 'KINESIS',
-  KINESIS_FIREHOSE: 'KINESIS_FIREHOSE',
-  S3: 'S3',
-  SCHEDULED: 'SCHEDULED',
-  SES: 'SES',
-  SNS: 'SNS',
-  LEX: 'LEX',
-  CLOUDWATCH: 'CLOUDWATCH',
-  CONFIG: 'CONFIG',
-  UNKNOWN: 'UNKNOWN',
-  /**
+  APIGATEWAY: 'apigateway',
+  CLOUDFRONT: 'cloudfront',
+  CLOUDWATCH: 'cloudwatch',
+  CLOUDWATCH_EVENTS: 'events',
+  CLOUDWATCH_LOGS: 'logs',
+  COGNITO_SYNC: 'cognito-sync',
+  CONFIG: 'config',
+  DYNAMODB: 'dynamodb',
+  FIREHOSE: 'firehose',
+  IOT: 'iot',
+  KINESIS: 'kinesis',
+  LEX: 'lex', // not an actual service in an ARN
+  S3: 's3',
+  SES: 'ses',
+  SNS: 'sns',
+
+  /*
    * CUSTOM_EVENT type will be returned when a manual invocation of a lambda function is
-   * called with a custom payload that is not structured like a APIGATEWAY_PROXY event.
+   * called with a custom payload that is not structured like anything else above.
    */
-  CUSTOM_EVENT: 'CUSTOM_EVENT',
+  CUSTOM: 'custom',
 };
 
 /**
@@ -26,7 +35,7 @@ export const eventSources = {
  *
  * @param {Object} event - The "event" payload given to the lambda handler.
  *
- * @returns {string} Returns the service (s3, dynamodb, etc.) or "unknown"
+ * @returns {string} Returns a constant from {@see eventSources}
  */
 export default function determineEventSource(event) {
   try {
@@ -39,106 +48,72 @@ export default function determineEventSource(event) {
       }
 
       // Check dynamoDB
-      if (record.dynamodb) {
-        if (record.eventSource === 'aws:dynamodb') {
-          return eventSources.DYNAMODB;
-        }
+      if (record.dynamodb && record.eventSource === 'aws:dynamodb') {
+        return eventSources.DYNAMODB;
       }
 
       // Check Kinesis
-      if (record.kinesis) {
-        if (record.eventSource === 'aws:kinesis') {
-          return eventSources.KINESIS;
-        }
+      if (record.kinesis && record.eventSource === 'aws:kinesis') {
+        return eventSources.KINESIS;
       }
 
       // Check S3
-      if (record.s3) {
-        if (record.eventSource === 'aws:s3') {
-          return eventSources.S3;
-        }
+      if (record.s3 && record.eventSource === 'aws:s3') {
+        return eventSources.S3;
       }
 
       // Check SES
-      if (record.ses) {
-        if (record.eventSource === 'aws:ses') {
-          return eventSources.SES;
-        }
+      if (record.ses && record.eventSource === 'aws:ses') {
+        return eventSources.SES;
       }
 
       // Check SNS
-      if (record.Sns) {
-        // This is not a typo, eventsource is capitalized in different ways in different events
-        if (record.EventSource === 'aws:sns') {
-          return eventSources.SNS;
-        }
+      // This is not a typo, eventsource is capitalized in different ways in different events
+      if (record.Sns && record.EventSource === 'aws:sns') {
+        return eventSources.SNS;
       }
     }
 
     // Check cognito-sync
-    if (event.datasetName) {
-      if (event.eventType === 'SyncTrigger') {
-        if (event.identityPoolId === 'identityPoolId') {
-          return eventSources.COGNITO_SYNC;
-        }
-      }
+    if (event.datasetName && event.eventType === 'SyncTrigger') {
+      return eventSources.COGNITO_SYNC;
     }
 
     // Check Amazon lex event
-    if (event.bot) {
-      if (event.currentIntent) {
-        return eventSources.LEX;
-      }
+    if (event.bot && event.currentIntent) {
+      return eventSources.LEX;
     }
 
     // Check for scheduled events
-    if (event.account) {
-      if (event['detail-type'] === 'Scheduled Event') {
-        if (event.source === 'aws.events') {
-          return eventSources.SCHEDULED;
-        }
-      }
+    if (event.source === 'aws.events' && event['detail-type'] === 'Scheduled Event') {
+      return eventSources.CLOUDWATCH_EVENTS;
     }
 
-    // Check Kinesis Firehost
-    if (event.records) {
-      if (event.deliveryStreamArn.indexOf('arn:aws:kinesis') === 0) {
-        return eventSources.KINESIS_FIREHOSE;
-      }
+    // Check Kinesis Firehose
+    if (event.records && event.deliveryStreamArn) {
+      return eventSources.FIREHOSE;
     }
 
     // Check for AWS IOT 'Button Event'
-    if (event.serialNumber) {
-      if (event.clickType) {
-        return eventSources.IOT_BUTTON;
-      }
+    if (event.serialNumber && event.clickType) {
+      return eventSources.IOT;
     }
 
     if (event.awslogs) {
-      if (event.awslogs.data) {
-        return eventSources.CLOUDWATCH;
-      }
+      return eventSources.CLOUDWATCH_LOGS;
     }
 
     if (event.configRuleArn) {
-      if (event.configRuleArn.indexOf('arn:aws:config') === 0) {
-        return eventSources.CONFIG;
-      }
+      return eventSources.CONFIG;
     }
 
     // Check apiGateway / custom event via api gateway
-    if (event.body) {
-      if (event.resource) {
-        if (event.requestContext) {
-          if (event.requestContext.identity) {
-            return eventSources.APIGATEWAY_PROXY;
-          }
-        }
-      }
+    if (event.requestContext && event.requestContext.apiId) {
+      return eventSources.APIGATEWAY;
     }
 
-    return eventSources.CUSTOM_EVENT;
+    return eventSources.CUSTOM;
   } catch (ex) {
-    return eventSources.UNKNOWN;
+    return eventSources.CUSTOM;
   }
 }

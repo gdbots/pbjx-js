@@ -1,49 +1,62 @@
-import jws from 'jws';
 import crypto from 'crypto';
+import jws from 'jws';
 import InvalidArgumentException from './exceptions/InvalidArgumentException';
-import GdbotsPbjxException from "./exceptions/GdbotsPbjxException";
 
 /**
- * The default algorithm and type of encryption scheme to use when signing.
+ * The algorithm and type of encryption scheme to use when signing.
  * Currently only HS256 (HMAC-SHA-256) is supported or allowed.
  *
  * @type {string}
  */
-const DEFAULT_ALGO = 'HS256';
+const ALGO = 'HS256';
 
 /**
- * The number of seconds in the future this token should expire.
+ * The ttl (time to live), in seconds, for a token.
+ * Used to create the "exp" claim.
  *
  * @type {number}
  */
-const DEFAULT_EXPIRATION = 5;
+const TTL = 5;
 
 /**
  * Seconds to allow time skew for time sensitive signatures
  *
  * @type {number}
  */
-const DEFAULT_LEEWAY = 5;
+const LEEWAY = 5;
 
 /**
- * Used to provide claim-checking support to jws decoding and validation.
- * Currently supports: 'exp'
+ * Ensures the token structure matches our expectations.
  *
- * @param {Object} tokenData - decoded JWT
+ * @param {Object} decodedToken - decoded JWT
  *
  * @throws {InvalidArgumentException}
  */
-const checkClaims = (tokenData) => {
-  if (!tokenData.payload.exp) {
-    throw new InvalidArgumentException('The "exp" payload property is required.');
+const checkClaims = (decodedToken) => {
+  if (!decodedToken.header || !decodedToken.payload || !decodedToken.signature) {
+    throw new InvalidArgumentException('Missing header, payload or signature.');
   }
 
-  if (((Date.now() / 1000) - DEFAULT_LEEWAY) >= tokenData.payload.exp) {
-    throw new InvalidArgumentException('Token expired');
-  }
-
-  if (!tokenData.header.kid) {
+  if (!decodedToken.header.kid) {
     throw new InvalidArgumentException('The "kid" header property is required.');
+  }
+
+  if (!decodedToken.payload.aud
+    || !decodedToken.payload.exp
+    || !decodedToken.payload.iat
+    || !decodedToken.payload.jti
+  ) {
+    throw new InvalidArgumentException('The payload properties [aud,exp,iat,jti] are required.');
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+
+  if (decodedToken.payload.iat > (now + LEEWAY)) {
+    throw new InvalidArgumentException('Cannot handle token prior to iat.');
+  }
+
+  if ((now - LEEWAY) >= decodedToken.payload.exp) {
+    throw new InvalidArgumentException('Token expired');
   }
 };
 
@@ -51,56 +64,61 @@ const checkClaims = (tokenData) => {
  * Hash the content string, which will be included in the final token,
  * to prevent tampering with the payload.
  *
- * @param {string} content hash in base64_encoded format
+ * @param {string} content
  *
  * @returns {string}
  */
-const createContentHash = (content) => {
-  return crypto.createHmac('sha256', '')
+const createContentHash = content => (
+  crypto.createHmac('sha256', '')
     .update(content)
-    .digest('hex');
-};
+    .digest('hex')
+);
 
 export default class PbjxToken {
   /**
    * @param {string} token - A JWT formatted token
    */
   constructor(token) {
-    const tokenData = jws.decode(token);
-    checkClaims(tokenData);
+    const decodedToken = jws.decode(token);
+    checkClaims(decodedToken);
 
     Object.defineProperty(this, 'token', { value: token });
-    Object.defineProperty(this, 'header', { value: tokenData.header });
-    Object.defineProperty(this, 'payload', { value: tokenData.payload });
-    Object.defineProperty(this, 'signature', { value: tokenData.signature });
+    Object.defineProperty(this, 'header', { value: decodedToken.header });
+    Object.defineProperty(this, 'payload', { value: decodedToken.payload });
+    Object.defineProperty(this, 'signature', { value: decodedToken.signature });
 
     Object.freeze(this);
   }
 
   /**
-   * @param {string} host     - Pbjx host or service name
-   * @param {string} content  - Pbjx content
-   * @param {string} kid      - Value of key used to identify the JWT.
-   * @param {string} secret   - Secret used to sign the JWT.
-   * @param {?number} exp     - The expiry (unix timestamp) to use for the token, defaults to 5 seconds from now.
+   * PbjxTokens are JWT so the arguments are used to create the payload
+   * of the JWT with our own requirements/conventions.
+   *
+   * @param {string} content - Pbjx content (will be combined with iat then hashed to create a jti)
+   * @param {string} aud     - Pbjx endpoint this token will be sent to.
+   * @param {string} kid     - Key ID used to sign the JWT.
+   * @param {string} secret  - Secret used to sign the JWT.
+   * @param {Object} options - Additional options for JWT creation (exp,iat)
    *
    * @returns {PbjxToken}
+   *
+   * @throws {InvalidArgumentException}
    */
-  static create(host, content, kid, secret, exp = null) {
-    if (!kid) {
-      throw new GdbotsPbjxException('Invalid keyId, please pass a string value');
-    }
-
+  static create(content, aud, kid, secret, options = { exp: null, iat: null }) {
     const header = {
-      alg: DEFAULT_ALGO,
+      alg: ALGO,
       typ: 'JWT',
       kid,
     };
 
+    const now = Math.floor(Date.now() / 1000);
+    const iat = options.iat || now;
+
     const payload = {
-      host,
-      pbjx: createContentHash(content),
-      exp: exp || (Date.now() / 1000) + DEFAULT_EXPIRATION,
+      aud,
+      exp: options.exp || now + TTL,
+      iat,
+      jti: createContentHash(`${aud}${iat}${content}`),
     };
 
     return new PbjxToken(jws.sign({ header, payload, secret }));
@@ -114,34 +132,20 @@ export default class PbjxToken {
   }
 
   /**
-   * @returns {Object}
+   * @returns {string}
    */
   toJSON() {
     return this.token;
   }
 
   /**
-   * Get the decoded header
-   *
    * @returns {Object}
    */
   getHeader() {
     return this.header;
   }
 
-
   /**
-   * Returns the kid from the header.
-   *
-   * @returns {string}
-   */
-  getKid() {
-    return this.getHeader().kid;
-  }
-
-  /**
-   * Get the decoded payload
-   *
    * @returns {Object}
    */
   getPayload() {
@@ -149,21 +153,53 @@ export default class PbjxToken {
   }
 
   /**
-   * Returns the expiry for this token.
+   * @returns {string}
+   */
+  getSignature() {
+    return this.signature;
+  }
+
+  /**
+   * @returns {string}
+   */
+  getKid() {
+    return this.getHeader().kid;
+  }
+
+  /**
+   * @link https://tools.ietf.org/html/rfc7519#section-4.1.3
    *
-   * @returns {number} a unix timestamp
+   * @returns {string}
+   */
+  getAud() {
+    return this.getPayload().aud;
+  }
+
+  /**
+   * @link https://tools.ietf.org/html/rfc7519#section-4.1.4
+   *
+   * @returns {number} a unix timestamp in seconds
    */
   getExp() {
     return this.getPayload().exp;
   }
 
   /**
-   * Get the signature.
+   * @link https://tools.ietf.org/html/rfc7519#section-4.1.6
+   *
+   * @returns {number} a unix timestamp in seconds
+   */
+  getIat() {
+    return this.getPayload().iat;
+  }
+
+  /**
+   * @link https://tools.ietf.org/html/rfc7519#section-4.1.7
    *
    * @returns {string}
    */
-  getSignature() {
-    return this.signature;
+  getJti() {
+    return this.getPayload().jti;
   }
 
   /**
@@ -173,7 +209,7 @@ export default class PbjxToken {
    */
   verify(secret) {
     try {
-      return jws.verify(this.token, DEFAULT_ALGO, secret);
+      return jws.verify(this.token, ALGO, secret);
     } catch (ex) {
       return false;
     }

@@ -1,33 +1,34 @@
 import test from 'tape';
 import determineEventSource, { eventSources } from '../../../src/aws/lambda/determineEventSource';
-import mockEventApiGateway from './sample-events/apigateway-proxy.json';
-import mockEventCloudfront from './sample-events/cloudfront.json';
-import mockEventCognitoSync from './sample-events/cognito-sync.json';
-import mockEventDynamoDB from './sample-events/dynamodb.json';
-import mockEventIotButton from './sample-events/iot-button.json';
-import mockEventKinesis from './sample-events/kinesis.json';
-import mockEventKinesisFirehose from './sample-events/kinesis-firehose.json';
-import mockEventLex from './sample-events/lex.json';
-import mockEventS3 from './sample-events/s3.json';
-import mockEventScheduled from './sample-events/scheduled-event.json';
-import mockEventSes from './sample-events/ses.json';
-import mockEventSns from './sample-events/sns.json';
+import sampleApiGateway from './sample-events/apigateway.json';
+import sampleCloudfront from './sample-events/cloudfront.json';
+import sampleCloudWatchEvents from './sample-events/cloudwatch-events.json';
+import sampleCognitoSync from './sample-events/cognito-sync.json';
+import sampleDynamoDB from './sample-events/dynamodb.json';
+import sampleFirehose from './sample-events/firehose.json';
+import sampleIot from './sample-events/iot.json';
+import sampleKinesis from './sample-events/kinesis.json';
+import sampleLex from './sample-events/lex.json';
+import sampleS3 from './sample-events/s3.json';
+import sampleSes from './sample-events/ses.json';
+import sampleSns from './sample-events/sns.json';
 
-const eventTypeMatches = (event, expected) => determineEventSource(event) === expected;
-
-test('determineEventSource() event detection', async (t) => {
-  t.ok(eventTypeMatches(mockEventApiGateway, eventSources.APIGATEWAY_PROXY));
-  t.ok(eventTypeMatches(mockEventCloudfront, eventSources.CLOUDFRONT));
-  t.ok(eventTypeMatches(mockEventCognitoSync, eventSources.COGNITO_SYNC));
-  t.ok(eventTypeMatches(mockEventDynamoDB, eventSources.DYNAMODB));
-  t.ok(eventTypeMatches(mockEventIotButton, eventSources.IOT_BUTTON));
-  t.ok(eventTypeMatches(mockEventKinesis, eventSources.KINESIS));
-  t.ok(eventTypeMatches(mockEventKinesisFirehose, eventSources.KINESIS_FIREHOSE));
-  t.ok(eventTypeMatches(mockEventLex, eventSources.LEX));
-  t.ok(eventTypeMatches(mockEventS3, eventSources.S3));
-  t.ok(eventTypeMatches(mockEventScheduled, eventSources.SCHEDULED));
-  t.ok(eventTypeMatches(mockEventSes, eventSources.SES));
-  t.ok(eventTypeMatches(mockEventSns, eventSources.SNS));
+// fixme: test more aws sample events
+test('determineEventSource tests', (t) => {
+  t.same(determineEventSource(sampleApiGateway), eventSources.APIGATEWAY);
+  t.same(determineEventSource(sampleCloudfront), eventSources.CLOUDFRONT);
+  t.same(determineEventSource(sampleCloudWatchEvents), eventSources.CLOUDWATCH_EVENTS);
+  t.same(determineEventSource(sampleCognitoSync), eventSources.COGNITO_SYNC);
+  t.same(determineEventSource(sampleDynamoDB), eventSources.DYNAMODB);
+  t.same(determineEventSource(sampleFirehose), eventSources.FIREHOSE);
+  t.same(determineEventSource(sampleIot), eventSources.IOT);
+  t.same(determineEventSource(sampleKinesis), eventSources.KINESIS);
+  t.same(determineEventSource(sampleLex), eventSources.LEX);
+  t.same(determineEventSource(sampleS3), eventSources.S3);
+  t.same(determineEventSource(sampleSes), eventSources.SES);
+  t.same(determineEventSource(sampleSns), eventSources.SNS);
+  t.same(determineEventSource({ custom: 'something' }), eventSources.CUSTOM);
+  t.same(determineEventSource(false), eventSources.CUSTOM);
+  t.same(determineEventSource(null), eventSources.CUSTOM);
   t.end();
 });
-

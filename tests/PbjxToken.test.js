@@ -3,43 +3,41 @@ import PbjxToken from '../src/PbjxToken';
 
 
 test('PbjxToken tests', (t) => {
-  const kid = 'myKid1';
-  const host = 'pbjxdev.com';
-  const secret = 'segdg4twsgsg';
-  const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
+  const content = 'content';
+  const aud = 'https://local.dev/pbjx';
+  const kid = 'kid';
+  const secret = 'secret';
 
-  t.ok(pbjxToken);
-  if (pbjxToken.getHeader().kid) {
-    t.equal(pbjxToken.getHeader().kid, kid);
-  }
+  // hijack Date.now so the time based functions are predictable
+  const originalNow = Date.now;
+  Date.now = () => 1509836741000;
 
-  t.end();
-});
+  // for this test, we need to provide options so we can
+  // make assertions on the generated values.
+  const now = Math.floor(Date.now() / 1000);
+  const exp = now + 5;
+  const iat = now;
 
+  const pbjxToken = PbjxToken.create(content, aud, kid, secret, { iat });
 
-test('PbjxToken.verify (passing) tests', (t) => {
-  const kid = 'myKid1';
-  const host = 'pbjxdev.com';
-  const secret = 'segdg4twsgsg';
-  const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
+  const expectedJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtpZCJ9.eyJhdWQiOiJodHRwczovL2xvY2FsLmRldi9wYmp4IiwiZXhwIjoxNTA5ODM2NzQ2LCJpYXQiOjE1MDk4MzY3NDEsImp0aSI6IjM4YTc0NzEwNTA0YmZmMTI5NDVmMzZkNzU2MDg1Mjc2NzY4MzkyOTdlMmExNjA2ZjkyYTk4MTYzM2UyNDdhNTEifQ.Z_kjrc7zUT14sz9OPsEfPLYHIzjJ0ANQS9hyIJ2GLjk';
+  const expectedJti = '38a74710504bff12945f36d75608527676839297e2a1606f92a981633e247a51';
 
-  t.ok(pbjxToken.verify(secret));
-  t.equal(pbjxToken.getHeader().kid, kid);
-  t.end();
-});
+  t.true(pbjxToken instanceof PbjxToken);
+  t.same(pbjxToken.getAud(), aud);
+  t.same(pbjxToken.getExp(), exp);
+  t.same(pbjxToken.getIat(), iat);
+  t.same(pbjxToken.getJti(), expectedJti);
+  t.same(pbjxToken.getKid(), kid);
+  t.same(pbjxToken.getSignature(), expectedJwt.split('.').pop());
+  t.same(pbjxToken.toString(), expectedJwt);
+  t.same(JSON.stringify(pbjxToken.toString()).replace(/"/g, ''), expectedJwt);
+  t.true(pbjxToken.verify(secret), 'should verify with correct secret');
+  t.false(pbjxToken.verify('invalid'), 'should NOT verify with incorrect secret');
 
+  //t.f();
 
-test('PbjxToken.verify (failing) tests', (t) => {
-  const kid = 'myKid1';
-  const host = 'pbjxdev.com';
-  const secret = 'segdg4twsgsg';
-  const content = JSON.stringify(['envelope1', 'envelope2']);
-  const pbjxToken = PbjxToken.create(host, JSON.stringify(content), kid, secret);
-
-  t.notOk(pbjxToken.verify('not the secret'));
-  t.equal(pbjxToken.getHeader().kid, kid);
+  Date.now = originalNow;
   t.end();
 });
 

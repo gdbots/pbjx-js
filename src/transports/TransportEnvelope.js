@@ -48,7 +48,7 @@ export default class TransportEnvelope {
       throw new AssertionFailed('Invalid TransportEnvelope object.');
     }
 
-    const serializer = obj.serializer ? obj.serializer : 'json';
+    const serializer = obj.serializer || 'json';
     const isReplay = !!obj.is_replay;
     const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message || '');
 
