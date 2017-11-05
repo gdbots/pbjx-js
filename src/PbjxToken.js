@@ -80,7 +80,7 @@ export default class PbjxToken {
    * PbjxTokens are JWT so the arguments are used to create the payload
    * of the JWT with our own requirements/conventions.
    *
-   * @param {string} content - Pbjx content (will be combined with aud and iat then hashed to create a jti)
+   * @param {string} content - Pbjx content (combined with aud and iat then hashed to create a jti)
    * @param {string} aud     - Pbjx endpoint this token will be sent to.
    * @param {string} kid     - Key ID used to sign the JWT.
    * @param {string} secret  - Secret used to sign the JWT.
