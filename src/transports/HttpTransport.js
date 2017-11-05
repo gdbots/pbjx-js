@@ -8,6 +8,7 @@ import { ACCESS_TOKEN_ENV_KEY, ACCESS_TOKEN_STORAGE_KEY, TRANSPORT_HTTP_ENVELOPE
 import EnvelopeReceivedEvent from '../events/EnvelopeReceivedEvent';
 import HttpTransportFailed from '../exceptions/HttpTransportFailed';
 import Transport from './Transport';
+import PbjxToken from '../PbjxToken';
 import { vendorToHttp } from '../utils/statusCodeConverter';
 
 export default class HttpTransport extends Transport {
@@ -146,6 +147,7 @@ export default class HttpTransport extends Transport {
     const accessToken = this.getAccessToken();
     if (accessToken) {
       options.headers.Authorization = `Bearer ${accessToken}`;
+      options.headers['x-pbjx-token'] = PbjxToken.create(options.body, url, 'bearer', accessToken).toString();
       options.credentials = 'include';
     }
 
