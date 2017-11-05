@@ -60,20 +60,6 @@ const checkClaims = (decodedToken) => {
   }
 };
 
-/**
- * Hash the content string, which will be included in the final token,
- * to prevent tampering with the payload.
- *
- * @param {string} content
- *
- * @returns {string}
- */
-const createContentHash = content => (
-  crypto.createHmac('sha256', '')
-    .update(content)
-    .digest('hex')
-);
-
 export default class PbjxToken {
   /**
    * @param {string} token - A JWT formatted token
@@ -94,15 +80,13 @@ export default class PbjxToken {
    * PbjxTokens are JWT so the arguments are used to create the payload
    * of the JWT with our own requirements/conventions.
    *
-   * @param {string} content - Pbjx content (will be combined with iat then hashed to create a jti)
+   * @param {string} content - Pbjx content (will be combined with aud and iat then hashed to create a jti)
    * @param {string} aud     - Pbjx endpoint this token will be sent to.
    * @param {string} kid     - Key ID used to sign the JWT.
    * @param {string} secret  - Secret used to sign the JWT.
    * @param {Object} options - Additional options for JWT creation (exp,iat)
    *
    * @returns {PbjxToken}
-   *
-   * @throws {InvalidArgumentException}
    */
   static create(content, aud, kid, secret, options = { exp: null, iat: null }) {
     const header = {
@@ -118,10 +102,19 @@ export default class PbjxToken {
       aud,
       exp: options.exp || now + TTL,
       iat,
-      jti: createContentHash(`${aud}${iat}${content}`),
+      jti: crypto.createHmac('sha256', secret).update(`${aud}${iat}${content}`).digest('hex'),
     };
 
     return new PbjxToken(jws.sign({ header, payload, secret }));
+  }
+
+  /**
+   * @param {string} token
+   *
+   * @returns {PbjxToken}
+   */
+  static fromString(token) {
+    return new PbjxToken(token);
   }
 
   /**

@@ -13,7 +13,6 @@ const callSsm = params => (
 
       return resolve(data.Parameters.reduce((acc, param) => {
         acc[param.Name] = param.Value;
-
         return acc;
       }, {}));
     });

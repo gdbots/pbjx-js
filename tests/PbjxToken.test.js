@@ -20,8 +20,8 @@ test('PbjxToken tests', (t) => {
 
   const pbjxToken = PbjxToken.create(content, aud, kid, secret, { iat });
 
-  const expectedJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtpZCJ9.eyJhdWQiOiJodHRwczovL2xvY2FsLmRldi9wYmp4IiwiZXhwIjoxNTA5ODM2NzQ2LCJpYXQiOjE1MDk4MzY3NDEsImp0aSI6IjM4YTc0NzEwNTA0YmZmMTI5NDVmMzZkNzU2MDg1Mjc2NzY4MzkyOTdlMmExNjA2ZjkyYTk4MTYzM2UyNDdhNTEifQ.Z_kjrc7zUT14sz9OPsEfPLYHIzjJ0ANQS9hyIJ2GLjk';
-  const expectedJti = '38a74710504bff12945f36d75608527676839297e2a1606f92a981633e247a51';
+  const expectedJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtpZCJ9.eyJhdWQiOiJodHRwczovL2xvY2FsLmRldi9wYmp4IiwiZXhwIjoxNTA5ODM2NzQ2LCJpYXQiOjE1MDk4MzY3NDEsImp0aSI6IjZjYTk1OTRmNDQyZmY4YWFhNTUxNWJlMDFiMjRmZDE1MGIwYTI1ODdiNGI4ZWQwYTE1NzQ3YzQ0ZTk0MmIwZWYifQ.GgSB7ckv558HDKSgpSu_ZXv_uibu6J7qUAE38f8BOGg';
+  const expectedJti = '6ca9594f442ff8aaa5515be01b24fd150b0a2587b4b8ed0a15747c44e942b0ef';
 
   t.true(pbjxToken instanceof PbjxToken);
   t.same(pbjxToken.getAud(), aud);
@@ -35,20 +35,15 @@ test('PbjxToken tests', (t) => {
   t.true(pbjxToken.verify(secret), 'should verify with correct secret');
   t.false(pbjxToken.verify('invalid'), 'should NOT verify with incorrect secret');
 
-  //t.f();
-
   Date.now = originalNow;
-  t.end();
-});
 
-
-test('PbjxToken expired tests', (t) => {
-  const expiredToken = 'eyJwYXlsb2FkX2hhc2giOiIxdWpJZ0VNbFdIdWRNN3A3SkpKR0JRMzdSZFwvVlRXUUZaN3Q4am84VWgyUT0iLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJob3N0IjoidG16ZGV2LmNvbSIsImV4cCI6NjB9.LWOQpMgIw0b-oqTaEarZWncQvJCGY50lTV4Gh2GLHhw';
+  // now ensure that exp works without Date.now hijacked
   try {
-    PbjxToken(expiredToken);
-    t.fail('Expired token was decoded');
+    PbjxToken.fromString(expectedJwt);
+    t.fail('Expired token was allowed to be created.');
   } catch (ex) {
-    t.pass('expired token will not be decoded by PbjxToken');
+    t.pass('Unable to create an instance from an expired token.');
   }
+
   t.end();
 });
