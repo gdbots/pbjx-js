@@ -1,6 +1,6 @@
 {
   "name": "@gdbots/pbjx",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Pbj messaging tools for es6.",
   "repository": {
     "type": "git",
