@@ -7,8 +7,8 @@
  *
  * @returns {string}
  */
-export default function curieToHandlerServiceId(curie) {
+export default (curie) => {
   const pkg = curie.getPackage().replace(/\./g, '-');
   const msg = curie.getMessage().replace(/-/g, '_');
   return `@${curie.getVendor()}/${pkg}/${msg}_handler`;
-}
+};

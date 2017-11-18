@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## v0.1.7
+* Change `aws/lambda/getConfig.js` to accept ssm rather than create it internally.  This makes it easier
+  to create unit tests for itself and for lambdas using it.  Also make it work ಠ_ಠ.
+* Remove name from all default exports and prefer fat arrow functions.
+
+
 ## v0.1.6
 * Add helpers for using pbjx in AWS Lambda.
   * `aws/lambda/determineEventSource.js` takes the event payload and returns the name of service it came from. 

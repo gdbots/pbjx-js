@@ -9,7 +9,7 @@ const actionsToHandle = {
   [actionTypes.FULFILLED]: true,
 };
 
-export default function createReducer() {
+export default () => {
   const dispatcher = new Dispatcher();
   const reducer = (state = {}, action) => {
     if (!actionsToHandle[action.type]) {
@@ -39,4 +39,4 @@ export default function createReducer() {
   reducer.subscribe = (eventName, listener) => dispatcher.addListener(eventName, listener);
   reducer.unsubscribe = (eventName, listener) => dispatcher.removeListener(eventName, listener);
   return reducer;
-}
+};
