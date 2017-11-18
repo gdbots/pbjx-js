@@ -37,7 +37,7 @@ export const eventSources = {
  *
  * @returns {string} Returns a constant from {@see eventSources}
  */
-export default function determineEventSource(event) {
+export default (event) => {
   try {
     if (event.Records && event.Records.length > 0) {
       const record = event.Records[0];
@@ -116,4 +116,4 @@ export default function determineEventSource(event) {
   } catch (ex) {
     return eventSources.CUSTOM;
   }
-}
+};

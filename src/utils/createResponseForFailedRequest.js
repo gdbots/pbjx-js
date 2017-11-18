@@ -8,7 +8,7 @@ import RequestFailedResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/Request
  *
  * @returns {Message} Returns a message using mixin 'gdbots:pbjx:mixin:response'
  */
-export default function createResponseForFailedRequest(request, exception) {
+export default (request, exception) => {
   let code = Code.UNKNOWN.getValue();
   if (exception instanceof Exception) {
     code = exception.getCode() || code;
@@ -27,4 +27,4 @@ export default function createResponseForFailedRequest(request, exception) {
   }
 
   return response;
-}
+};

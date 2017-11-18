@@ -10,7 +10,7 @@ const cache = new Map();
  *
  * @returns {string[]}
  */
-export default function getEventNames(message, suffix = '', includeWildcards = false) {
+export default (message, suffix = '', includeWildcards = false) => {
   const schema = message.schema();
   const cacheKey = `${schema.getId()}${suffix}${includeWildcards}`;
   if (cache.has(cacheKey)) {
@@ -41,4 +41,4 @@ export default function getEventNames(message, suffix = '', includeWildcards = f
 
   cache.set(cacheKey, events);
   return events;
-}
+};
