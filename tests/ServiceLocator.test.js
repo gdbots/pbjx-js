@@ -1,3 +1,4 @@
+/* eslint-disable no-self-compare */
 import test from 'tape';
 import SchemaCurie from '@gdbots/pbj/SchemaCurie';
 import CommandBus from '../src/CommandBus';

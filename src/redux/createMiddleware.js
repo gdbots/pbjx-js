@@ -57,7 +57,7 @@ export default pbjx => store => next => (action) => {
   if (action instanceof Message) {
     pbj = action;
   } else if (action.type === actionTypes.CALLED) {
-    pbj = action.pbj;
+    pbj = action.pbj; // eslint-disable-line prefer-destructuring
     channel = action.ctx.channel || channel;
   } else {
     return next(action);
