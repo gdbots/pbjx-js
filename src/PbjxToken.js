@@ -16,14 +16,14 @@ const ALGO = 'HS256';
  *
  * @type {number}
  */
-const TTL = 5;
+const TTL = 120;
 
 /**
  * Seconds to allow time skew for time sensitive signatures
  *
  * @type {number}
  */
-const LEEWAY = 5;
+const LEEWAY = 30;
 
 /**
  * Ensures the token structure matches our expectations.

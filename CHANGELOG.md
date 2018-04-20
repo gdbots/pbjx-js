@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v0.1.8
+* Adjust `PbjxToken` TTL to 120 (up from 5) and LEEWAY to 30 (from 5).
+
+
 ## v0.1.7
 * Change `aws/lambda/getConfig.js` to accept ssm rather than create it internally.  This makes it easier
   to create unit tests for itself and for lambdas using it.  Also make it work ಠ_ಠ.

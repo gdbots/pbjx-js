@@ -15,12 +15,12 @@ test('PbjxToken tests', (t) => {
   // for this test, we need to provide options so we can
   // make assertions on the generated values.
   const now = Math.floor(Date.now() / 1000);
-  const exp = now + 5;
+  const exp = now + 120;
   const iat = now;
 
   const pbjxToken = PbjxToken.create(content, aud, kid, secret, { iat });
 
-  const expectedJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtpZCJ9.eyJhdWQiOiJodHRwczovL2xvY2FsLmRldi9wYmp4IiwiZXhwIjoxNTA5ODM2NzQ2LCJpYXQiOjE1MDk4MzY3NDEsImp0aSI6IjZjYTk1OTRmNDQyZmY4YWFhNTUxNWJlMDFiMjRmZDE1MGIwYTI1ODdiNGI4ZWQwYTE1NzQ3YzQ0ZTk0MmIwZWYifQ.GgSB7ckv558HDKSgpSu_ZXv_uibu6J7qUAE38f8BOGg';
+  const expectedJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtpZCJ9.eyJhdWQiOiJodHRwczovL2xvY2FsLmRldi9wYmp4IiwiZXhwIjoxNTA5ODM2ODYxLCJpYXQiOjE1MDk4MzY3NDEsImp0aSI6IjZjYTk1OTRmNDQyZmY4YWFhNTUxNWJlMDFiMjRmZDE1MGIwYTI1ODdiNGI4ZWQwYTE1NzQ3YzQ0ZTk0MmIwZWYifQ.rP0d7suRJw1rjuOWb8zVsad2fCvE1qByC_xh-xIFC7U';
   const expectedJti = '6ca9594f442ff8aaa5515be01b24fd150b0a2587b4b8ed0a15747c44e942b0ef';
 
   t.true(pbjxToken instanceof PbjxToken);
