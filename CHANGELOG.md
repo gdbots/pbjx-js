@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v0.1.9
+* Adjust `PbjxToken` TTL to 10 (down from 120) and LEEWAY to 300 (from 30).  Because LEEWAY is used in both iat and exp validation we need that window to be larger, exp works within that expanded window as well.
+
+
 ## v0.1.8
 * Adjust `PbjxToken` TTL to 120 (up from 5) and LEEWAY to 30 (from 5).
 
