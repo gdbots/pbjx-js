@@ -38,25 +38,14 @@ test('pbjUrl from UriTemplate[templates provided]', (t) => {
   t.end();
 });
 
-/* eslint-disable no-param-reassign */
 test('pbjUrl from UriTemplate[overriding templates]', (t) => {
-  const config1 = new Map([
-    ['acme:form.another', 'https://instagram.com/p/{media_id}'],
-  ]);
-
-  registerTemplates([...config1.entries()].reduce((obj, [key, value]) => {
-    obj[key] = value;
-    return obj;
-  }, {}));
-
-  const config2 = new Map([
-    ['acme:form.another', 'https://instagram.com/another/p/{media_id}'],
-  ]);
-
-  registerTemplates([...config2.entries()].reduce((obj, [key, value]) => {
-    obj[key] = value;
-    return obj;
-  }, {}));
+  registerTemplates({
+    'acme:form.another': 'https://instagram.com/p/{media_id}',
+  });
+  // at some point we re-register another template with same key
+  registerTemplates({
+    'acme:form.another': 'https://instagram.com/another/p/{media_id}',
+  });
 
   const actual = pbjUrl(node, 'another');
   // expecting the last one
