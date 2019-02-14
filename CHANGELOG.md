@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.1.10
+* Added UriTemplate helpers using URI.js (http://medialize.github.io/URI.js/)
+
 
 ## v0.1.9
 * Adjust `PbjxToken` TTL to 10 (down from 120) and LEEWAY to 300 (from 30).  Because LEEWAY is used in both iat and exp validation we need that window to be larger, exp works within that expanded window as well.

@@ -62,5 +62,8 @@
   },
   "babel": {
     "presets": "./.babelrc.js"
+  },
+  "dependencies": {
+    "urijs": "^1.19.1"
   }
 }
