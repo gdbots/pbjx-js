@@ -7,21 +7,25 @@ let globals = {};
 
 /**
  * Determines if a given template id has an associated template
- * @param string id
- * @return boolean
+ * @param {string} id
+ * @return {boolean}
  */
 const hasTemplates = id => !!templates[id];
 
 const expand = (id, uriTemplateVars = {}) => {
-  if(!hasTemplates(id)) {
+  if (!hasTemplates(id)) {
     return false;
   }
-  return new URITemplate(templates[id]).expand({...globals, ...uriTemplateVars});
+  return new URITemplate(templates[id]).expand({ ...globals, ...uriTemplateVars });
 };
 
-export const registerTemplates = (newTemplates = {}) => templates = {...templates, ...newTemplates};
+export const registerTemplates = (newTemplates = {}) => {
+  templates = { ...templates, ...newTemplates };
+};
 
-export const registerGlobals = (newGlobals = {}) => globals = {...globals, ...newGlobals};
+export const registerGlobals = (newGlobals = {}) => {
+  globals = { ...globals, ...newGlobals };
+};
 
 /**
  * Creates the expanded url given the node and the template.
@@ -30,14 +34,14 @@ export const registerGlobals = (newGlobals = {}) => globals = {...globals, ...ne
  */
 export const pbjUrl = (node, template = '') => {
   if (!(node instanceof Message)) {
-    throw new Error('Node should be an instance of Message.')
+    throw new Error('Node should be an instance of Message.');
   }
-  return expand(`${node.schema().getQName()}.${template}`, {...node.getUriTemplateVars()});
+  return expand(`${node.schema().getQName()}.${template}`, { ...node.getUriTemplateVars() });
 };
 
 /**
- * Creates the expanded url given the template id and variables
+ * Creates the expanded url given the template id and template variables.
  * @param {string} id
  * @param {object} templateVars
  */
-export const uriTemplateExpand = (id, templateVars = {}) => expand(id, {...templateVars});
+export const uriTemplateExpand = (id, templateVars = {}) => expand(id, { ...templateVars });
