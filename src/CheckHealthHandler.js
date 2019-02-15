@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1';
 import CommandHandler from './CommandHandler';
 

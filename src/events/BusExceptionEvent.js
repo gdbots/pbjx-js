@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import PbjxEvent from './PbjxEvent';
 
 const exceptionSym = Symbol('exception');

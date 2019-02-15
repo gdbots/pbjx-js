@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import Exception from '@gdbots/common/Exception';
 import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';

@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import upperFirst from 'lodash/upperFirst';
 
 export default class EventSubscriber {

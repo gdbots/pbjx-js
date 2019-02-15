@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unused-vars */
+/* eslint-disable no-unused-vars */
 import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
 import RequestHandler from './RequestHandler';
 

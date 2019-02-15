@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unused-vars */
+/* eslint-disable no-unused-vars */
 import LogicException from './exceptions/LogicException';
 
 /**

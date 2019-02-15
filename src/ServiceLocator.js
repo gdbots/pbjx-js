@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import CommandBus from './CommandBus';
 import Dispatcher from './Dispatcher';
 import EventBus from './EventBus';

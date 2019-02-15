@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import LogicException from '../exceptions/LogicException';
 import PbjxEvent from './PbjxEvent';
 

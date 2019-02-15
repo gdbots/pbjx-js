@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import { serviceIds } from './constants';
 import HandlerNotFound from './exceptions/HandlerNotFound';
 import ServiceLocator from './ServiceLocator';

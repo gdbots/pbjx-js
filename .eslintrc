@@ -16,6 +16,7 @@
     }
   },
   "rules": {
+    "class-methods-use-this": "off",
     "function-paren-newline": "off"
   }
 }
