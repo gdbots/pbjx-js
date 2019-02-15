@@ -1,7 +1,8 @@
 # CHANGELOG
 
+
 ## v0.1.10
-* Added UriTemplate helpers using URI.js (http://medialize.github.io/URI.js/)
+* Add `pbjUrl` which uses URI.js (http://medialize.github.io/URI.js/) to provide url resolution for pbj instances using templates.
 
 
 ## v0.1.9
