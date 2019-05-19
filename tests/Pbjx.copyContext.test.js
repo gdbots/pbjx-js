@@ -24,6 +24,7 @@ test('Pbjx.copyContext tests', (t) => {
   from.set('ctx_correlator_ref', ref);
   from.set('ctx_user_ref', ref);
   from.set('ctx_ip', '10.0.0.1');
+  from.set('ctx_ipv6', '2001:db8:85a3:8d3:1319:8a2e:370:7348');
   from.set('ctx_ua', 'test-runner');
 
   pbjx.copyContext(from, to);
@@ -35,6 +36,7 @@ test('Pbjx.copyContext tests', (t) => {
   t.same(from.get('ctx_correlator_ref'), to.get('ctx_correlator_ref'));
   t.same(from.get('ctx_user_ref'), to.get('ctx_user_ref'));
   t.same(from.get('ctx_ip'), to.get('ctx_ip'));
+  t.same(from.get('ctx_ipv6'), to.get('ctx_ipv6'));
   t.same(from.get('ctx_ua'), to.get('ctx_ua'));
 
   t.end();

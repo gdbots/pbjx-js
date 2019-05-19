@@ -179,7 +179,7 @@ export default class Pbjx {
       to.set('ctx_cloud', from.get('ctx_cloud').clone());
     }
 
-    ['ctx_correlator_ref', 'ctx_user_ref', 'ctx_ip', 'ctx_ua'].forEach((ctx) => {
+    ['ctx_correlator_ref', 'ctx_user_ref', 'ctx_ip', 'ctx_ipv6', 'ctx_ua'].forEach((ctx) => {
       if (!to.has(ctx) && from.has(ctx)) {
         to.set(ctx, from.get(ctx));
       }
@@ -255,6 +255,7 @@ export default class Pbjx {
       this[locatorSym].getExceptionHandler().onRequestBusException(
         new BusExceptionEvent(response, e),
       );
+      throw e;
     }
 
     return response;

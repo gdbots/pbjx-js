@@ -1,6 +1,6 @@
 {
   "name": "@gdbots/pbjx",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Pbj messaging tools for es6.",
   "repository": {
     "type": "git",
@@ -31,10 +31,10 @@
     "jws": "^3.1.4"
   },
   "devDependencies": {
-    "@gdbots/acme-schemas": "^1.2.7",
-    "@gdbots/common": "^0.1.1",
-    "@gdbots/pbj": "^0.2.4",
-    "@gdbots/schemas": "^1.5.7",
+    "@gdbots/acme-schemas": "^1.2.11",
+    "@gdbots/common": "^0.1.2",
+    "@gdbots/pbj": "^0.2.6",
+    "@gdbots/schemas": "^1.5.12",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-plugin-lodash": "^3.3.4",
@@ -48,12 +48,12 @@
     "babel-tape-runner": "^2.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react": "^7.13.0",
     "faucet": "^0.0.1",
     "isomorphic-fetch": "^2.2.1",
-    "jws": "^3.2.1",
+    "jws": "^3.2.2",
     "lodash": "^4.17.11",
     "lodash-es": "^4.17.11",
     "md5": "^2.2.1",

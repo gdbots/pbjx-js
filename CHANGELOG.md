@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## v0.1.11
+* In `Pbjx.copyContext` copy the `ctx_ipv6` field when present.
+* In `Pbjx.request` rethrow any exceptions when response created events are triggered.
+
+
 ## v0.1.10
 * Add `pbjUrl` which uses URI.js (http://medialize.github.io/URI.js/) to provide url resolution for pbj instances using templates.
 
