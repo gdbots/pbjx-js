@@ -1,6 +1,6 @@
 {
   "name": "@gdbots/pbjx",
-  "version": "0.1.11",
+  "version": "1.0.0",
   "description": "Pbj messaging tools for es6.",
   "repository": {
     "type": "git",
@@ -22,8 +22,8 @@
     "urijs": "^1.19.1"
   },
   "peerDependencies": {
-    "@gdbots/common": "~0.1 || ^1.0.0",
-    "@gdbots/pbj": "~0.1 || ^1.0.0",
+    "@gdbots/common": "^1.0.0",
+    "@gdbots/pbj": "^1.0.0",
     "@gdbots/schemas": "^1.5.0",
     "lodash": "^4.17.4",
     "lodash-es": "^4.17.4",
@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@gdbots/acme-schemas": "^1.2.11",
-    "@gdbots/common": "^0.1.2",
-    "@gdbots/pbj": "^0.2.6",
+    "@gdbots/common": "^1.0.0",
+    "@gdbots/pbj": "^1.0.0",
     "@gdbots/schemas": "^1.5.12",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
@@ -48,7 +48,7 @@
     "babel-tape-runner": "^2.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0",
     "faucet": "^0.0.1",
@@ -59,7 +59,7 @@
     "md5": "^2.2.1",
     "moment": "^2.24.0",
     "rimraf": "^2.6.3",
-    "tape": "^4.10.1",
+    "tape": "^4.10.2",
     "utf8": "^3.0.0",
     "uuid": "^3.3.2"
   },

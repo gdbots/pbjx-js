@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v1.0.0
+* Tag first stable version.
+
+
 ## v0.1.11
 * In `Pbjx.copyContext` copy the `ctx_ipv6` field when present.
 * In `Pbjx.request` rethrow any exceptions when response created events are triggered.
