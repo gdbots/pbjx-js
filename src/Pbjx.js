@@ -70,14 +70,14 @@ export default class Pbjx {
   /**
    * Triggers lifecycle events using the dispatcher which will announce an event for each of:
    *
-   * gdbots_pbjx.message.suffix
+   * @gdbots/pbjx/message.suffix
+   * mixin:v[MAJOR VERSION].suffix
+   * mixin.suffix
    * curie:v[MAJOR VERSION].suffix
    * curie.suffix
-   * mixinId.suffix (mixinId is the mixin with the major rev)
-   * mixinCurie.suffix (mixinCurie is the curie ONLY)
    *
    * When the recursive option is used, any fields with MessageType will also be run through
-   * the trigger process.  The PbjxEvent object will have a reference to the parent event
+   * the trigger process. The PbjxEvent object will have a reference to the parent event
    * and the depth of the recursion.
    *
    * @param {Message}    message   The message that will be processed.
@@ -93,7 +93,7 @@ export default class Pbjx {
    * @throws {TooMuchRecursion}
    * @throws {Exception}
    */
-  trigger(message, suffix, event = null, recursive = true) {
+  async trigger(message, suffix, event = null, recursive = true) {
     const fsuffix = `.${trim(suffix, '.')}`;
     if (fsuffix === '.') {
       throw new InvalidArgumentException('Trigger requires a non-empty suffix.');
@@ -103,27 +103,31 @@ export default class Pbjx {
     const schema = message.schema();
 
     if (fevent.getDepth() > this[maxRecursionSym]) {
-      throw new TooMuchRecursion('Pbjx::trigger encountered a schema that is too complex ' +
+      throw new TooMuchRecursion('Pbjx.trigger encountered a schema that is too complex ' +
         'or a nested message is being referenced multiple times in ' +
         `the same tree.  Max recursion: ${this[maxRecursionSym]}, Current schema is "${schema.getId()}".`,
       );
     }
 
     if (recursive && fevent.supportsRecursion()) {
-      getNestedMessages(message, schema).forEach((nestedMessage) => {
-        if (nestedMessage.isFrozen()) {
+      const nested = getNestedMessages(message, schema);
+      const l = nested.length;
+      for (let i = 0; i < l; i += 1) {
+        if (nested[i].isFrozen()) {
           return;
         }
 
-        this.trigger(nestedMessage, fsuffix, fevent.createChildEvent(nestedMessage), recursive);
-      });
+        await this.trigger(nested[i], fsuffix, fevent.createChildEvent(nested[i]), recursive);
+      }
     }
 
-    const dispatcher = this[locatorSym].getDispatcher();
-    dispatcher.dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
-    getEventNames(message, fsuffix).forEach((eventName) => {
-      dispatcher.dispatch(eventName, fevent);
-    });
+    const dispatcher = await this[locatorSym].getDispatcher();
+    await dispatcher.dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
+    const events = getEventNames(message, fsuffix);
+    const l = events.length;
+    for (let i = 0; i < l; i += 1) {
+      await dispatcher.dispatch(events[i], fevent);
+    }
 
     return this;
   }
@@ -142,15 +146,15 @@ export default class Pbjx {
    *
    * @throws {Exception}
    */
-  triggerLifecycle(message, recursive = true) {
+  async triggerLifecycle(message, recursive = true) {
     if (message.isFrozen()) {
       return this;
     }
 
     const event = new PbjxEvent(message);
-    this.trigger(message, SUFFIX_BIND, event, recursive);
-    this.trigger(message, SUFFIX_VALIDATE, event, recursive);
-    this.trigger(message, SUFFIX_ENRICH, event, recursive);
+    await this.trigger(message, SUFFIX_BIND, event, recursive);
+    await this.trigger(message, SUFFIX_VALIDATE, event, recursive);
+    await this.trigger(message, SUFFIX_ENRICH, event, recursive);
     return this;
   }
 
@@ -167,21 +171,33 @@ export default class Pbjx {
       return this;
     }
 
-    if (!to.has('ctx_causator_ref')) {
+    const schema = to.schema();
+
+    if (!to.has('ctx_causator_ref') && schema.hasField('ctx_causator_ref')) {
       to.set('ctx_causator_ref', from.generateMessageRef());
     }
 
-    if (!to.has('ctx_app') && from.has('ctx_app')) {
-      to.set('ctx_app', from.get('ctx_app').clone());
-    }
+    const clone = ['ctx_app', 'ctx_cloud'];
 
-    if (!to.has('ctx_cloud') && from.has('ctx_cloud')) {
-      to.set('ctx_cloud', from.get('ctx_cloud').clone());
-    }
+    clone.forEach((field) => {
+      if (!to.has(field) && from.has(field) && schema.hasField(field)) {
+        to.set(field, from.get(field).clone());
+      }
+    });
 
-    ['ctx_correlator_ref', 'ctx_user_ref', 'ctx_ip', 'ctx_ipv6', 'ctx_ua'].forEach((ctx) => {
-      if (!to.has(ctx) && from.has(ctx)) {
-        to.set(ctx, from.get(ctx));
+    const simple = [
+      'ctx_tenant_id',
+      'ctx_correlator_ref',
+      'ctx_user_ref',
+      'ctx_ip',
+      'ctx_ipv6',
+      'ctx_ua',
+      'ctx_msg',
+    ];
+
+    simple.forEach((field) => {
+      if (!to.has(field) && from.has(field) && schema.hasField(field)) {
+        to.set(field, from.get(field));
       }
     });
 
@@ -200,8 +216,9 @@ export default class Pbjx {
       throw new InvalidArgumentException('Pbjx.send() requires a message using "gdbots:pbjx:mixin:command".');
     }
 
-    this.triggerLifecycle(command);
-    return this[locatorSym].getCommandBus().send(command);
+    await this.triggerLifecycle(command);
+    const bus = await this[locatorSym].getCommandBus();
+    return bus.send(command);
   }
 
   /**
@@ -216,8 +233,9 @@ export default class Pbjx {
       throw new InvalidArgumentException('Pbjx.publish() requires a message using "gdbots:pbjx:mixin:event".');
     }
 
-    this.triggerLifecycle(event);
-    return this[locatorSym].getEventBus().publish(event);
+    await this.triggerLifecycle(event);
+    const bus = await this[locatorSym].getEventBus();
+    return bus.publish(event);
   }
 
   /**
@@ -232,15 +250,16 @@ export default class Pbjx {
       throw new InvalidArgumentException('Pbjx.request() requires a message using "gdbots:pbjx:mixin:request".');
     }
 
-    this.triggerLifecycle(req);
+    await this.triggerLifecycle(req);
     const event = new GetResponseEvent(req);
-    this.trigger(req, SUFFIX_BEFORE_HANDLE, event, false);
+    await this.trigger(req, SUFFIX_BEFORE_HANDLE, event, false);
 
     if (event.hasResponse()) {
       return event.getResponse();
     }
 
-    const response = await this[locatorSym].getRequestBus().request(req);
+    const bus = await this[locatorSym].getRequestBus();
+    const response = await bus.request(req);
     event.setResponse(response);
 
     if (response.schema().getCurie().toString() === 'gdbots:pbjx:request:request-failed-response') {
@@ -249,12 +268,11 @@ export default class Pbjx {
 
     try {
       const createdEvent = new ResponseCreatedEvent(req, response);
-      this.trigger(req, SUFFIX_AFTER_HANDLE, createdEvent, false);
-      this.trigger(response, SUFFIX_CREATED, createdEvent, false);
+      await this.trigger(req, SUFFIX_AFTER_HANDLE, createdEvent, false);
+      await this.trigger(response, SUFFIX_CREATED, createdEvent, false);
     } catch (e) {
-      this[locatorSym].getExceptionHandler().onRequestBusException(
-        new BusExceptionEvent(response, e),
-      );
+      const exceptionHandler = await this[locatorSym].getExceptionHandler();
+      await exceptionHandler.onRequestBusException(new BusExceptionEvent(response, e));
       throw e;
     }
 

@@ -37,9 +37,9 @@ export default class ServiceLocator {
   /**
    * @returns {Pbjx}
    */
-  getPbjx() {
+  async getPbjx() {
     if (this[pbjx] === null) {
-      this[pbjx] = this.doGetPbjx();
+      this[pbjx] = await this.doGetPbjx();
     }
 
     return this[pbjx];
@@ -50,16 +50,16 @@ export default class ServiceLocator {
    *
    * @returns {Pbjx}
    */
-  doGetPbjx() {
+  async doGetPbjx() {
     return new Pbjx(this);
   }
 
   /**
    * @returns {Dispatcher}
    */
-  getDispatcher() {
+  async getDispatcher() {
     if (this[dispatcher] === null) {
-      this[dispatcher] = this.doGetDispatcher();
+      this[dispatcher] = await this.doGetDispatcher();
     }
 
     return this[dispatcher];
@@ -70,16 +70,16 @@ export default class ServiceLocator {
    *
    * @returns {Dispatcher}
    */
-  doGetDispatcher() {
+  async doGetDispatcher() {
     return new Dispatcher();
   }
 
   /**
    * @returns {CommandBus}
    */
-  getCommandBus() {
+  async getCommandBus() {
     if (this[commandBus] === null) {
-      this[commandBus] = this.doGetCommandBus();
+      this[commandBus] = await this.doGetCommandBus();
     }
 
     return this[commandBus];
@@ -90,16 +90,16 @@ export default class ServiceLocator {
    *
    * @returns {CommandBus}
    */
-  doGetCommandBus() {
-    return new CommandBus(this, this.getDefaultTransport());
+  async doGetCommandBus() {
+    return new CommandBus(this, await this.getDefaultTransport());
   }
 
   /**
    * @returns {EventBus}
    */
-  getEventBus() {
+  async getEventBus() {
     if (this[eventBus] === null) {
-      this[eventBus] = this.doGetEventBus();
+      this[eventBus] = await this.doGetEventBus();
     }
 
     return this[eventBus];
@@ -110,16 +110,16 @@ export default class ServiceLocator {
    *
    * @returns {EventBus}
    */
-  doGetEventBus() {
-    return new EventBus(this, this.getDefaultTransport());
+  async doGetEventBus() {
+    return new EventBus(this, await this.getDefaultTransport());
   }
 
   /**
    * @returns {RequestBus}
    */
-  getRequestBus() {
+  async getRequestBus() {
     if (this[requestBus] === null) {
-      this[requestBus] = this.doGetRequestBus();
+      this[requestBus] = await this.doGetRequestBus();
     }
 
     return this[requestBus];
@@ -130,16 +130,16 @@ export default class ServiceLocator {
    *
    * @returns {RequestBus}
    */
-  doGetRequestBus() {
-    return new RequestBus(this, this.getDefaultTransport());
+  async doGetRequestBus() {
+    return new RequestBus(this, await this.getDefaultTransport());
   }
 
   /**
    * @returns {ExceptionHandler}
    */
-  getExceptionHandler() {
+  async getExceptionHandler() {
     if (this[exceptionHandler] === null) {
-      this[exceptionHandler] = this.doGetExceptionHandler();
+      this[exceptionHandler] = await this.doGetExceptionHandler();
     }
 
     return this[exceptionHandler];
@@ -150,8 +150,8 @@ export default class ServiceLocator {
    *
    * @returns {ExceptionHandler}
    */
-  doGetExceptionHandler() {
-    return new ExceptionHandler(this.getDispatcher());
+  async doGetExceptionHandler() {
+    return new ExceptionHandler(await this.getDispatcher());
   }
 
   /**
@@ -159,11 +159,11 @@ export default class ServiceLocator {
    *
    * @param {SchemaCurie} curie
    *
-   * @returns {CommandHandler}
+   * @returns {{handleCommand: function}}
    *
    * @throws {HandlerNotFound}
    */
-  getCommandHandler(curie) {
+  async getCommandHandler(curie) {
     throw new HandlerNotFound(curie);
   }
 
@@ -172,11 +172,11 @@ export default class ServiceLocator {
    *
    * @param {SchemaCurie} curie
    *
-   * @returns {RequestHandler}
+   * @returns {{handleRequest: function}}
    *
    * @throws {HandlerNotFound}
    */
-  getRequestHandler(curie) {
+  async getRequestHandler(curie) {
     throw new HandlerNotFound(curie);
   }
 
@@ -185,9 +185,9 @@ export default class ServiceLocator {
    *
    * @returns {Transport}
    */
-  getDefaultTransport() {
+  async getDefaultTransport() {
     if (this[defaultTransport] === null) {
-      this[defaultTransport] = this.doGetDefaultTransport();
+      this[defaultTransport] = await this.doGetDefaultTransport();
     }
 
     return this[defaultTransport];
@@ -205,7 +205,7 @@ export default class ServiceLocator {
    *
    * @returns {Transport}
    */
-  doGetDefaultTransport() {
+  async doGetDefaultTransport() {
     return new InMemoryTransport(this);
   }
 }

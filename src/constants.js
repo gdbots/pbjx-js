@@ -41,31 +41,6 @@ export const serviceIds = {
 };
 
 /**
- * When using the redux middleware you can use these actionTypes
- * in your reducers, sagas, etc.
- *
- * @link http://redux.js.org/docs/basics/Actions.html
- *
- * @type {Object}
- */
-export const actionTypes = {
-  PREFIX: EVENT_PREFIX,
-
-  CALLED: t('CALLED'),
-  STARTED: t('STARTED'),
-  FULFILLED: t('FULFILLED'),
-  REJECTED: t('REJECTED'),
-};
-
-/**
- * Redux requires a state property on the action when processing
- * pbjx middleware and pbjx reducers.
- */
-export const STATE_STARTED = 'started';
-export const STATE_FULFILLED = 'fulfilled';
-export const STATE_REJECTED = 'rejected';
-
-/**
  * Access Tokens (aka Bearer Token) can be used with transports
  * that support authentication via an "Authorization" header.
  * When reading/writing the access tokens, use these keys.

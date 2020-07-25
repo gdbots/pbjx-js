@@ -89,11 +89,7 @@ export default class PbjxToken {
    * @returns {PbjxToken}
    */
   static create(content, aud, kid, secret, options = { exp: null, iat: null }) {
-    const header = {
-      alg: ALGO,
-      typ: 'JWT',
-      kid,
-    };
+    const header = { alg: ALGO, typ: 'JWT', kid };
 
     const now = Math.floor(Date.now() / 1000);
     const iat = options.iat || now;

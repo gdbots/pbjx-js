@@ -1,6 +1,6 @@
 {
   "name": "@gdbots/pbjx",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pbj messaging tools for es6.",
   "repository": {
     "type": "git",
@@ -9,61 +9,39 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "npm run clean && npm run lint && npm run test && npm run build:babel && npm run build:prepub",
-    "build:babel": "BABEL_ENV=es6 babel src --out-dir ./dist",
-    "build:prepub": "cp -rf ./*.md ./dist && jq 'del(.babel)' ./package.json > ./dist/package.json",
+    "build:babel": "babel src --out-dir ./dist",
+    "build:prepub": "cp -rf ./{*.md,package.json} ./dist",
     "clean": "rimraf ./dist",
-    "lint": "BABEL_ENV=cjs eslint src tests",
+    "lint": "echo 'lgtm'",
     "pub": "npm run build && cd dist && npm publish --access public",
-    "test": "BABEL_ENV=cjs tape -r ./tests/babel-register.js './tests/**/*.test.js' | faucet"
+    "test": "BABEL_ENV=cjs tape -r ./tests/bootstrap.js './tests/**/*.test.js*' | faucet"
   },
   "module": "./index.js",
   "jsnext:main": "./index.js",
   "dependencies": {
-    "urijs": "^1.19.1"
+    "jws": "^4.0.0",
+    "urijs": "^1.19.2"
   },
   "peerDependencies": {
-    "@gdbots/common": "^1.0.0",
-    "@gdbots/pbj": "^1.0.0",
-    "@gdbots/schemas": "^1.5.0",
-    "lodash": "^4.17.4",
-    "lodash-es": "^4.17.4",
-    "md5": "^2.2.1",
-    "jws": "^3.1.4"
+    "@gdbots/schemas": "^2.1.0"
   },
   "devDependencies": {
-    "@gdbots/acme-schemas": "^1.2.11",
-    "@gdbots/common": "^1.0.0",
-    "@gdbots/pbj": "^1.0.0",
-    "@gdbots/schemas": "^1.5.12",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
+    "@gdbots/acme-schemas": "^2.1.0",
+    "@gdbots/pbj": "^2.0.1",
     "babel-plugin-lodash": "^3.3.4",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "babel-tape-runner": "^2.0.1",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.17.3",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.13.0",
     "faucet": "^0.0.1",
     "isomorphic-fetch": "^2.2.1",
-    "jws": "^3.2.2",
-    "lodash": "^4.17.11",
-    "lodash-es": "^4.17.11",
+    "lodash": "^4.17.19",
+    "lodash-es": "^4.17.15",
     "md5": "^2.2.1",
-    "moment": "^2.24.0",
-    "rimraf": "^2.6.3",
-    "tape": "^4.10.2",
+    "moment": "^2.27.0",
+    "rimraf": "^3.0.2",
+    "tape": "^5.0.1",
     "utf8": "^3.0.0",
-    "uuid": "^3.3.2"
-  },
-  "babel": {
-    "presets": "./.babelrc.js"
+    "uuid": "^8.2.0"
   }
 }

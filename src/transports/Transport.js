@@ -23,19 +23,17 @@ export default class Transport {
   async sendCommand(command) {
     const transportEvent = new TransportEvent(command, this.transportName);
     const dispatcher = this.locator.getDispatcher();
-    dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
+    await dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
 
     try {
       await this.doSendCommand(command);
     } catch (e) {
-      this.locator.getExceptionHandler().onTransportException(
-        new TransportExceptionEvent(command, this.transportName, e),
-      );
-
+      const exceptionHandler = await this.locator.getExceptionHandler();
+      await exceptionHandler.onTransportException(new TransportExceptionEvent(command, this.transportName, e));
       throw e;
     }
 
-    dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportEvent);
+    await dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportEvent);
   }
 
   /**
@@ -46,7 +44,8 @@ export default class Transport {
    * @returns {Promise}
    */
   async doSendCommand(command) {
-    return this.locator.getCommandBus().receiveCommand(command);
+    const bus = await this.locator.getCommandBus();
+    return bus.receiveCommand(command);
   }
 
   /**
@@ -58,20 +57,18 @@ export default class Transport {
    */
   async sendEvent(event) {
     const transportEvent = new TransportEvent(event, this.transportName);
-    const dispatcher = this.locator.getDispatcher();
-    dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
+    const dispatcher = await this.locator.getDispatcher();
+    await dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
 
     try {
       await this.doSendEvent(event);
     } catch (e) {
-      this.locator.getExceptionHandler().onTransportException(
-        new TransportExceptionEvent(event, this.transportName, e),
-      );
-
+      const exceptionHandler = await this.locator.getExceptionHandler();
+      await exceptionHandler.onTransportException(new TransportExceptionEvent(event, this.transportName, e));
       throw e;
     }
 
-    dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportEvent);
+    await dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportEvent);
   }
 
   /**
@@ -82,7 +79,8 @@ export default class Transport {
    * @returns {Promise}
    */
   async doSendEvent(event) {
-    return this.locator.getEventBus().receiveEvent(event);
+    const bus = await this.locator.getEventBus();
+    return bus.receiveEvent(event);
   }
 
   /**
@@ -94,22 +92,20 @@ export default class Transport {
    */
   async sendRequest(request) {
     const transportEvent = new TransportEvent(request, this.transportName);
-    const dispatcher = this.locator.getDispatcher();
-    dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
+    const dispatcher = await this.locator.getDispatcher();
+    await dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
     let response = null;
 
     try {
       response = await this.doSendRequest(request);
     } catch (e) {
-      this.locator.getExceptionHandler().onTransportException(
-        new TransportExceptionEvent(request, this.transportName, e),
-      );
-
+      const exceptionHandler = await this.locator.getExceptionHandler();
+      await exceptionHandler.onTransportException(new TransportExceptionEvent(request, this.transportName, e));
       response = createResponseForFailedRequest(request, e);
     }
 
     const transportResponseEvent = new TransportEvent(response, this.transportName);
-    dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportResponseEvent);
+    await dispatcher.dispatch(TRANSPORT_AFTER_SEND, transportResponseEvent);
 
     return response;
   }
@@ -122,6 +118,7 @@ export default class Transport {
    * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async doSendRequest(request) {
-    return this.locator.getRequestBus().receiveRequest(request);
+    const bus = await this.locator.getRequestBus();
+    return bus.receiveRequest(request);
   }
 }

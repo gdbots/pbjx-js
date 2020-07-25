@@ -15,10 +15,10 @@ export default class Dispatcher {
    *
    * @returns {Event}
    */
-  dispatch(eventName, event = null) {
+  async dispatch(eventName, event = null) {
     const theEvent = event || new Event();
     const listeners = this.getListeners(eventName);
-    this.doDispatch(listeners, eventName, theEvent);
+    await this.doDispatch(listeners, eventName, theEvent);
     return theEvent;
   }
 
@@ -34,14 +34,14 @@ export default class Dispatcher {
    * @param {string} eventName
    * @param {Event} event
    */
-  doDispatch(listeners, eventName, event) {
+  async doDispatch(listeners, eventName, event) {
     const l = listeners.length;
     for (let i = 0; i < l; i += 1) {
       if (event.isPropagationStopped()) {
         break;
       }
 
-      listeners[i](event, eventName, this);
+      await listeners[i](event, eventName, this);
     }
   }
 
@@ -101,32 +101,5 @@ export default class Dispatcher {
     }
 
     this[listenersMap].get(eventName).delete(listener);
-  }
-
-  /**
-   * Adds an event subscriber.
-   *
-   * The subscriber is asked for all the events he is
-   * interested in and added as a listener for these events.
-   *
-   * @param {EventSubscriber} subscriber
-   */
-  addSubscriber(subscriber) {
-    const events = subscriber.getSubscribedEvents();
-    Object.keys(events).forEach((eventName) => {
-      this.addListener(eventName, events[eventName]);
-    });
-  }
-
-  /**
-   * Removes an event subscriber.
-   *
-   * @param {EventSubscriber} subscriber
-   */
-  removeSubscriber(subscriber) {
-    const events = subscriber.getSubscribedEvents();
-    Object.keys(events).forEach((eventName) => {
-      this.removeListener(eventName, events[eventName]);
-    });
   }
 }

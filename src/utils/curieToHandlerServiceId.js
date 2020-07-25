@@ -12,3 +12,4 @@ export default (curie) => {
   const msg = curie.getMessage().replace(/-/g, '_');
   return `@${curie.getVendor()}/${pkg}/${msg}_handler`;
 };
+

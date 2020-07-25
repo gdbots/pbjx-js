@@ -1,4 +1,4 @@
-import Exception from '@gdbots/common/Exception';
+import Exception from '@gdbots/pbj/Exception';
 import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';
 import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode';
@@ -20,9 +20,6 @@ export default class HttpTransport extends Transport {
     Object.defineProperty(this, 'endpoint', { value: endpoint });
   }
 
-  /**
-   * {@inheritDoc}
-   */
   async doSendCommand(command) {
     const envelope = await this.callEndpoint(command);
     if (envelope.get('ok')) {
@@ -34,9 +31,6 @@ export default class HttpTransport extends Transport {
     throw new HttpTransportFailed(command, envelope);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   async doSendEvent(event) {
     const envelope = await this.callEndpoint(event);
     if (envelope.get('ok')) {
@@ -48,9 +42,6 @@ export default class HttpTransport extends Transport {
     throw new HttpTransportFailed(event, envelope);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   async doSendRequest(request) {
     const envelope = await this.callEndpoint(request);
     if (envelope.get('ok')) {
@@ -99,9 +90,10 @@ export default class HttpTransport extends Transport {
 
     try {
       const response = await fetch(fetchRequest);
-      const envelope = ObjectSerializer.deserialize(await response.json());
+      const envelope = await ObjectSerializer.deserialize(await response.json());
       const event = new EnvelopeReceivedEvent(message, envelope, response);
-      this.locator.getDispatcher().dispatch(TRANSPORT_HTTP_ENVELOPE_RECEIVED, event);
+      const dispatcher = await this.locator.getDispatcher();
+      await dispatcher.dispatch(TRANSPORT_HTTP_ENVELOPE_RECEIVED, event);
       return envelope;
     } catch (e) {
       let code = Code.UNAVAILABLE.getValue();

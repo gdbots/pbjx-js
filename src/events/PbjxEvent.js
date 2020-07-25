@@ -2,7 +2,6 @@ import Event from './Event';
 import LogicException from '../exceptions/LogicException';
 
 const pbjxService = Symbol('pbjxService');
-const reduxStore = Symbol('reduxStore');
 const depth = Symbol('depth');
 const parentEvent = Symbol('parentEvent');
 const pbjMessage = Symbol('pbjMessage');
@@ -84,26 +83,11 @@ export default class PbjxEvent extends Event {
   }
 
   /**
-   * @returns {{getState: function, dispatch: function, subscribe: function}}
-   */
-  getRedux() {
-    return PbjxEvent[reduxStore];
-  }
-
-  /**
    * @param {Pbjx} pbjx
    */
   static setPbjx(pbjx) {
     PbjxEvent[pbjxService] = pbjx;
   }
-
-  /**
-   * @param {{getState: function, dispatch: function, subscribe: function}} redux
-   */
-  static setRedux(redux) {
-    PbjxEvent[reduxStore] = redux;
-  }
 }
 
 PbjxEvent[pbjxService] = null;
-PbjxEvent[reduxStore] = null;

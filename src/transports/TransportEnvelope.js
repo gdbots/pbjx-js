@@ -35,7 +35,7 @@ export default class TransportEnvelope {
    *
    * @throws {AssertionFailed}
    */
-  static fromJSON(json) {
+  static async fromJSON(json) {
     let obj;
 
     try {
@@ -50,7 +50,8 @@ export default class TransportEnvelope {
 
     const serializer = obj.serializer || 'json';
     const isReplay = !!obj.is_replay;
-    const message = TransportEnvelope.getSerializer(serializer).deserialize(obj.message || '');
+    const srlzr = TransportEnvelope.getSerializer(serializer);
+    const message = await srlzr.deserialize(obj.message || '');
 
     if (isReplay) {
       message.isReplay(true);

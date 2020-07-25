@@ -1,9 +1,4 @@
-import {
-  COMMAND_BUS_EXCEPTION,
-  EVENT_BUS_EXCEPTION,
-  REQUEST_BUS_EXCEPTION,
-  TRANSPORT_SEND_EXCEPTION,
-} from './constants';
+import { COMMAND_BUS_EXCEPTION, EVENT_BUS_EXCEPTION, TRANSPORT_SEND_EXCEPTION, } from './constants';
 
 export default class ExceptionHandler {
   /**
@@ -16,28 +11,30 @@ export default class ExceptionHandler {
   /**
    * @param {BusExceptionEvent} event
    */
-  onCommandBusException(event) {
-    this.dispatcher.dispatch(COMMAND_BUS_EXCEPTION, event);
+  async onCommandBusException(event) {
+    await this.dispatcher.dispatch(COMMAND_BUS_EXCEPTION, event);
   }
 
   /**
    * @param {BusExceptionEvent} event
    */
-  onEventBusException(event) {
-    this.dispatcher.dispatch(EVENT_BUS_EXCEPTION, event);
+  async onEventBusException(event) {
+    await this.dispatcher.dispatch(EVENT_BUS_EXCEPTION, event);
   }
 
   /**
    * @param {BusExceptionEvent} event
    */
-  onRequestBusException(event) {
-    this.dispatcher.dispatch(REQUEST_BUS_EXCEPTION, event);
+  async onRequestBusException(event) {
+    // because we throw the exception in Pbjx.request
+    // we don't need to log it, something up the chain will.
+    //this.dispatcher.dispatch(REQUEST_BUS_EXCEPTION, event);
   }
 
   /**
    * @param {TransportExceptionEvent} event
    */
-  onTransportException(event) {
-    this.dispatcher.dispatch(TRANSPORT_SEND_EXCEPTION, event);
+  async onTransportException(event) {
+    await this.dispatcher.dispatch(TRANSPORT_SEND_EXCEPTION, event);
   }
 }
