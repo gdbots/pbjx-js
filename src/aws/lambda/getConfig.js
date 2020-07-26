@@ -43,7 +43,7 @@ const callSsm = (ssm, paramMap) => (
  *
  * @returns {Object}
  */
-export default async (ssm, paramMap, ttl = 60) => {
+export default async (ssm, paramMap, ttl = 180) => {
   if (config.pbjxLoaded && config.pbjxExpiresAt > new Date()) {
     return config;
   }

@@ -8,7 +8,7 @@ import curieToHandlerServiceId from './utils/curieToHandlerServiceId';
 
 export default class ContainerAwareServiceLocator extends ServiceLocator {
   /**
-   * @param {Object} container
+   * @param {{get: function, has: function, getParameter: function, hasParameter: function}} container
    */
   constructor(container) {
     super();
@@ -16,9 +16,9 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {Pbjx}
    */
-  doGetPbjx() {
+  async doGetPbjx() {
     if (!this.container.has(serviceIds.PBJX)) {
       return super.doGetPbjx();
     }
@@ -27,9 +27,9 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {Dispatcher}
    */
-  doGetDispatcher() {
+  async doGetDispatcher() {
     if (!this.container.has(serviceIds.DISPATCHER)) {
       return super.doGetDispatcher();
     }
@@ -38,30 +38,30 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {CommandBus}
    */
-  doGetCommandBus() {
-    return new CommandBus(this, this.getTransportForBus(serviceIds.COMMAND_BUS_TRANSPORT));
+  async doGetCommandBus() {
+    return new CommandBus(this, await this.getTransportForBus(serviceIds.COMMAND_BUS_TRANSPORT));
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {EventBus}
    */
-  doGetEventBus() {
-    return new EventBus(this, this.getTransportForBus(serviceIds.EVENT_BUS_TRANSPORT));
+  async doGetEventBus() {
+    return new EventBus(this, await this.getTransportForBus(serviceIds.EVENT_BUS_TRANSPORT));
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {RequestBus}
    */
-  doGetRequestBus() {
-    return new RequestBus(this, this.getTransportForBus(serviceIds.REQUEST_BUS_TRANSPORT));
+  async doGetRequestBus() {
+    return new RequestBus(this, await this.getTransportForBus(serviceIds.REQUEST_BUS_TRANSPORT));
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {ExceptionHandler}
    */
-  doGetExceptionHandler() {
+  async doGetExceptionHandler() {
     if (!this.container.has(serviceIds.EXCEPTION_HANDLER)) {
       return super.doGetExceptionHandler();
     }
@@ -70,16 +70,16 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {{handleCommand: function}}
    */
-  getCommandHandler(curie) {
+  async getCommandHandler(curie) {
     return this.getHandler(curie);
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {{handleRequest: function}}
    */
-  getRequestHandler(curie) {
+  async getRequestHandler(curie) {
     return this.getHandler(curie);
   }
 
@@ -88,13 +88,13 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
    *
    * @param {SchemaCurie} curie
    *
-   * @returns {CommandHandler|RequestHandler}
+   * @returns {{handleCommand: function}|{handleRequest: function}}
    *
    * @throws {HandlerNotFound}
    */
-  getHandler(curie) {
+  async getHandler(curie) {
     try {
-      return this.container.get(curieToHandlerServiceId(curie));
+      return await this.container.get(curieToHandlerServiceId(curie));
     } catch (e) {
       throw new HandlerNotFound(curie);
     }
@@ -103,17 +103,15 @@ export default class ContainerAwareServiceLocator extends ServiceLocator {
   /**
    * @private
    *
-   * @param {string} id - Container entry id with the bus to use.
+   * @param {string} name
    *
    * @returns {Transport}
-   *
-   * @throws {Exception}
    */
-  getTransportForBus(id) {
-    if (!this.container.has(id)) {
+  async getTransportForBus(name) {
+    if (!this.container.hasParameter(name)) {
       return this.getDefaultTransport();
     }
 
-    return this.container.get(`${serviceIds.TRANSPORT_PREFIX}${this.container.get(id)}`);
+    return this.container.get(`${serviceIds.TRANSPORT_PREFIX}${this.container.getParameter(name)}`);
   }
 }

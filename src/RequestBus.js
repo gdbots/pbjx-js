@@ -22,9 +22,6 @@ export default class RequestBus {
   }
 
   /**
-   * Processes an request directly.  DO NOT use this method in the application as this
-   * is intended for the transports, consumers and workers of the Pbjx system.
-   *
    * Invokes the handler that services the given request.  If an exception occurs
    * it will be caught and a RequestFailedResponse will be created with the reason.
    *
@@ -36,20 +33,18 @@ export default class RequestBus {
    * @returns {Promise.<Message>} Resolves with a message using mixin 'gdbots:pbjx:mixin:response'
    */
   async receiveRequest(request) {
-    let handler;
-
     try {
-      handler = this.locator.getRequestHandler(request.schema().getCurie());
-    } catch (e) {
-      return createResponseForFailedRequest(request, e);
-    }
-
-    try {
+      const handler = await this.locator.getRequestHandler(request.schema().getCurie());
       request.freeze();
-      const response = await handler.handleRequest(request, this.locator.getPbjx());
+      const pbjx = await this.locator.getPbjx();
+      const response = await handler.handleRequest(request, pbjx);
       response.set('ctx_request_ref', request.generateMessageRef());
       if (request.has('ctx_correlator_ref')) {
         response.set('ctx_correlator_ref', request.get('ctx_correlator_ref'));
+      }
+
+      if (request.has('ctx_tenant_id')) {
+        response.set('ctx_tenant_id', request.get('ctx_tenant_id'));
       }
 
       return response;

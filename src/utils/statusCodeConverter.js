@@ -18,9 +18,12 @@ export function vendorToHttp(code = Code.OK.getValue()) {
       return HttpCode.HTTP_CLIENT_CLOSED_REQUEST.getValue();
 
     case Code.UNKNOWN.getValue():
+    case Code.DATA_LOSS.getValue():
+    case Code.INTERNAL.getValue():
       return HttpCode.HTTP_INTERNAL_SERVER_ERROR.getValue();
 
     case Code.INVALID_ARGUMENT.getValue():
+    case Code.OUT_OF_RANGE.getValue():
       return HttpCode.HTTP_BAD_REQUEST.getValue();
 
     case Code.DEADLINE_EXCEEDED.getValue():
@@ -29,6 +32,7 @@ export function vendorToHttp(code = Code.OK.getValue()) {
     case Code.NOT_FOUND.getValue():
       return HttpCode.HTTP_NOT_FOUND.getValue();
 
+    case Code.ABORTED.getValue():
     case Code.ALREADY_EXISTS.getValue():
       return HttpCode.HTTP_CONFLICT.getValue();
 
@@ -45,23 +49,11 @@ export function vendorToHttp(code = Code.OK.getValue()) {
     case Code.FAILED_PRECONDITION.getValue():
       return HttpCode.HTTP_PRECONDITION_FAILED.getValue();
 
-    case Code.ABORTED.getValue():
-      return HttpCode.HTTP_CONFLICT.getValue();
-
-    case Code.OUT_OF_RANGE.getValue():
-      return HttpCode.HTTP_BAD_REQUEST.getValue();
-
     case Code.UNIMPLEMENTED.getValue():
       return HttpCode.HTTP_NOT_IMPLEMENTED.getValue();
 
-    case Code.INTERNAL.getValue():
-      return HttpCode.HTTP_INTERNAL_SERVER_ERROR.getValue();
-
     case Code.UNAVAILABLE.getValue():
       return HttpCode.HTTP_SERVICE_UNAVAILABLE.getValue();
-
-    case Code.DATA_LOSS.getValue():
-      return HttpCode.HTTP_INTERNAL_SERVER_ERROR.getValue();
 
     default:
       return HttpCode.HTTP_UNPROCESSABLE_ENTITY.getValue();

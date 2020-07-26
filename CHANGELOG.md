@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v2.0.0
+__BREAKING CHANGES__
+
+* Async ALL THE THINGS!!
+* Remove redux utils since the middleware and observable reducer wasn't as useful or necessary as we thought.
+* Dispatcher now works with async listeners.
+
+
 ## v1.0.0
 * Tag first stable version.
 
@@ -30,14 +38,14 @@
 
 ## v0.1.6
 * Add helpers for using pbjx in AWS Lambda.
-  * `aws/lambda/determineEventSource.js` takes the event payload and returns the name of service it came from. 
+  * `aws/lambda/determineEventSource.js` takes the event payload and returns the name of service it came from.
   * `aws/lambda/getConfig.js` takes an object with keys of parameters to load from SSM and the variables to map them to.
 * Add `PbjxToken` which can be used to secure an endpoint that accept pbjx payloads.
 * Add `transports/TransportEnvelope.js` for containing messages through pbjx.  Same as php lib.
 
 
 ## v0.1.5
-* Remove the `babel` key from the `package.json` during build so projects importing 
+* Remove the `babel` key from the `package.json` during build so projects importing
   this lib don't have their babel config wiped out during serve/build/bundle/etc.
 
 
@@ -47,16 +55,16 @@
 
 ## v0.1.3
 * In `redux/createMiddleware.js`:
-  * Add the ability to include a "channel" in a redux action. This addresses issues with 
-    concurrent pbjx actions or simply needing pbjx actions to be reduced into different 
+  * Add the ability to include a "channel" in a redux action. This addresses issues with
+    concurrent pbjx actions or simply needing pbjx actions to be reduced into different
     parts of the state in a reducer.
-  * Change the redux action structure to `action.ctx` instead of `action.pbjx` for clarify 
+  * Change the redux action structure to `action.ctx` instead of `action.pbjx` for clarify
     that it's contextual data about the action which may or may not be pbjx specific.
   * Return a promise with the result of the final dispatch in the pbjx process.
 * Add `redux/actions.js` with one public action creator `callPbjx`.
 * Change `redux/createReducer.js` to call the reducer with the standard signature of
   `prevState, action` instead of `prevState, pbj`.  This also gives the reducer the complete
-  action containing the new `action.ctx` property which has the channel and other useful data.  
+  action containing the new `action.ctx` property which has the channel and other useful data.
 
 
 ## v0.1.2

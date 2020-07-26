@@ -1,4 +1,4 @@
-import Exception from '@gdbots/common/Exception';
+import Exception from '@gdbots/pbj/Exception';
 import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import RequestFailedResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/RequestFailedResponseV1';
 
@@ -24,6 +24,10 @@ export default (request, exception) => {
 
   if (request.has('ctx_correlator_ref')) {
     response.set('ctx_correlator_ref', request.get('ctx_correlator_ref'));
+  }
+
+  if (request.has('ctx_tenant_id')) {
+    response.set('ctx_tenant_id', request.get('ctx_tenant_id'));
   }
 
   return response;

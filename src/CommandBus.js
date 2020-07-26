@@ -24,17 +24,8 @@ export default class CommandBus {
   }
 
   /**
-   * Processes a command directly.  DO NOT use this method in the application as this
-   * is intended for the transports, consumers and workers of the Pbjx system.
-   *
    * Invokes the handler that services the given command.  If an exception occurs
-   * it will be processed by the exception handler and not thrown by this method.
-   *
-   * It is up to the handler or exception handler to retry the command (if appropriate)
-   * or message the user in some way that their command has failed.  This process is
-   * expected to be running asynchronously and very likely in a background process so
-   * allowing an exception to just bubble up and break the service handling commands
-   * will not be seen by anyone except an error log.
+   * it will be processed by the exception handler and rethrown.
    *
    * @internal
    * @package
@@ -44,24 +35,18 @@ export default class CommandBus {
    * @returns {Promise}
    */
   async receiveCommand(command) {
-    let handler;
-
     try {
-      handler = this.locator.getCommandHandler(command.schema().getCurie());
-    } catch (e) {
-      this.locator.getExceptionHandler().onCommandBusException(new BusExceptionEvent(command, e));
-      return;
-    }
-
-    try {
+      const handler = await this.locator.getCommandHandler(command.schema().getCurie());
       command.freeze();
-      const pbjx = this.locator.getPbjx();
+      const pbjx = await this.locator.getPbjx();
       const event = new PbjxEvent(command);
-      pbjx.trigger(command, SUFFIX_BEFORE_HANDLE, event, false);
+      await pbjx.trigger(command, SUFFIX_BEFORE_HANDLE, event, false);
       await handler.handleCommand(command, pbjx);
-      pbjx.trigger(command, SUFFIX_AFTER_HANDLE, event, false);
+      await pbjx.trigger(command, SUFFIX_AFTER_HANDLE, event, false);
     } catch (e) {
-      this.locator.getExceptionHandler().onCommandBusException(new BusExceptionEvent(command, e));
+      const exceptionHandler = await this.locator.getExceptionHandler();
+      await exceptionHandler.onCommandBusException(new BusExceptionEvent(command, e));
+      throw e;
     }
   }
 }

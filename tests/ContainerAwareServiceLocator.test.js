@@ -7,18 +7,18 @@ import Pbjx from '../src/Pbjx';
 import curieToHandlerServiceId from '../src/utils/curieToHandlerServiceId';
 import { serviceIds } from '../src/constants';
 
-test('ContainerAwareServiceLocator tests', (t) => {
+test('ContainerAwareServiceLocator tests', async (t) => {
   const container = new Container();
   const locator = new ContainerAwareServiceLocator(container);
   const pbjx = new Pbjx(locator);
   container.set(serviceIds.PBJX, pbjx);
 
-  t.true(locator.getPbjx() === pbjx);
+  t.true(await locator.getPbjx() === pbjx);
 
   const requestHandler = new EchoRequestHandler();
   const requestCurie = EchoRequestV1.schema().getCurie();
   container.set(curieToHandlerServiceId(requestCurie), requestHandler);
-  t.true(locator.getRequestHandler(requestCurie) === requestHandler);
+  t.true((await locator.getRequestHandler(requestCurie)) === requestHandler);
 
   t.end();
 });

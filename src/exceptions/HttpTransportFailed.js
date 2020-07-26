@@ -9,7 +9,7 @@ export default class HttpTransportFailed extends GdbotsPbjxException {
     const code = envelope.get('code', 2);
     const errName = envelope.get('error_name');
     const errMessage = envelope.get('error_message');
-    super(`HttpTransport failed to handle [${pbj.generateMessageRef()}].  ${errName}::${code}::${errMessage}`, code);
+    super(`HttpTransport failed to handle [${pbj.generateMessageRef()}]. ${errName}::${code}::${errMessage}`, code);
     this.pbj = pbj;
     this.envelope = envelope;
   }

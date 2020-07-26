@@ -57,6 +57,10 @@ export default class GetResponseEvent extends PbjxEvent {
       response.set('ctx_correlator_ref', request.get('ctx_correlator_ref'));
     }
 
+    if (!response.has('ctx_tenant_id') && request.has('ctx_tenant_id')) {
+      response.set('ctx_tenant_id', request.get('ctx_tenant_id'));
+    }
+
     this[responseSym] = response;
     this.stopPropagation();
   }

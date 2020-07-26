@@ -2,7 +2,24 @@ import LogicException from '../../src/exceptions/LogicException';
 
 export default class Container {
   constructor() {
+    this.parameters = {};
     this.services = {};
+  }
+
+  setParameter(name, value) {
+    this.parameters[name] = value;
+  }
+
+  getParameter(name) {
+    if (!this.hasParameter(name)) {
+      throw new LogicException(`Parameter [${name}] not found in container.`);
+    }
+
+    return this.parameters[name];
+  }
+
+  hasParameter(name) {
+    return !!(this.parameters[name] || false);
   }
 
   set(id, service) {
@@ -11,7 +28,7 @@ export default class Container {
 
   get(id) {
     if (!this.has(id)) {
-      throw new LogicException(`Entry [${id}] not found in container.`);
+      throw new LogicException(`Service [${id}] not found in container.`);
     }
 
     return this.services[id];

@@ -24,9 +24,7 @@ test('getEventNames tests', (t) => {
     'gdbots:pbjx:mixin:request',
     'gdbots:pbjx:request:echo-request:v1',
     'gdbots:pbjx:request:echo-request',
-    'gdbots:pbjx:request:*',
     'gdbots:pbjx:*',
-    'gdbots:*',
     '*',
   ]);
 
@@ -35,9 +33,7 @@ test('getEventNames tests', (t) => {
     'gdbots:pbjx:mixin:request.test',
     'gdbots:pbjx:request:echo-request:v1.test',
     'gdbots:pbjx:request:echo-request.test',
-    'gdbots:pbjx:request:*',
     'gdbots:pbjx:*',
-    'gdbots:*',
     '*',
   ]);
 

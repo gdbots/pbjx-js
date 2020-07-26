@@ -1,4 +1,4 @@
-import Exception from '@gdbots/common/Exception';
+import Exception from '@gdbots/pbj/Exception';
 import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
 import EventExecutionFailedV1 from '@gdbots/schemas/gdbots/pbjx/event/EventExecutionFailedV1';
 import BusExceptionEvent from './events/BusExceptionEvent';
@@ -42,8 +42,8 @@ export default class EventBus {
    */
   async receiveEvent(event) {
     event.freeze();
-    const dispatcher = this.locator.getDispatcher();
-    const pbjx = this.locator.getPbjx();
+    const dispatcher = await this.locator.getDispatcher();
+    const pbjx = await this.locator.getPbjx();
 
     const listeners = [];
     getEventNames(event, '', true).forEach((eventName) => {
@@ -67,7 +67,8 @@ export default class EventBus {
       await listener(event, pbjx);
     } catch (e) {
       if (event.schema().getCurie().toString() === 'gdbots:pbjx:event:event-execution-failed') {
-        this.locator.getExceptionHandler().onEventBusException(new BusExceptionEvent(event, e));
+        const exceptionHandler = await this.locator.getExceptionHandler();
+        await exceptionHandler.onEventBusException(new BusExceptionEvent(event, e));
         return;
       }
 
@@ -83,7 +84,7 @@ export default class EventBus {
         .set('error_message', e.message.substr(0, 2048))
         .set('stack_trace', e.stack || null);
 
-      pbjx.copyContext(event, failedEvent);
+      await pbjx.copyContext(event, failedEvent);
 
       // running in process for now
       await this.receiveEvent(failedEvent);

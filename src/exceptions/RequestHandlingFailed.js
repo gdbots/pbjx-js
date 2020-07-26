@@ -9,7 +9,7 @@ export default class RequestHandlingFailed extends GdbotsPbjxException {
     const errName = response.get('error_name');
     const errCode = response.get('error_code', 2);
     const errMsg = response.get('error_message');
-    super(`Request [${ref}] could not be handled.  ${errName}::${errCode}::${errMsg}`, errCode);
+    super(`Request [${ref}] could not be handled. ${errName}::${errCode}::${errMsg}`, errCode);
     this.response = response;
   }
 

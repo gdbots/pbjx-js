@@ -17,22 +17,22 @@ export default class RegisteringServiceLocator extends ServiceLocator {
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {{handleCommand: function}}
    */
-  getCommandHandler(curie) {
+  async getCommandHandler(curie) {
     return this.getHandler(curie);
   }
 
   /**
-   * {@inheritDoc}
+   * @returns {{handleRequest: function}}
    */
-  getRequestHandler(curie) {
+  async getRequestHandler(curie) {
     return this.getHandler(curie);
   }
 
   /**
    * @param {SchemaCurie} curie
-   * @param {CommandHandler} handler
+   * @param {{handleCommand: function}} handler
    */
   registerCommandHandler(curie, handler) {
     this[handlers].set(curie.toString(), handler);
@@ -40,7 +40,7 @@ export default class RegisteringServiceLocator extends ServiceLocator {
 
   /**
    * @param {SchemaCurie} curie
-   * @param {RequestHandler} handler
+   * @param {{handleRequest: function}} handler
    */
   registerRequestHandler(curie, handler) {
     this[handlers].set(curie.toString(), handler);
@@ -51,11 +51,11 @@ export default class RegisteringServiceLocator extends ServiceLocator {
    *
    * @param {SchemaCurie} curie
    *
-   * @returns {CommandHandler|RequestHandler}
+   * @returns {{handleCommand: function}|{handleRequest: function}}
    *
    * @throws {HandlerNotFound}
    */
-  getHandler(curie) {
+  async getHandler(curie) {
     const id = curie.toString();
 
     if (this[handlers].has(id)) {

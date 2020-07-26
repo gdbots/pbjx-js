@@ -18,10 +18,7 @@ export default (message, suffix = '', includeWildcards = false) => {
   }
 
   const curie = schema.getCurie();
-  const events = [];
-
-  schema.getMixinIds().forEach(mixinId => events.push(`${mixinId}${suffix}`));
-  schema.getMixinCuries().forEach(mixinCurie => events.push(`${mixinCurie}${suffix}`));
+  const events = schema.getMixins().map(mixin => `${mixin}${suffix}`);
   events.push(`${schema.getCurieMajor()}${suffix}`);
   events.push(`${curie}${suffix}`);
 
@@ -30,13 +27,7 @@ export default (message, suffix = '', includeWildcards = false) => {
     return events;
   }
 
-  const vendor = curie.getVendor();
-  const pkg = curie.getPackage();
-  const category = curie.getCategory();
-
-  events.push(`${vendor}:${pkg}:${category}:*`);
-  events.push(`${vendor}:${pkg}:*`);
-  events.push(`${vendor}:*`);
+  events.push(`${curie.getVendor()}:${curie.getPackage()}:*`);
   events.push('*');
 
   cache.set(cacheKey, events);
