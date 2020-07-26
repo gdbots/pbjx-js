@@ -35,9 +35,6 @@ export const serviceIds = {
   // handlers
   CHECK_HEALTH_HANDLER: t('check_health_handler'),
   ECHO_REQUEST_HANDLER: t('echo_request_handler'),
-
-  // redux
-  REDUX_REDUCER: t('redux/reducer'),
 };
 
 /**
