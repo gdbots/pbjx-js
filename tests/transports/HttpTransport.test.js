@@ -17,6 +17,7 @@ test('HttpTransport tests', async (t) => {
   }
 
   const locator = new RegisteringServiceLocator();
+  const dispatcher = await locator.getDispatcher();
   const transport = new HttpTransport(locator, process.env.PBJX_ENDPOINT);
   let called = 0;
 
@@ -33,7 +34,7 @@ test('HttpTransport tests', async (t) => {
     t.same(event.getEnvelope().get('message_ref').getCurie(), event.getMessage().schema().getCurie());
   };
 
-  locator.getDispatcher().addListener(TRANSPORT_HTTP_ENVELOPE_RECEIVED, checker.bind(this));
+  dispatcher.addListener(TRANSPORT_HTTP_ENVELOPE_RECEIVED, checker.bind(this));
 
   try {
     t.comment('sendCommand test');

@@ -166,7 +166,7 @@ export default class Pbjx {
    *
    * @returns {Pbjx}
    */
-  copyContext(from, to) {
+  async copyContext(from, to) {
     if (to.isFrozen()) {
       return this;
     }
@@ -177,13 +177,13 @@ export default class Pbjx {
       to.set('ctx_causator_ref', from.generateMessageRef());
     }
 
-    const clone = ['ctx_app', 'ctx_cloud'];
+    if (!to.has('ctx_app') && from.has('ctx_app') && schema.hasField('ctx_app')) {
+      to.set('ctx_app', await from.get('ctx_app').clone());
+    }
 
-    clone.forEach((field) => {
-      if (!to.has(field) && from.has(field) && schema.hasField(field)) {
-        to.set(field, from.get(field).clone());
-      }
-    });
+    if (!to.has('ctx_cloud') && from.has('ctx_cloud') && schema.hasField('ctx_cloud')) {
+      to.set('ctx_cloud', await from.get('ctx_cloud').clone());
+    }
 
     const simple = [
       'ctx_tenant_id',

@@ -1,13 +1,13 @@
 import test from 'tape';
-import MessageRef from '@gdbots/pbj/MessageRef';
+import MessageRef from '@gdbots/pbj/well-known/MessageRef';
 import AppV1 from '@gdbots/schemas/gdbots/contexts/AppV1';
 import CloudV1 from '@gdbots/schemas/gdbots/contexts/CloudV1';
 import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
 import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
-test('Pbjx.copyContext tests', (t) => {
+test('Pbjx.copyContext tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const pbjx = locator.getPbjx();
+  const pbjx = await locator.getPbjx();
 
   const from = EchoRequestV1.create();
   const to = EchoRequestV1.create();
@@ -26,8 +26,9 @@ test('Pbjx.copyContext tests', (t) => {
   from.set('ctx_ip', '10.0.0.1');
   from.set('ctx_ipv6', '2001:db8:85a3:8d3:1319:8a2e:370:7348');
   from.set('ctx_ua', 'test-runner');
+  from.set('ctx_tenant_id', 'tenantid');
 
-  pbjx.copyContext(from, to);
+  await pbjx.copyContext(from, to);
   t.same(from.generateMessageRef(), to.get('ctx_causator_ref'));
   t.same(`${from.get('ctx_app')}`, `${to.get('ctx_app')}`, 'ctx_app should be the same when serialized.');
   t.false(from.get('ctx_app') === to.get('ctx_app'), 'ctx_app should NOT be the same instance.');
@@ -38,6 +39,7 @@ test('Pbjx.copyContext tests', (t) => {
   t.same(from.get('ctx_ip'), to.get('ctx_ip'));
   t.same(from.get('ctx_ipv6'), to.get('ctx_ipv6'));
   t.same(from.get('ctx_ua'), to.get('ctx_ua'));
+  t.same(from.get('ctx_tenant_id'), to.get('ctx_tenant_id'));
 
   t.end();
 });

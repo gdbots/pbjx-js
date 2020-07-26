@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign, no-unused-vars */
 import test from 'tape';
 import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1';
 import LogicException from '../src/exceptions/LogicException';
@@ -7,8 +6,8 @@ import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
 test('Pbjx.publish tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const dispatcher = locator.getDispatcher();
-  const pbjx = locator.getPbjx();
+  const dispatcher = await locator.getDispatcher();
+  const pbjx = await locator.getPbjx();
   const event = HealthCheckedV1.create().set('msg', 'test');
 
   let called = 0;
@@ -20,13 +19,11 @@ test('Pbjx.publish tests', async (t) => {
 
   dispatcher.addListener('gdbots:pbjx:event:health-checked:v1', boundChecker);
   dispatcher.addListener('gdbots:pbjx:event:health-checked', boundChecker);
-  dispatcher.addListener('gdbots:pbjx:event:*', boundChecker);
   dispatcher.addListener('gdbots:pbjx:*', boundChecker);
-  dispatcher.addListener('gdbots:*', boundChecker);
   dispatcher.addListener('*', boundChecker);
 
   await pbjx.publish(event);
-  t.same(called, 8);
+  t.same(called, 6);
 
   t.end();
 });
@@ -34,8 +31,8 @@ test('Pbjx.publish tests', async (t) => {
 
 test('Pbjx.publish (simulated failing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const dispatcher = locator.getDispatcher();
-  const pbjx = locator.getPbjx();
+  const dispatcher = await locator.getDispatcher();
+  const pbjx = await locator.getPbjx();
   const event = HealthCheckedV1.create().set('msg', 'test');
 
   let called = 0;

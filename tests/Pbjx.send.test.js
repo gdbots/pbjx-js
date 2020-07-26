@@ -1,16 +1,13 @@
-/* eslint-disable no-unused-vars */
 import test from 'tape';
 import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
 import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
-import CommandHandler from '../src/CommandHandler';
 import HandlerNotFound from '../src/exceptions/HandlerNotFound';
 import LogicException from '../src/exceptions/LogicException';
 import PbjxEvent from '../src/events/PbjxEvent';
 import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
 
-class TestHandler extends CommandHandler {
+class TestHandler {
   constructor() {
-    super();
     this.handled = false;
   }
 
@@ -29,9 +26,11 @@ class TestHandler extends CommandHandler {
 
 test('Pbjx.send (simulated passing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const pbjx = locator.getPbjx();
+  const pbjx = await locator.getPbjx();
+  const dispatcher = await locator.getDispatcher();
   const handler = new TestHandler();
   locator.registerCommandHandler(CheckHealthV1.schema().getCurie(), handler);
+  t.same(`${dispatcher}`, `${handler}`);
 
   /**
    * @param {PbjxEvent} event
@@ -42,12 +41,12 @@ test('Pbjx.send (simulated passing) tests', async (t) => {
     t.same(event.getMessage().get('msg'), 'passing');
   };
 
-  locator.getDispatcher().addListener(
+  dispatcher.addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_BEFORE_HANDLE}`,
     lifecycleChecker.bind(this),
   );
 
-  locator.getDispatcher().addListener(
+  dispatcher.addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
     lifecycleChecker.bind(this),
   );
@@ -65,7 +64,8 @@ test('Pbjx.send (simulated passing) tests', async (t) => {
 
 test('Pbjx.send (simulated failing) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const pbjx = locator.getPbjx();
+  const pbjx = await locator.getPbjx();
+  const dispatcher = await locator.getDispatcher();
   const handler = new TestHandler();
   locator.registerCommandHandler(CheckHealthV1.schema().getCurie(), handler);
 
@@ -79,17 +79,18 @@ test('Pbjx.send (simulated failing) tests', async (t) => {
   };
 
   const lifecycleChecker = () => t.fail(`a failing message MUST NOT call ${SUFFIX_AFTER_HANDLE}`);
-  locator.getDispatcher().addListener(
+  dispatcher.addListener(
     `${CheckHealthV1.schema().getCurie()}.${SUFFIX_AFTER_HANDLE}`,
     lifecycleChecker.bind(this),
   );
 
-  locator.getDispatcher().addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
+  dispatcher.addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
 
   try {
     await pbjx.send(CheckHealthV1.create().set('msg', 'failing'));
   } catch (e) {
-    t.fail(e);
+    t.true(e instanceof LogicException, 'Exception MUST be an instanceOf LogicException');
+    t.same(e.message, 'failing');
   }
 
   t.false(handler.handled);
@@ -99,7 +100,8 @@ test('Pbjx.send (simulated failing) tests', async (t) => {
 
 test('Pbjx.send (HandlerNotFound) tests', async (t) => {
   const locator = new RegisteringServiceLocator();
-  const pbjx = locator.getPbjx();
+  const pbjx = await locator.getPbjx();
+  const dispatcher = await locator.getDispatcher();
 
   /**
    * @param {BusExceptionEvent} event
@@ -109,12 +111,12 @@ test('Pbjx.send (HandlerNotFound) tests', async (t) => {
     t.true(e instanceof HandlerNotFound, 'Exception MUST be an instanceOf HandlerNotFound');
   };
 
-  locator.getDispatcher().addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
+  dispatcher.addListener(COMMAND_BUS_EXCEPTION, checker.bind(this));
 
   try {
     await pbjx.send(CheckHealthV1.create());
   } catch (e) {
-    t.fail(e);
+    t.true(e instanceof HandlerNotFound, 'Exception MUST be an instanceOf HandlerNotFound');
   }
 
   t.end();

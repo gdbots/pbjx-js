@@ -22,7 +22,7 @@ export default class Transport {
    */
   async sendCommand(command) {
     const transportEvent = new TransportEvent(command, this.transportName);
-    const dispatcher = this.locator.getDispatcher();
+    const dispatcher = await this.locator.getDispatcher();
     await dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
 
     try {
@@ -94,7 +94,7 @@ export default class Transport {
     const transportEvent = new TransportEvent(request, this.transportName);
     const dispatcher = await this.locator.getDispatcher();
     await dispatcher.dispatch(TRANSPORT_BEFORE_SEND, transportEvent);
-    let response = null;
+    let response;
 
     try {
       response = await this.doSendRequest(request);

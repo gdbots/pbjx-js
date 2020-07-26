@@ -84,7 +84,7 @@ export default class EventBus {
         .set('error_message', e.message.substr(0, 2048))
         .set('stack_trace', e.stack || null);
 
-      pbjx.copyContext(event, failedEvent);
+      await pbjx.copyContext(event, failedEvent);
 
       // running in process for now
       await this.receiveEvent(failedEvent);
