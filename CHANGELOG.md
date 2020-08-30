@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v2.0.1
+* Fix bug in `Pbjx.trigger` that used return instead of continue with frozen nested messages.
+
+
 ## v2.0.0
 __BREAKING CHANGES__
 

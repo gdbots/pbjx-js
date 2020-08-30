@@ -114,7 +114,7 @@ export default class Pbjx {
       const l = nested.length;
       for (let i = 0; i < l; i += 1) {
         if (nested[i].isFrozen()) {
-          return;
+          continue;
         }
 
         await this.trigger(nested[i], fsuffix, fevent.createChildEvent(nested[i]), recursive);
