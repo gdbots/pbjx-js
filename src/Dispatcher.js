@@ -1,4 +1,4 @@
-import Event from './events/Event';
+import Event from './events/Event.js';
 
 const listenersMap = Symbol('listenersMap');
 

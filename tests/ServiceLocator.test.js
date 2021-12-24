@@ -1,15 +1,15 @@
 import test from 'tape';
-import SchemaCurie from '@gdbots/pbj/SchemaCurie';
-import CommandBus from '../src/CommandBus';
-import Dispatcher from '../src/Dispatcher';
-import EventBus from '../src/EventBus';
-import ExceptionHandler from '../src/ExceptionHandler';
-import InMemoryTransport from '../src/transports/InMemoryTransport';
-import Pbjx from '../src/Pbjx';
-import RequestBus from '../src/RequestBus';
-import ServiceLocator from '../src/ServiceLocator';
-import HandlerNotFound from '../src/exceptions/HandlerNotFound';
-import Transport from '../src/transports/Transport';
+import SchemaCurie from '@gdbots/pbj/SchemaCurie.js';
+import CommandBus from '../src/CommandBus.js';
+import Dispatcher from '../src/Dispatcher.js';
+import EventBus from '../src/EventBus.js';
+import ExceptionHandler from '../src/ExceptionHandler.js';
+import InMemoryTransport from '../src/transports/InMemoryTransport.js';
+import Pbjx from '../src/Pbjx.js';
+import RequestBus from '../src/RequestBus.js';
+import ServiceLocator from '../src/ServiceLocator.js';
+import HandlerNotFound from '../src/exceptions/HandlerNotFound.js';
+import Transport from '../src/transports/Transport.js';
 
 test('ServiceLocator tests', async (t) => {
   const locator = new ServiceLocator();

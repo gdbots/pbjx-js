@@ -1,6 +1,6 @@
 import test from 'tape';
-import AcmeForm from '@gdbots/acme-schemas/acme/forms/node/FormV1';
-import pbjUrl, { expand, registerGlobal, registerGlobals, registerTemplate, registerTemplates } from '../src/pbjUrl';
+import AcmeForm from '@gdbots/acme-schemas/acme/forms/node/FormV1.js';
+import pbjUrl, { expand, registerGlobal, registerGlobals, registerTemplate, registerTemplates } from '../src/pbjUrl.js';
 
 
 test('pbjUrl tests', (t) => {

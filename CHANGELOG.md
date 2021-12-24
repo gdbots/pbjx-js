@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v3.0.0
+__BREAKING CHANGES__
+
+* Require gdbots/pbj and gdbots/schemas v3.x.
+* Publish as type module in npm.
+* Add throwEx option to Pbjx.trigger, default to true to match php implementation.
+
+
 ## v2.0.1
 * Fix bug in `Pbjx.trigger` that used return instead of continue with frozen nested messages.
 

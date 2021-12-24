@@ -1,5 +1,5 @@
-import LogicException from '../exceptions/LogicException';
-import PbjxEvent from './PbjxEvent';
+import LogicException from '../exceptions/LogicException.js';
+import PbjxEvent from './PbjxEvent.js';
 
 const responseSym = Symbol('response');
 

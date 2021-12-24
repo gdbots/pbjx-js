@@ -1,5 +1,5 @@
 import test from 'tape';
-import Dispatcher from '../src/Dispatcher';
+import Dispatcher from '../src/Dispatcher.js';
 
 
 test('Dispatcher with arrow function tests', async (t) => {

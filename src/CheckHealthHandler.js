@@ -1,4 +1,4 @@
-import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1';
+import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1.js';
 
 export default class CheckHealthHandler {
   async handleCommand(command, pbjx) {

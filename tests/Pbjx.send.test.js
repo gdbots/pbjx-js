@@ -1,10 +1,10 @@
 import test from 'tape';
-import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
-import HandlerNotFound from '../src/exceptions/HandlerNotFound';
-import LogicException from '../src/exceptions/LogicException';
-import PbjxEvent from '../src/events/PbjxEvent';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
+import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1.js';
+import { COMMAND_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants.js';
+import HandlerNotFound from '../src/exceptions/HandlerNotFound.js';
+import LogicException from '../src/exceptions/LogicException.js';
+import PbjxEvent from '../src/events/PbjxEvent.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
 
 class TestHandler {
   constructor() {

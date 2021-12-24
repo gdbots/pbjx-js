@@ -1,9 +1,9 @@
 import test from 'tape';
-import MessageRef from '@gdbots/pbj/well-known/MessageRef';
-import AppV1 from '@gdbots/schemas/gdbots/contexts/AppV1';
-import CloudV1 from '@gdbots/schemas/gdbots/contexts/CloudV1';
-import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
+import MessageRef from '@gdbots/pbj/well-known/MessageRef.js';
+import AppV1 from '@gdbots/schemas/gdbots/contexts/AppV1.js';
+import CloudV1 from '@gdbots/schemas/gdbots/contexts/CloudV1.js';
+import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
 
 test('Pbjx.copyContext tests', async (t) => {
   const locator = new RegisteringServiceLocator();

@@ -1,7 +1,7 @@
 import test from 'tape';
-import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import * as constants from '../src/constants';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
+import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1.js';
+import * as constants from '../src/constants.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
 
 test('Pbjx.trigger tests', async (t) => {
   const locator = new RegisteringServiceLocator();

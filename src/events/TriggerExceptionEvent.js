@@ -1,15 +1,25 @@
 import PbjxEvent from './PbjxEvent.js';
 
+const eventNameSym = Symbol('eventName');
 const exceptionSym = Symbol('exception');
 
-export default class BusExceptionEvent extends PbjxEvent {
+export default class TriggerExceptionEvent extends PbjxEvent {
   /**
    * @param {Message} message
-   * @param {Exception} exception
+   * @param {string} eventName
+   * @param {Exception|Error} exception
    */
-  constructor(message, exception) {
+  constructor(message, eventName, exception) {
     super(message);
+    this[eventNameSym] = eventName;
     this[exceptionSym] = exception;
+  }
+
+  /**
+   * @returns {string}
+   */
+  getEventName() {
+    return this[eventNameSym];
   }
 
   /**

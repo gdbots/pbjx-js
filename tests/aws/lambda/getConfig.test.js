@@ -1,5 +1,5 @@
 import test from 'tape';
-import getConfig from '../../../src/aws/lambda/getConfig';
+import getConfig from '../../../src/aws/lambda/getConfig.js';
 
 
 test('getConfig tests', async (t) => {

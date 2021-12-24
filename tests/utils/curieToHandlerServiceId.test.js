@@ -1,6 +1,6 @@
 import test from 'tape';
-import SchemaCurie from '@gdbots/pbj/SchemaCurie';
-import curieToHandlerServiceId from '../../src/utils/curieToHandlerServiceId';
+import SchemaCurie from '@gdbots/pbj/SchemaCurie.js';
+import curieToHandlerServiceId from '../../src/utils/curieToHandlerServiceId.js';
 
 test('curieToHandlerServiceId tests', (t) => {
   t.same(

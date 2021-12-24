@@ -1,4 +1,4 @@
-import createResponseForFailedRequest from './utils/createResponseForFailedRequest';
+import createResponseForFailedRequest from './utils/createResponseForFailedRequest.js';
 
 export default class RequestBus {
   /**

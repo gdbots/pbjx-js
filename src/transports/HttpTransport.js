@@ -1,14 +1,14 @@
-import Exception from '@gdbots/pbj/Exception';
-import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
-import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1';
-import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode';
-import ObjectSerializer from '@gdbots/pbj/serializers/ObjectSerializer';
-import { ACCESS_TOKEN_ENV_KEY, ACCESS_TOKEN_STORAGE_KEY, TRANSPORT_HTTP_ENVELOPE_RECEIVED } from '../constants';
-import EnvelopeReceivedEvent from '../events/EnvelopeReceivedEvent';
-import HttpTransportFailed from '../exceptions/HttpTransportFailed';
-import Transport from './Transport';
-import PbjxToken from '../PbjxToken';
-import { vendorToHttp } from '../utils/statusCodeConverter';
+import Exception from '@gdbots/pbj/Exception.js';
+import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code.js';
+import EnvelopeV1 from '@gdbots/schemas/gdbots/pbjx/EnvelopeV1.js';
+import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode.js';
+import ObjectSerializer from '@gdbots/pbj/serializers/ObjectSerializer.js';
+import { ACCESS_TOKEN_ENV_KEY, ACCESS_TOKEN_STORAGE_KEY, TRANSPORT_HTTP_ENVELOPE_RECEIVED } from '../constants.js';
+import EnvelopeReceivedEvent from '../events/EnvelopeReceivedEvent.js';
+import HttpTransportFailed from '../exceptions/HttpTransportFailed.js';
+import Transport from './Transport.js';
+import PbjxToken from '../PbjxToken.js';
+import { vendorToHttp } from '../utils/statusCodeConverter.js';
 
 export default class HttpTransport extends Transport {
   /**

@@ -1,7 +1,7 @@
 import test from 'tape';
-import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1';
-import LogicException from '../src/exceptions/LogicException';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
+import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1.js';
+import LogicException from '../src/exceptions/LogicException.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
 
 
 test('Pbjx.publish tests', async (t) => {

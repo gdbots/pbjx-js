@@ -1,8 +1,8 @@
 import test from 'tape';
-import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import HandlerNotFound from '../src/exceptions/HandlerNotFound';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
+import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1.js';
+import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1.js';
+import HandlerNotFound from '../src/exceptions/HandlerNotFound.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
 
 test('RegisteringServiceLocator tests', async (t) => {
   const locator = new RegisteringServiceLocator();
