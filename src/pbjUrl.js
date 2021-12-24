@@ -1,5 +1,5 @@
-import URITemplate from 'urijs/src/URITemplate';
-import Message from '@gdbots/pbj/Message';
+import URITemplate from 'urijs/src/URITemplate.js';
+import Message from '@gdbots/pbj/Message.js';
 
 /**
  * All the available uri templates keyed by an id.

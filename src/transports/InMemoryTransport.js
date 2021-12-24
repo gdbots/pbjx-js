@@ -1,4 +1,4 @@
-import Transport from './Transport';
+import Transport from './Transport.js';
 
 export default class InMemoryTransport extends Transport {
   /**

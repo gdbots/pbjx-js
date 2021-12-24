@@ -1,6 +1,6 @@
-import { SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from './constants';
-import BusExceptionEvent from './events/BusExceptionEvent';
-import PbjxEvent from './events/PbjxEvent';
+import { SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from './constants.js';
+import BusExceptionEvent from './events/BusExceptionEvent.js';
+import PbjxEvent from './events/PbjxEvent.js';
 
 export default class CommandBus {
   /**

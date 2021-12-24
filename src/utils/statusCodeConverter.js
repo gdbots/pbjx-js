@@ -1,5 +1,5 @@
-import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
-import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode';
+import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code.js';
+import HttpCode from '@gdbots/schemas/gdbots/pbjx/enums/HttpCode.js';
 
 /**
  * Convert our "Code" aka vendor code to an http status code.

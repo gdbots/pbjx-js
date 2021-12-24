@@ -1,5 +1,5 @@
-import clamp from 'lodash/clamp';
-import trim from 'lodash/trim';
+import clamp from 'lodash-es/clamp.js';
+import trim from 'lodash-es/trim.js';
 import {
   EVENT_PREFIX,
   SUFFIX_AFTER_HANDLE,
@@ -8,15 +8,15 @@ import {
   SUFFIX_CREATED,
   SUFFIX_ENRICH,
   SUFFIX_VALIDATE,
-} from './constants';
-import getEventNames from './utils/getEventNames';
-import BusExceptionEvent from './events/BusExceptionEvent';
-import GetResponseEvent from './events/GetResponseEvent';
-import InvalidArgumentException from './exceptions/InvalidArgumentException';
-import PbjxEvent from './events/PbjxEvent';
-import RequestHandlingFailed from './exceptions/RequestHandlingFailed';
-import TooMuchRecursion from './exceptions/TooMuchRecursion';
-import ResponseCreatedEvent from './events/ResponseCreatedEvent';
+} from './constants.js';
+import getEventNames from './utils/getEventNames.js';
+import BusExceptionEvent from './events/BusExceptionEvent.js';
+import GetResponseEvent from './events/GetResponseEvent.js';
+import InvalidArgumentException from './exceptions/InvalidArgumentException.js';
+import PbjxEvent from './events/PbjxEvent.js';
+import RequestHandlingFailed from './exceptions/RequestHandlingFailed.js';
+import TooMuchRecursion from './exceptions/TooMuchRecursion.js';
+import ResponseCreatedEvent from './events/ResponseCreatedEvent.js';
 
 const locatorSym = Symbol('locator');
 const maxRecursionSym = Symbol('maxRecursion');

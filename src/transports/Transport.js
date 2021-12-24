@@ -1,7 +1,7 @@
-import { TRANSPORT_AFTER_SEND, TRANSPORT_BEFORE_SEND } from '../constants';
-import createResponseForFailedRequest from '../utils/createResponseForFailedRequest';
-import TransportEvent from '../events/TransportEvent';
-import TransportExceptionEvent from '../events/TransportExceptionEvent';
+import { TRANSPORT_AFTER_SEND, TRANSPORT_BEFORE_SEND } from '../constants.js';
+import createResponseForFailedRequest from '../utils/createResponseForFailedRequest.js';
+import TransportEvent from '../events/TransportEvent.js';
+import TransportExceptionEvent from '../events/TransportExceptionEvent.js';
 
 export default class Transport {
   /**

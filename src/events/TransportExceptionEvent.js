@@ -1,4 +1,4 @@
-import TransportEvent from './TransportEvent';
+import TransportEvent from './TransportEvent.js';
 
 const exceptionSym = Symbol('exception');
 

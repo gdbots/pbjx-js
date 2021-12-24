@@ -1,12 +1,12 @@
-import * as constants from './constants';
-import CommandBus from './CommandBus';
-import Dispatcher from './Dispatcher';
-import ExceptionHandler from './ExceptionHandler';
-import EventBus from './EventBus';
-import Pbjx from './Pbjx';
-import PbjxToken from './PbjxToken';
-import RequestBus from './RequestBus';
-import ServiceLocator from './ServiceLocator';
+import * as constants from './constants.js';
+import CommandBus from './CommandBus.js';
+import Dispatcher from './Dispatcher.js';
+import ExceptionHandler from './ExceptionHandler.js';
+import EventBus from './EventBus.js';
+import Pbjx from './Pbjx.js';
+import PbjxToken from './PbjxToken.js';
+import RequestBus from './RequestBus.js';
+import ServiceLocator from './ServiceLocator.js';
 
 export default {
   constants,

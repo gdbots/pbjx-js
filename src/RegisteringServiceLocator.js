@@ -1,5 +1,5 @@
-import HandlerNotFound from './exceptions/HandlerNotFound';
-import ServiceLocator from './ServiceLocator';
+import HandlerNotFound from './exceptions/HandlerNotFound.js';
+import ServiceLocator from './ServiceLocator.js';
 
 const handlers = Symbol('handlers');
 

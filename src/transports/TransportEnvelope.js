@@ -1,5 +1,5 @@
-import AssertionFailed from '@gdbots/pbj/exceptions/AssertionFailed';
-import JsonSerializer from '@gdbots/pbj/serializers/JsonSerializer';
+import AssertionFailed from '@gdbots/pbj/exceptions/AssertionFailed.js';
+import JsonSerializer from '@gdbots/pbj/serializers/JsonSerializer.js';
 
 const serializers = new Map();
 

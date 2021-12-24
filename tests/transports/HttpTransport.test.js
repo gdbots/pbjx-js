@@ -1,12 +1,12 @@
 import test from 'tape';
-import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1';
-import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1';
-import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
-import RegisteringServiceLocator from '../../src/RegisteringServiceLocator';
-import HttpTransport from '../../src/transports/HttpTransport';
-import EnvelopeReceivedEvent from '../../src/events/EnvelopeReceivedEvent';
-import { TRANSPORT_HTTP_ENVELOPE_RECEIVED } from '../../src/constants';
+import CheckHealthV1 from '@gdbots/schemas/gdbots/pbjx/command/CheckHealthV1.js';
+import HealthCheckedV1 from '@gdbots/schemas/gdbots/pbjx/event/HealthCheckedV1.js';
+import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1.js';
+import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1.js';
+import RegisteringServiceLocator from '../../src/RegisteringServiceLocator.js';
+import HttpTransport from '../../src/transports/HttpTransport.js';
+import EnvelopeReceivedEvent from '../../src/events/EnvelopeReceivedEvent.js';
+import { TRANSPORT_HTTP_ENVELOPE_RECEIVED } from '../../src/constants.js';
 
 
 test('HttpTransport tests', async (t) => {

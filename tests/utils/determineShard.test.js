@@ -1,5 +1,5 @@
 import test from 'tape';
-import determineShard from '../../src/utils/determineShard';
+import determineShard from '../../src/utils/determineShard.js';
 
 test('determineShard tests', (t) => {
   t.same(determineShard('test'), 143);

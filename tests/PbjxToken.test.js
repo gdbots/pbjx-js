@@ -1,5 +1,5 @@
 import test from 'tape';
-import PbjxToken from '../src/PbjxToken';
+import PbjxToken from '../src/PbjxToken.js';
 
 
 test('PbjxToken tests', (t) => {

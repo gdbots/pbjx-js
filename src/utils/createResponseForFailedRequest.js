@@ -1,6 +1,6 @@
-import Exception from '@gdbots/pbj/Exception';
-import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
-import RequestFailedResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/RequestFailedResponseV1';
+import Exception from '@gdbots/pbj/Exception.js';
+import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code.js';
+import RequestFailedResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/RequestFailedResponseV1.js';
 
 /**
  * @param {Message}         request   - A message using mixin 'gdbots:pbjx:mixin:request'

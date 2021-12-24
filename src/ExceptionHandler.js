@@ -1,4 +1,4 @@
-import { COMMAND_BUS_EXCEPTION, EVENT_BUS_EXCEPTION, TRANSPORT_SEND_EXCEPTION, } from './constants';
+import { COMMAND_BUS_EXCEPTION, EVENT_BUS_EXCEPTION, TRANSPORT_SEND_EXCEPTION, } from './constants.js';
 
 export default class ExceptionHandler {
   /**

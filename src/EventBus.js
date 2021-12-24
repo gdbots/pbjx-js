@@ -1,8 +1,8 @@
-import Exception from '@gdbots/pbj/Exception';
-import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code';
-import EventExecutionFailedV1 from '@gdbots/schemas/gdbots/pbjx/event/EventExecutionFailedV1';
-import BusExceptionEvent from './events/BusExceptionEvent';
-import getEventNames from './utils/getEventNames';
+import Exception from '@gdbots/pbj/Exception.js';
+import Code from '@gdbots/schemas/gdbots/pbjx/enums/Code.js';
+import EventExecutionFailedV1 from '@gdbots/schemas/gdbots/pbjx/event/EventExecutionFailedV1.js';
+import BusExceptionEvent from './events/BusExceptionEvent.js';
+import getEventNames from './utils/getEventNames.js';
 
 export default class EventBus {
   /**

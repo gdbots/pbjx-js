@@ -1,13 +1,13 @@
 import test from 'tape';
 import 'isomorphic-fetch';
-import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1';
-import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
-import { REQUEST_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants';
-import HandlerNotFound from '../src/exceptions/HandlerNotFound';
-import LogicException from '../src/exceptions/LogicException';
-import PbjxEvent from '../src/events/PbjxEvent';
-import RegisteringServiceLocator from '../src/RegisteringServiceLocator';
-import RequestHandlingFailed from '../src/exceptions/RequestHandlingFailed';
+import EchoRequestV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoRequestV1.js';
+import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1.js';
+import { REQUEST_BUS_EXCEPTION, SUFFIX_AFTER_HANDLE, SUFFIX_BEFORE_HANDLE } from '../src/constants.js';
+import HandlerNotFound from '../src/exceptions/HandlerNotFound.js';
+import LogicException from '../src/exceptions/LogicException.js';
+import PbjxEvent from '../src/events/PbjxEvent.js';
+import RegisteringServiceLocator from '../src/RegisteringServiceLocator.js';
+import RequestHandlingFailed from '../src/exceptions/RequestHandlingFailed.js';
 
 
 class TestHandler {

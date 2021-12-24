@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import jws from 'jws';
-import InvalidArgumentException from './exceptions/InvalidArgumentException';
+import InvalidArgumentException from './exceptions/InvalidArgumentException.js';
 
 /**
  * The algorithm and type of encryption scheme to use when signing.

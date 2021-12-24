@@ -1,4 +1,4 @@
-import LogicException from '../../src/exceptions/LogicException';
+import LogicException from '../../src/exceptions/LogicException.js';
 
 export default class Container {
   constructor() {

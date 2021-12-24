@@ -1,6 +1,6 @@
 import test from 'tape';
-import UserV1 from '@gdbots/acme-schemas/acme/iam/node/UserV1';
-import TransportEnvelope from '../../src/transports/TransportEnvelope';
+import UserV1 from '@gdbots/acme-schemas/acme/iam/node/UserV1.js';
+import TransportEnvelope from '../../src/transports/TransportEnvelope.js';
 
 test('TransportEnvelope tests', async (t) => {
   const user = await UserV1.fromObject({ _id: '9c632008-124f-454a-aeef-fd424612abc3', created_at: '1508977465084000' });

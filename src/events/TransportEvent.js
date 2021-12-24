@@ -1,4 +1,4 @@
-import PbjxEvent from './PbjxEvent';
+import PbjxEvent from './PbjxEvent.js';
 
 const transportNameSym = Symbol('transportName');
 

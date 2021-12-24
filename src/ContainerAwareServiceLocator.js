@@ -1,10 +1,10 @@
-import { serviceIds } from './constants';
-import HandlerNotFound from './exceptions/HandlerNotFound';
-import ServiceLocator from './ServiceLocator';
-import CommandBus from './CommandBus';
-import EventBus from './EventBus';
-import RequestBus from './RequestBus';
-import curieToHandlerServiceId from './utils/curieToHandlerServiceId';
+import { serviceIds } from './constants.js';
+import HandlerNotFound from './exceptions/HandlerNotFound.js';
+import ServiceLocator from './ServiceLocator.js';
+import CommandBus from './CommandBus.js';
+import EventBus from './EventBus.js';
+import RequestBus from './RequestBus.js';
+import curieToHandlerServiceId from './utils/curieToHandlerServiceId.js';
 
 export default class ContainerAwareServiceLocator extends ServiceLocator {
   /**

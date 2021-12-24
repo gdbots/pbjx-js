@@ -1,4 +1,4 @@
-import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1';
+import EchoResponseV1 from '@gdbots/schemas/gdbots/pbjx/request/EchoResponseV1.js';
 
 export default class EchoRequestHandler {
   async handleRequest(request, pbjx) {

@@ -1,5 +1,5 @@
-import Event from './Event';
-import LogicException from '../exceptions/LogicException';
+import Event from './Event.js';
+import LogicException from '../exceptions/LogicException.js';
 
 const pbjxService = Symbol('pbjxService');
 const depth = Symbol('depth');
