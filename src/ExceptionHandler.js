@@ -1,4 +1,10 @@
-import { COMMAND_BUS_EXCEPTION, EVENT_BUS_EXCEPTION, TRANSPORT_SEND_EXCEPTION, } from './constants.js';
+import {
+  COMMAND_BUS_EXCEPTION,
+  EVENT_BUS_EXCEPTION,
+  TRANSPORT_SEND_EXCEPTION,
+  TRIGGER_EXCEPTION
+} from './constants.js';
+import TriggerExceptionEvent from './events/TriggerExceptionEvent.js';
 
 export default class ExceptionHandler {
   /**
@@ -6,6 +12,16 @@ export default class ExceptionHandler {
    */
   constructor(dispatcher) {
     Object.defineProperty(this, 'dispatcher', { value: dispatcher });
+  }
+
+  /**
+   * @param {PbjxEvent} event
+   * @param {string} eventName
+   * @param {Exception|Error} exception
+   */
+  async onTriggerException(event, eventName, exception) {
+    const message = event.getMessage();
+    await this.dispatcher.dispatch(TRIGGER_EXCEPTION, new TriggerExceptionEvent(message, eventName, exception));
   }
 
   /**

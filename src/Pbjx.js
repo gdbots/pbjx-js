@@ -85,6 +85,7 @@ export default class Pbjx {
    *                               (bind, validate, enrich, etc.)
    * @param {?PbjxEvent} event     An event object containing the message.
    * @param {boolean}    recursive If true, all field values with MessageType are also triggered.
+   * @param {boolean}    throwEx   If true, exceptions are thrown, otherwise they are logged.
    *
    * @returns {Pbjx}
    *
@@ -93,7 +94,7 @@ export default class Pbjx {
    * @throws {TooMuchRecursion}
    * @throws {Exception}
    */
-  async trigger(message, suffix, event = null, recursive = true) {
+  async trigger(message, suffix, event = null, recursive = true, throwEx = false) {
     const fsuffix = `.${trim(suffix, '.')}`;
     if (fsuffix === '.') {
       throw new InvalidArgumentException('Trigger requires a non-empty suffix.');
@@ -122,11 +123,19 @@ export default class Pbjx {
     }
 
     const dispatcher = await this[locatorSym].getDispatcher();
-    await dispatcher.dispatch(`${EVENT_PREFIX}message${fsuffix}`, fevent);
-    const events = getEventNames(message, fsuffix);
+    const events = [`${EVENT_PREFIX}message${fsuffix}`].concat(getEventNames(message, fsuffix));
+
     const l = events.length;
     for (let i = 0; i < l; i += 1) {
-      await dispatcher.dispatch(events[i], fevent);
+      try {
+        await dispatcher.dispatch(events[i], fevent);
+      } catch (e) {
+        if (throwEx) {
+          throw e;
+        }
+        const exceptionHandler = await this[locatorSym].getExceptionHandler();
+        await exceptionHandler.onTriggerException(fevent, events[i], e);
+      }
     }
 
     return this;

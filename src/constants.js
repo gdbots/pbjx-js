@@ -61,6 +61,13 @@ export const SUFFIX_AFTER_HANDLE = 'after_handle';
 export const SUFFIX_CREATED = 'created';
 export const SUFFIX_UPDATED = 'updated';
 export const SUFFIX_DELETED = 'deleted';
+export const SUFFIX_EXCEPTION = 'exception';
+
+/**
+ * Occurs during a Pbjx.trigger call when throwEx is false, which
+ * means the error doesn't block/throw and is dispatched instead.
+ */
+export const TRIGGER_EXCEPTION = t('trigger_exception');
 
 /**
  * Occurs prior to an expection being thrown during the handling phase of a command.
