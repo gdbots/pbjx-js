@@ -32,7 +32,7 @@
     "@babel/register": "^7.10.4",
     "@gdbots/acme-schemas": "^3.0.1",
     "@gdbots/pbj": "^3.0.0",
-    "faucet": "^0.0.1",
+    "faucet": "^0.0.4",
     "isomorphic-fetch": "^3.0.0",
     "lodash-es": "^4.17.15",
     "md5": "^2.3.0",
