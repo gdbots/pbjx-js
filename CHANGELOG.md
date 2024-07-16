@@ -1,6 +1,10 @@
 # CHANGELOG
 
 
+## v3.0.1
+* Add throwEx option to Pbjx.trigger, default to true (for real this time) to match php implementation.
+
+
 ## v3.0.0
 __BREAKING CHANGES__
 

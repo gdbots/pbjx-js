@@ -94,7 +94,7 @@ export default class Pbjx {
    * @throws {TooMuchRecursion}
    * @throws {Exception}
    */
-  async trigger(message, suffix, event = null, recursive = true, throwEx = false) {
+  async trigger(message, suffix, event = null, recursive = true, throwEx = true) {
     const fsuffix = `.${trim(suffix, '.')}`;
     if (fsuffix === '.') {
       throw new InvalidArgumentException('Trigger requires a non-empty suffix.');
@@ -118,7 +118,7 @@ export default class Pbjx {
           continue;
         }
 
-        await this.trigger(nested[i], fsuffix, fevent.createChildEvent(nested[i]), recursive);
+        await this.trigger(nested[i], fsuffix, fevent.createChildEvent(nested[i]), recursive, throwEx);
       }
     }
 

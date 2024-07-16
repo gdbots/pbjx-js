@@ -1,6 +1,6 @@
 {
   "name": "@gdbots/pbjx",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Pbj messaging tools for es6.",
   "repository": {
     "type": "git",
@@ -32,13 +32,13 @@
     "@babel/register": "^7.10.4",
     "@gdbots/acme-schemas": "^3.0.1",
     "@gdbots/pbj": "^3.0.0",
-    "faucet": "^0.0.1",
+    "faucet": "^0.0.4",
     "isomorphic-fetch": "^3.0.0",
     "lodash-es": "^4.17.15",
     "md5": "^2.3.0",
-    "rimraf": "^3.0.2",
-    "tape": "^5.0.1",
+    "rimraf": "^6.0.1",
+    "tape-es": "^1.2.17",
     "utf8": "^3.0.0",
-    "uuid": "^8.3.0"
+    "uuid": "^9.0.1"
   }
 }
