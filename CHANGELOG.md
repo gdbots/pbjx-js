@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## v3.1.0
+__POSSIBLE BREAKING CHANGES__
+* The underlying gdbots/pbj has been upgraded from 3.x to 4.x so we can use the latest uuid package for security reasons. The interface remains the same but npm packaging being what it is (horrible) you might run into dependency issues.
+
+
 ## v3.0.1
 * Add throwEx option to Pbjx.trigger, default to true (for real this time) to match php implementation.
 
